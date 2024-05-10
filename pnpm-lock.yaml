@@ -11,6 +11,12 @@ importers:
       bootstrap:
         specifier: ^5.3.3
         version: 5.3.3(@popperjs/core@2.11.8)
+      js-base64:
+        specifier: ^3.7.7
+        version: 3.7.7
+      lossless-json:
+        specifier: ^4.0.1
+        version: 4.0.1
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -20,9 +26,15 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
+      react-error-boundary:
+        specifier: ^4.0.13
+        version: 4.0.13(react@18.3.1)
       react-router:
         specifier: ^6.23.0
         version: 6.23.0(react@18.3.1)
+      react-router-bootstrap:
+        specifier: ^0.26.2
+        version: 0.26.2(react-router-dom@6.23.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       react-router-dom:
         specifier: ^6.23.0
         version: 6.23.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1062,6 +1074,9 @@ packages:
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
+  js-base64@3.7.7:
+    resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
+
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -1109,6 +1124,9 @@ packages:
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
+
+  lossless-json@4.0.1:
+    resolution: {integrity: sha512-l0L+ppmgPDnb+JGxNLndPtJZGNf6+ZmVaQzoxQm3u6TXmhdnsA+YtdVR8DjzZd/em58686CQhOFDPewfJ4l7MA==}
 
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
@@ -1258,6 +1276,11 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
+  react-error-boundary@4.0.13:
+    resolution: {integrity: sha512-b6PwbdSv8XeOSYvjt8LpgpKrZ0yGdtZokYwkwV2wlcZbxgopHX/hgPl5VgpnoVOWd868n1hktM8Qm4b+02MiLQ==}
+    peerDependencies:
+      react: '>=16.13.1'
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -1267,6 +1290,12 @@ packages:
   react-refresh@0.14.2:
     resolution: {integrity: sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==}
     engines: {node: '>=0.10.0'}
+
+  react-router-bootstrap@0.26.2:
+    resolution: {integrity: sha512-YlpI9Xi+Uqp6zFAUO8D/wu6P8mr1ujqq+0V5MhJG1kx9dr/95fAMoGk4J+/CsysOkwtR3tYSac4DDWmHwXvC8w==}
+    peerDependencies:
+      react: '>=16.13.1'
+      react-router-dom: '>=6.0.0'
 
   react-router-dom@6.23.0:
     resolution: {integrity: sha512-Q9YaSYvubwgbal2c9DJKfx6hTNoBp3iJDsl+Duva/DwxoJH+OTXkxGpql4iUK2sla/8z4RpjAm6EWx1qUDuopQ==}
@@ -2544,6 +2573,8 @@ snapshots:
 
   isexe@2.0.0: {}
 
+  js-base64@3.7.7: {}
+
   js-tokens@4.0.0: {}
 
   js-yaml@4.1.0:
@@ -2583,6 +2614,8 @@ snapshots:
   loose-envify@1.4.0:
     dependencies:
       js-tokens: 4.0.0
+
+  lossless-json@4.0.1: {}
 
   lru-cache@5.1.1:
     dependencies:
@@ -2734,11 +2767,22 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
+  react-error-boundary@4.0.13(react@18.3.1):
+    dependencies:
+      '@babel/runtime': 7.24.5
+      react: 18.3.1
+
   react-is@16.13.1: {}
 
   react-lifecycles-compat@3.0.4: {}
 
   react-refresh@0.14.2: {}
+
+  react-router-bootstrap@0.26.2(react-router-dom@6.23.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1):
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-router-dom: 6.23.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   react-router-dom@6.23.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
