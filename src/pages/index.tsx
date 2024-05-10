@@ -1,8 +1,13 @@
+import LotteryGen from '../compoments/lotterygen.tsx';
+import TimeConv from '../compoments/timeconv.tsx';
+import UUIDCard from '../compoments/uuidgen.tsx';
 
-const Render:React.FC = () =>  {
+const Render: React.FC = () => {
   return (
     <>
-      <p>It works!</p>
+      <TimeConv />
+      <UUIDCard />
+      <LotteryGen />
     </>
   )
 }
