@@ -4,27 +4,11 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 
 import { useBasic } from '@/hooks/use-basic';
+import moment from 'moment';
 
-const nowTs = () => Math.floor(Date.now() / 1000).toString();
-
-const pad2 = (num: number) => num < 10 ? '0' + num : num;
-
-const timestamp2str = (ts: string) => {
-    const date = new Date(Number(ts) * 1000);
-    const year = date.getFullYear();
-    const month = pad2(date.getMonth() + 1);
-    const day = pad2(date.getDate());
-    const hour = pad2(date.getHours());
-    const minute = pad2(date.getMinutes());
-    const second = pad2(date.getSeconds());
-    return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
-};
-
-const str2timestamp = (value: string) => {
-    const parsedDate = new Date(value.replace(/-/g, '/'));
-    const timestamp = ~~(parsedDate.getTime() / 1e3);
-    return timestamp.toString();
-};
+const nowTs = () => moment().unix().toString();
+const timestamp2str = (ts: string) => moment.unix(Number(ts)).format('YYYY-MM-DD HH:mm:ss');
+const str2timestamp = (value: string) => moment(value).unix().toString();
 
 const TimeConv: React.FC = () => {
     const { value, setValue, action, copy } = useBasic(nowTs());

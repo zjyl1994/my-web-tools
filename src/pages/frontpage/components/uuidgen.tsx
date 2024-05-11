@@ -13,7 +13,7 @@ const Uuid: React.FC = () => {
         <Card className="mt-3">
             <Card.Body>
                 <Card.Title>UUID</Card.Title>
-                <Card.Text className="font-monospace fs-4">{value}</Card.Text>
+                <Card.Text className="font-monospace fs-5">{value}</Card.Text>
                 <ButtonGroup>
                     <Button variant="outline-primary" onClick={action(() => uuid())}>生成</Button>
                     <Button variant="outline-primary" onClick={copy}>复制</Button>

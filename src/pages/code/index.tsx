@@ -12,7 +12,7 @@ const CodePage: React.FC = () => {
   const [rememberName, setRememberName] = useState('');
 
   const calcCode = useMemo(() => calculate(mainPassword, rememberName), [mainPassword, rememberName]);
-  const displayCalcCode = useMemo(() => addSeparator(calcCode), [calcCode]);
+  const displayCalcCode = useMemo(() => addSeparator(calcCode, ' '), [calcCode]);
   const copy = useCopy(calcCode);
 
   return (

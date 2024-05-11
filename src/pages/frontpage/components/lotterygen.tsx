@@ -15,12 +15,14 @@ const getRandomNumbers = (maxNumber: number, numberCount: number) => {
     return numbers.sort((a, b) => a - b);
 }
 
+const pad2 = (num: number) => num < 10 ? '0' + num : num;
+
 const superLottoGen = () => {
-    return getRandomNumbers(35, 5).join(' ') + ' + ' + getRandomNumbers(12, 2).join(' ')
+    return getRandomNumbers(35, 5).map(pad2).join(' ') + ' + ' + getRandomNumbers(12, 2).map(pad2).join(' ')
 }
 
 const markSixGen = () => {
-    return getRandomNumbers(49, 6).join(' + ');
+    return getRandomNumbers(49, 6).map(pad2).join(' + ');
 }
 
 const LotteryGen: React.FC = () => {
@@ -30,7 +32,7 @@ const LotteryGen: React.FC = () => {
         <Card className="mt-3">
             <Card.Body>
                 <Card.Title>LotteryGen</Card.Title>
-                <Card.Text className="font-monospace fs-4">{value}</Card.Text>
+                <Card.Text className="font-monospace fs-5">{value}</Card.Text>
                 <ButtonGroup>
                     <Button variant="outline-primary" onClick={action(superLottoGen)}>SuperLotto</Button>
                     <Button variant="outline-primary" onClick={action(markSixGen)}>MarkSix</Button>
