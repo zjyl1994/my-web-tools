@@ -16,8 +16,8 @@ const Render: React.FC = () => {
     setCalcParams(preValue => { return { ...preValue, [event.target.name]: event.target.value } });
 
   const calcCode = (): string => {
-    let value = md5(calcParams.mainPassword + calcParams.rememberName + sha1(calcParams.mainPassword + calcParams.rememberName)).substring(0, 16);
-    return value.substring(0, 4).toUpperCase() + value.substring(4, 8) + value.substring(8, 12).toUpperCase() + value.substring(12, 16);;
+    const value = md5(calcParams.mainPassword + calcParams.rememberName + sha1(calcParams.mainPassword + calcParams.rememberName)).substring(0, 16);
+    return value.substring(0, 4).toUpperCase() + value.substring(4, 8) + value.substring(8, 12).toUpperCase() + value.substring(12, 16);
   };
   const addSeparator = (str: string, separator: string, n: number): string => {
     const regex = new RegExp(`.{1,${n}}`, 'g');
