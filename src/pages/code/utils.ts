@@ -9,5 +9,10 @@ export const calculate = (mainPassword: string, rememberName: string) => {
         value.substring(4, 8),
         value.substring(8, 12).toUpperCase(),
         value.substring(12, 16),
-    ].join('-');
+    ].join('');
+};
+
+export const addSeparator = (str: string, separator = '-', n = 4): string => {
+    const regex = new RegExp(`.{1,${n}}`, 'g');
+    return str.match(regex)?.join(separator) || str;
 };

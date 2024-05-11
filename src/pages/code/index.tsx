@@ -5,13 +5,14 @@ import Button from 'react-bootstrap/Button';
 
 import { useCopy } from '@/hooks/use-basic';
 
-import { calculate } from './utils';
+import { addSeparator, calculate } from './utils';
 
 const CodePage: React.FC = () => {
   const [mainPassword, setMainPassword] = useState('');
   const [rememberName, setRememberName] = useState('');
 
   const calcCode = useMemo(() => calculate(mainPassword, rememberName), [mainPassword, rememberName]);
+  const displayCalcCode = useMemo(() => addSeparator(calcCode), [calcCode]);
   const copy = useCopy(calcCode);
 
   return (
@@ -28,7 +29,7 @@ const CodePage: React.FC = () => {
         <Form.Label>最终密码</Form.Label>
         <Form.Control type="text" value={calcCode} readOnly />
       </Form.Group>
-      <p className="font-monospace fs-2">{calcCode}</p>
+      <p className="font-monospace fs-2">{displayCalcCode}</p>
       <Button variant="outline-primary" onClick={copy}>复制</Button>
     </>
   )
