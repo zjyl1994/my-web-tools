@@ -7,14 +7,14 @@ import { Base64 } from 'js-base64';
 
 import { useBasic } from '@/hooks/use-basic';
 
-const Render: React.FC = () => {
-    const decode_oct_utf8 = (content:string) => {
-        const byteArray = content.split('\\').filter(Boolean).map(octal => parseInt(octal, 8));
-        const uint8Array = new Uint8Array(byteArray);
-        const textDecoder = new TextDecoder('utf-8');
-        return textDecoder.decode(uint8Array);
-    }
+const decode_oct_utf8 = (content: string) => {
+    const byteArray = content.split('\\').filter(Boolean).map(octal => parseInt(octal, 8));
+    const uint8Array = new Uint8Array(byteArray);
+    const textDecoder = new TextDecoder('utf-8');
+    return textDecoder.decode(uint8Array);
+};
 
+const EncoderPage: React.FC = () => {
     const { value, setValue, action, copy, paste } = useBasic('');
 
     return (
@@ -41,7 +41,7 @@ const Render: React.FC = () => {
                 </ButtonGroup>
             </ButtonToolbar>
         </>
-    )
-}
+    );
+};
 
-export default Render
+export default EncoderPage
