@@ -1,18 +1,18 @@
 import { useState, useCallback } from 'react';
 
-const useCopy = (text: string) => {
+export const useCopy = (text: string) => {
     return useCallback(() => {
         return navigator.clipboard.writeText(text).catch(err => console.error(err));
     }, [text]);
 };
 
-const usePaste = (setInputValue: (value: string) => void) => {
+export const usePaste = (setInputValue: (value: string) => void) => {
     return useCallback(() => {
         return navigator.clipboard.readText().then(text => setInputValue(text)).catch(err => console.error(err));
     }, [setInputValue]);
 };
 
-const useActionCreater = (
+export const useActionCreater = (
     inputValue: string,
     setInputValue: (value: string) => void,
 ) => {
