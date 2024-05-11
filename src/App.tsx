@@ -4,11 +4,11 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
-import FrontPage from './pages/frontpage'
-import JsonPage from './pages/json.tsx'
-import EncoderPage from './pages/encoder'
-import KcalCalcPage from './pages/kcal.tsx'
-import CodeCalcPage from './pages/code'
+import FrontPage from '@/pages/frontpage'
+import JsonPage from '@/pages/json'
+import EncoderPage from '@/pages/encoder'
+import KcalCalcPage from '@/pages/kcal'
+import CodeCalcPage from '@/pages/code'
 
 function App() {
   return (

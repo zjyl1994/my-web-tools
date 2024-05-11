@@ -2,22 +2,12 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import * as LosslessJSON from 'lossless-json'
 
 import { useBasic } from '@/hooks/use-basic';
 
-const deepParse = (s: string): unknown => LosslessJSON.parse(s, (_, v) => {
-    try {
-        return typeof v === 'string' && !/^\d+$/.test(v) ? deepParse(v) : v;
-    } catch {
-        return v;
-    }
-});
-const format_json = (data: string) => LosslessJSON.stringify(LosslessJSON.parse(data), null, 4)!;
-const enhanced_format_json = (data: string) => LosslessJSON.stringify(deepParse(data), null, 4)!;
-const compress_json = (data: string) => LosslessJSON.stringify(LosslessJSON.parse(data))!;
+import { format_json, enhanced_format_json, compress_json } from './utils';
 
-const Render: React.FC = () => {
+const JsonPage: React.FC = () => {
     const { value, setValue, action, copy, paste } = useBasic('');
 
     return (
@@ -40,4 +30,4 @@ const Render: React.FC = () => {
     )
 }
 
-export default Render
+export default JsonPage

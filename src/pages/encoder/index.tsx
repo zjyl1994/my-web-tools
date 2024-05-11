@@ -7,12 +7,7 @@ import { Base64 } from 'js-base64';
 
 import { useBasic } from '@/hooks/use-basic';
 
-const decode_oct_utf8 = (content: string) => {
-    const byteArray = content.split('\\').filter(Boolean).map(octal => parseInt(octal, 8));
-    const uint8Array = new Uint8Array(byteArray);
-    const textDecoder = new TextDecoder('utf-8');
-    return textDecoder.decode(uint8Array);
-};
+import { decode_oct_utf8 } from './utils';
 
 const EncoderPage: React.FC = () => {
     const { value, setValue, action, copy, paste } = useBasic('');
