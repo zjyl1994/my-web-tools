@@ -1,6 +1,6 @@
-import LotteryGen from './lotterygen.tsx';
-import TimeConv from './timeconv.tsx';
-import UUIDCard from './uuidgen.tsx';
+import LotteryGen from './components/lotterygen.tsx';
+import TimeConv from './components/timeconv.tsx';
+import UUIDCard from './components/uuidgen.tsx';
 
 const FrontPage: React.FC = () => {
   return (

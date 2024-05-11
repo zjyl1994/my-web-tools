@@ -4,7 +4,7 @@ import Card from 'react-bootstrap/Card';
 
 import { useBasic } from '@/hooks/use-basic';
 
-function getRandomNumbers(maxNumber: number, numberCount: number): number[] {
+const getRandomNumbers = (maxNumber: number, numberCount: number) => {
     const numbers: number[] = [];
     while (numbers.length < numberCount) {
         const randomNumber = Math.floor(Math.random() * maxNumber) + 1;
