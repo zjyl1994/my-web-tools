@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
-import IndexPage from './pages/index.tsx'
+import FrontPage from './pages/frontpage/index.tsx'
 import JsonPage from './pages/json.tsx'
 import EncoderPage from './pages/encoder.tsx'
 import KcalCalcPage from './pages/kcal.tsx'
@@ -31,7 +31,7 @@ function App() {
       </Navbar>
       <Container className="mt-3">
         <Routes>
-          <Route path="/" element={<IndexPage />} />
+          <Route path="/" element={<FrontPage />} />
           <Route path="/json" element={<JsonPage />} />
           <Route path="/encoder" element={<EncoderPage />} />
           <Route path="/kcal" element={<KcalCalcPage />} />
