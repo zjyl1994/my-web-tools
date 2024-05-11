@@ -5,6 +5,8 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 
+import { doCopy } from '@/utils';
+
 function timestamp2str(ts: string) {
     let pad2 = (num: number) => num < 10 ? '0' + num : num;
     let date = new Date(Number(ts) * 1000);
@@ -23,7 +25,6 @@ const TimeConv: React.FC = () => {
     const [inputValue, setInputValue] = useState(nowTs());
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setInputValue(event.target.value);
-    const doCopy = () => navigator.clipboard.writeText(inputValue).catch(err => console.error(err));
 
     const currentTimestamp = () => setInputValue(nowTs());
     const formTimestamp = () => setInputValue(timestamp2str(inputValue));
@@ -43,7 +44,7 @@ const TimeConv: React.FC = () => {
                     <Button variant="outline-primary" onClick={currentTimestamp}>当前时间戳</Button>
                     <Button variant="outline-primary" onClick={formTimestamp}>时间戳转字符串</Button>
                     <Button variant="outline-primary" onClick={toTimestamp}>字符串转时间戳</Button>
-                    <Button variant="outline-primary" onClick={doCopy}>复制</Button>
+                    <Button variant="outline-primary" onClick={() => doCopy(inputValue)}>复制</Button>
                 </ButtonGroup>
             </Card.Body>
         </Card>

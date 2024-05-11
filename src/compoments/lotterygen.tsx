@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Card from 'react-bootstrap/Card';
 
+import { doCopy } from '@/utils';
+
 function getRandomNumbers(maxNumber: number, numberCount: number): number[] {
     const numbers: number[] = [];
     while (numbers.length < numberCount) {
@@ -27,7 +29,6 @@ const LotteryGen: React.FC = () => {
     const [inputValue, setInputValue] = useState(superLottoGen());
 
     const handleGenButton = (action: Function) => () => setInputValue(action());
-    const doCopy = () => navigator.clipboard.writeText(inputValue).catch(err => console.error(err));
 
     return (
         <Card className="mt-3">
@@ -37,7 +38,7 @@ const LotteryGen: React.FC = () => {
                 <ButtonGroup>
                     <Button variant="outline-primary" onClick={handleGenButton(superLottoGen)}>SuperLotto</Button>
                     <Button variant="outline-primary" onClick={handleGenButton(markSixGen)}>MarkSix</Button>
-                    <Button variant="outline-primary" onClick={doCopy}>复制</Button>
+                    <Button variant="outline-primary" onClick={() => doCopy(inputValue)}>复制</Button>
                 </ButtonGroup>
             </Card.Body>
         </Card>

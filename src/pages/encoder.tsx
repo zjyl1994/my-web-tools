@@ -7,6 +7,8 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
 import { Base64 } from 'js-base64';
 
+import { doCopy } from '@/utils';
+
 const Render: React.FC = () => {
     const decode_oct_utf8 = (content:string) => {
         const byteArray = content.split('\\').filter(Boolean).map(octal => parseInt(octal, 8));
@@ -25,7 +27,6 @@ const Render: React.FC = () => {
             } catch (e) { console.error(e) };
         }
     }
-    const doCopy = () => navigator.clipboard.writeText(inputValue).catch(err => console.error(err));
     const doPaste = () => navigator.clipboard.readText().then(text => setInputValue(text)).catch(err => console.error(err));
     return (
         <>
@@ -45,7 +46,7 @@ const Render: React.FC = () => {
                     <Button variant="outline-primary" onClick={doAction(decode_oct_utf8)}>八进制 UTF8 解码</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2">
-                    <Button variant="outline-primary" onClick={doCopy}>复制</Button>
+                    <Button variant="outline-primary" onClick={() => doCopy(inputValue)}>复制</Button>
                     <Button variant="outline-primary" onClick={doPaste}>粘贴</Button>
                     <Button variant="outline-primary" onClick={() => { setInputValue("") }}>清空</Button>
                 </ButtonGroup>

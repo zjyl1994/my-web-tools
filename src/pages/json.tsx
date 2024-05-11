@@ -6,6 +6,8 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import * as LosslessJSON from 'lossless-json'
 
+import { doCopy } from '@/utils';
+
 const Render: React.FC = () => {
     const deepParse: any = (s: string) => LosslessJSON.parse(s, (_, v) => {
         try {
@@ -28,7 +30,6 @@ const Render: React.FC = () => {
             } catch (e) { console.error(e) };
         }
     }
-    const doCopy = () => navigator.clipboard.writeText(inputValue).catch(err => console.error(err));
     const doPaste = () => navigator.clipboard.readText().then(text => setInputValue(text)).catch(err => console.error(err));
 
     return (
@@ -42,7 +43,7 @@ const Render: React.FC = () => {
                     <Button variant="outline-primary" onClick={doAction(compress_json)}>压缩</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2">
-                    <Button variant="outline-primary" onClick={doCopy}>复制</Button>
+                    <Button variant="outline-primary" onClick={() => doCopy(inputValue)}>复制</Button>
                     <Button variant="outline-primary" onClick={doPaste}>粘贴</Button>
                     <Button variant="outline-primary" onClick={() => { setInputValue("") }}>清空</Button>
                 </ButtonGroup>

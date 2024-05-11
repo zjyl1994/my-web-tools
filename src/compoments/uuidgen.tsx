@@ -6,11 +6,12 @@ import Card from 'react-bootstrap/Card';
 
 import { v4 as uuid } from 'uuid';
 
+import { doCopy } from '@/utils';
+
 const UUID: React.FC = () => {
     const [inputValue, setInputValue] = useState(uuid());
 
     const handleGenButton = () => setInputValue(uuid());
-    const doCopy = () => navigator.clipboard.writeText(inputValue).catch(err => console.error(err));
 
     return (
         <Card className="mt-3">
@@ -19,7 +20,7 @@ const UUID: React.FC = () => {
                 <Card.Text className="font-monospace fs-4">{inputValue}</Card.Text>
                 <ButtonGroup>
                     <Button variant="outline-primary" onClick={handleGenButton}>生成</Button>
-                    <Button variant="outline-primary" onClick={doCopy}>复制</Button>
+                    <Button variant="outline-primary" onClick={() => doCopy(inputValue)}>复制</Button>
                 </ButtonGroup>
             </Card.Body>
         </Card>
