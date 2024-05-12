@@ -4,11 +4,11 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 
 import { useBasic } from '@/hooks/use-basic';
-import moment from 'moment';
+import dayjs from 'dayjs'
 
-const nowTs = () => moment().unix().toString();
-const timestamp2str = (ts: string) => moment.unix(Number(ts)).format('YYYY-MM-DD HH:mm:ss');
-const str2timestamp = (value: string) => moment(value).unix().toString();
+const nowTs = () => dayjs().unix().toString();
+const timestamp2str = (ts: string) => dayjs.unix(Number(ts)).format('YYYY-MM-DD HH:mm:ss');
+const str2timestamp = (value: string) => dayjs(value).unix().toString();
 
 const TimeConv: React.FC = () => {
     const { value, setValue, action, copy } = useBasic(nowTs());

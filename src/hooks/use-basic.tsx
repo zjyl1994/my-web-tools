@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { toast } from 'react-toastify';
 
 export const useCopy = (text: string) => {
     return useCallback(() => {
@@ -21,7 +22,7 @@ export const useActionCreater = (
             const result = action(inputValue);
             if (result) setInputValue(result);
         } catch (e) {
-            setInputValue(String(e));
+            toast.error(String(e), { autoClose: 10000 });
         }
     }, [inputValue, setInputValue]);
 };

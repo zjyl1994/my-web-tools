@@ -9,13 +9,16 @@ import JsonPage from '@/pages/json'
 import EncoderPage from '@/pages/encoder'
 import KcalCalcPage from '@/pages/kcal'
 import CodeCalcPage from '@/pages/code'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
   return (
     <>
       <Navbar expand="lg" bg="dark" data-bs-theme="dark" sticky="top">
         <Container>
-          <Navbar.Brand as={Link} to="/">鱼sifu工具包</Navbar.Brand>
+          <Navbar.Brand as={Link} to="/">鱼 sifu 工具包</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
@@ -38,6 +41,7 @@ function App() {
           <Route path="/code" element={<CodeCalcPage />} />
         </Routes>
       </Container>
+      <ToastContainer />
     </>
   )
 }
