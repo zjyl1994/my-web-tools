@@ -12,18 +12,12 @@ const getRandomNumbers = (maxNumber: number, numberCount: number) => {
             numbers.push(randomNumber);
         }
     }
-    return numbers.sort((a, b) => a - b);
+    return numbers.sort((a, b) => a - b).map((num: number) => num < 10 ? '0' + num : num);
 }
 
-const pad2 = (num: number) => num < 10 ? '0' + num : num;
+const superLottoGen = () => getRandomNumbers(35, 5).join(' ') + ' + ' + getRandomNumbers(12, 2).join(' ');
 
-const superLottoGen = () => {
-    return getRandomNumbers(35, 5).map(pad2).join(' ') + ' + ' + getRandomNumbers(12, 2).map(pad2).join(' ')
-}
-
-const markSixGen = () => {
-    return getRandomNumbers(49, 6).map(pad2).join(' + ');
-}
+const markSixGen = () => getRandomNumbers(49, 6).join(' ');
 
 const LotteryGen: React.FC = () => {
     const { value, action, copy } = useBasic(superLottoGen());
