@@ -10,6 +10,7 @@ import EncoderPage from '@/pages/encoder';
 import KcalCalcPage from '@/pages/kcal';
 import CodeCalcPage from '@/pages/code';
 import SQLFmtPage from '@/pages/sqlfmt';
+import TextProcPage from '@/pages/textproc';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -23,12 +24,13 @@ function App() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link as={Link} to="/json" active={Boolean(useMatch('/json'))}  eventKey="1">JSON</Nav.Link>
-              <Nav.Link as={Link} to="/encoder" active={Boolean(useMatch('/encoder'))}  eventKey="2">编解码</Nav.Link>
-              <Nav.Link as={Link} to="/kcal" active={Boolean(useMatch('/kcal'))}  eventKey="3">大卡计算</Nav.Link>
+              <Nav.Link as={Link} to="/json" active={Boolean(useMatch('/json'))}  eventKey="json">JSON</Nav.Link>
+              <Nav.Link as={Link} to="/encoder" active={Boolean(useMatch('/encoder'))}  eventKey="encoder">编解码</Nav.Link>
+              <Nav.Link as={Link} to="/textproc" active={Boolean(useMatch('/textproc'))}  eventKey="textproc">文本处理</Nav.Link>
+              <Nav.Link as={Link} to="/kcal" active={Boolean(useMatch('/kcal'))}  eventKey="kcal">大卡计算</Nav.Link>
               <NavDropdown title="其他" id="basic-nav-dropdown">
-                <NavDropdown.Item as={Link} to="/code" active={Boolean(useMatch('/code'))}  eventKey="4">密码机</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/sqlfmt" active={Boolean(useMatch('/sqlfmt'))}  eventKey="5">SQL 格式化</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/code" active={Boolean(useMatch('/code'))}  eventKey="code">密码机</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/sqlfmt" active={Boolean(useMatch('/sqlfmt'))}  eventKey="sqlfmt">SQL 格式化</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>
@@ -42,6 +44,7 @@ function App() {
           <Route path="/kcal" element={<KcalCalcPage />} />
           <Route path="/code" element={<CodeCalcPage />} />
           <Route path="/sqlfmt" element={<SQLFmtPage />} />
+          <Route path="/textproc" element={<TextProcPage />} />
         </Routes>
       </Container>
       <ToastContainer />
