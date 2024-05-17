@@ -7,9 +7,10 @@ import { useBasic } from '@/hooks/use-basic';
 import {
     split_by_comma, join_with_comma,
     trim_line_space, remove_empty_line,
-    add_quote, remove_quote,
+    add_quote, remove_quote, uniq_line,
     add_comma_suffix, remove_comma_suffix,
-    nums_average,nums_max,nums_min,
+    nums_average, nums_max, nums_min,
+    sort_asc, sort_desc, sort_len_asc, sort_len_desc,
 } from './utils';
 import { useMemo } from 'react';
 
@@ -48,6 +49,17 @@ const TextProcPage: React.FC = () => {
                 <ButtonGroup className="me-2">
                     <Button variant="outline-primary" onClick={action(trim_line_space)}>去除两边空白</Button>
                     <Button variant="outline-primary" onClick={action(remove_empty_line)}>去除空行</Button>
+                    <Button variant="outline-primary" onClick={action(uniq_line)}>去除重复行</Button>
+                </ButtonGroup>
+            </ButtonToolbar>
+            <ButtonToolbar className="mt-2">
+                <ButtonGroup className="me-2">
+                    <Button variant="outline-primary" onClick={action(sort_asc)}>字典升序排序</Button>
+                    <Button variant="outline-primary" onClick={action(sort_desc)}>字典降序排序</Button>
+                </ButtonGroup>
+                <ButtonGroup className="me-2">
+                    <Button variant="outline-primary" onClick={action(sort_len_asc)}>长度升序排序</Button>
+                    <Button variant="outline-primary" onClick={action(sort_len_desc)}>长度降序排序</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2">
                     <Button variant="outline-primary" onClick={copy}>复制</Button>
