@@ -6,18 +6,29 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import { useBasic } from '@/hooks/use-basic';
 import {
     split_by_comma, join_with_comma,
-    trim_line_space,remove_empty_line,
+    trim_line_space, remove_empty_line,
     add_quote, remove_quote,
     add_comma_suffix, remove_comma_suffix,
 } from './utils';
+import { useMemo } from 'react';
 
 
 const TextProcPage: React.FC = () => {
     const { value, setValue, action, copy, paste } = useBasic('');
 
+    const valueLines = useMemo(() => value.split('\n').map(x => x.trim()).filter(x => x.length > 0), [value]);
+    const valueLinesLength = useMemo(() => valueLines.map(x => x.length), [valueLines]);
+
     return (
         <>
             <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} />
+
+            <div className="mt-2">
+                <span className="me-2">总长度 {value.length}</span>
+                <span className="me-2">总行数 {valueLines.length}</span>
+                <span className="me-2">最长行长度 {Math.max(...valueLinesLength)}</span>
+                <span className="me-2">最短行长度 {Math.min(...valueLinesLength)}</span>
+            </div>
 
             <ButtonToolbar className="mt-2">
                 <ButtonGroup className="me-2">
