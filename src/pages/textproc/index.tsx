@@ -30,7 +30,7 @@ const TextProcPage: React.FC = () => {
                 <span className="me-2">总行数 {valueLines.length}</span>
                 <span className="me-2">最长行长度 {nums_max(valueLinesLength)}</span>
                 <span className="me-2">最短行长度 {nums_min(valueLinesLength)}</span>
-                <span className="me-2">平均行长度 {nums_average(valueLinesLength)}</span>
+                <span className="me-2">平均行长度 {nums_average(valueLinesLength).toFixed(2)}</span>
             </div>
 
             <ButtonToolbar className="mt-2">
