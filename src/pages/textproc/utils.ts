@@ -10,3 +10,7 @@ export const remove_quote = (data: string) => data.split('\n').map(x => x.replac
 
 export const add_comma_suffix = (data: string) => data.split('\n').map(x => x + ',').join('\n');
 export const remove_comma_suffix = (data: string) => data.split('\n').map(x => x.replace(/(,*$)/g, '')).join('\n');
+
+export const nums_average = (nums: number[]) => nums.length > 0 ? nums.reduce((a, b) => a + b) / nums.length : 0;
+export const nums_max = (nums: number[]) => nums.length > 0 ? Math.max(...nums) : 0;
+export const nums_min = (nums: number[]) => nums.length > 0 ? Math.min(...nums) : 0;

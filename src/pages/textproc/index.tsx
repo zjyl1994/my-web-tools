@@ -9,6 +9,7 @@ import {
     trim_line_space, remove_empty_line,
     add_quote, remove_quote,
     add_comma_suffix, remove_comma_suffix,
+    nums_average,nums_max,nums_min,
 } from './utils';
 import { useMemo } from 'react';
 
@@ -26,8 +27,9 @@ const TextProcPage: React.FC = () => {
             <div className="mt-2">
                 <span className="me-2">总长度 {value.length}</span>
                 <span className="me-2">总行数 {valueLines.length}</span>
-                <span className="me-2">最长行长度 {Math.max(...valueLinesLength)}</span>
-                <span className="me-2">最短行长度 {Math.min(...valueLinesLength)}</span>
+                <span className="me-2">最长行长度 {nums_max(valueLinesLength)}</span>
+                <span className="me-2">最短行长度 {nums_min(valueLinesLength)}</span>
+                <span className="me-2">平均行长度 {nums_average(valueLinesLength)}</span>
             </div>
 
             <ButtonToolbar className="mt-2">
