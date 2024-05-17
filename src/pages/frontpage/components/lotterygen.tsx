@@ -3,11 +3,12 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Card from 'react-bootstrap/Card';
 
 import { useBasic } from '@/hooks/use-basic';
+import { getRandomInt } from './utils.ts';
 
 const getRandomNumbers = (maxNumber: number, numberCount: number) => {
     const numbers: number[] = [];
     while (numbers.length < numberCount) {
-        const randomNumber = Math.floor(Math.random() * maxNumber) + 1;
+        const randomNumber = getRandomInt(1, maxNumber);
         if (!numbers.includes(randomNumber)) {
             numbers.push(randomNumber);
         }

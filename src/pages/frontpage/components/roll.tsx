@@ -3,8 +3,10 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Card from 'react-bootstrap/Card';
 
 import { useBasic } from '@/hooks/use-basic';
+import { getRandomInt } from './utils.ts';
 
-const rollNum = () => Math.floor(Math.random() * 100) + 1;
+const pad2 = (num: number) => num < 10 ? '0' + num : num;
+const rollNum = () => pad2(getRandomInt(1, 100));
 
 const Roll: React.FC = () => {
     const { value, action, copy } = useBasic(rollNum().toString());
