@@ -9,10 +9,33 @@ import { useState } from 'react';
 import { uniq } from 'lodash';
 
 const LotteryGen: React.FC = () => {
-    const [codeList, setCodeList] = useState<string[]>([])
+    const loadCodeList = () => JSON.parse(localStorage.getItem("lottery_codes") ?? '[]');
+
+    const [codeList, setCodeList] = useState<string[]>(loadCodeList())
     const { value, action } = useBasic(superLottoGen());
-    const saveCode = () => setCodeList(prev => uniq([value, ...prev]));
-    const cleanList = () => setCodeList([]);
+
+    const saveCode = () => setCodeList(prev => {
+        const newList = uniq([value, ...prev]);
+        localStorage.setItem("lottery_codes", JSON.stringify(newList));
+        return newList;
+    });
+
+    const cleanList = () => {
+        if (confirm('真的要清空吗?'))
+            setCodeList(() => {
+                localStorage.removeItem("lottery_codes");
+                return [];
+            })
+    };
+
+    const deleteCode = (index: number) => () => {
+        if (confirm('真的要删除吗?'))
+            setCodeList(prev => {
+                const newList = prev.filter((_, i) => i !== index);
+                localStorage.setItem("lottery_codes", JSON.stringify(newList));
+                return newList;
+            });
+    };
 
     return (
         <>
@@ -33,7 +56,12 @@ const LotteryGen: React.FC = () => {
             <Card className="mt-3">
                 <Card.Header>心仪号码列表</Card.Header>
                 <ListGroup variant="flush">
-                    {codeList.map((item: string) => <ListGroup.Item>{item}</ListGroup.Item>)}
+                    {codeList.map((item: string, index: number) =>
+                        <ListGroup.Item className="d-flex justify-content-between">
+                            <div>{item} </div>
+                            <button type="button" className="btn-close" onClick={deleteCode(index)}></button>
+                        </ListGroup.Item>
+                    )}
                 </ListGroup>
             </Card>
 
