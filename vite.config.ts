@@ -18,7 +18,7 @@ export default defineConfig({
         name: '鱼 sifu 工具包',
         short_name: '工具包',
         description: '鱼 sifu 的在线小工具合集包',
-        theme_color: '#F8F9FA',
+        theme_color: 'rgb(248, 249, 250)',
         icons: [
           {
             src: 'android-chrome-192x192.png',
