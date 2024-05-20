@@ -19,7 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   return (
     <>
-      <Navbar expand="lg" bg="dark" data-bs-theme="dark" sticky="top" collapseOnSelect>
+      <Navbar expand="lg" bg="light" data-bs-theme="light" sticky="top" collapseOnSelect>
         <Container>
           <Navbar.Brand as={Link} to="/">鱼 sifu 工具包</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
