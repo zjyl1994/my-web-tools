@@ -10,9 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/blueimp-md5": "^2.18.2",
-    "@types/lodash": "^4.17.3",
-    "@types/uuid": "^9.0.8",
     "blueimp-md5": "^2.19.0",
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.11",
@@ -28,8 +25,7 @@
     "react-router-dom": "^6.23.0",
     "react-toastify": "^10.0.5",
     "sql-formatter": "^15.3.1",
-    "uuid": "^9.0.1",
-    "vite-plugin-pwa": "^0.20.0"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
@@ -37,11 +33,15 @@
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "@types/blueimp-md5": "^2.18.2",
+    "@types/lodash": "^4.17.3",
+    "@types/uuid": "^9.0.8",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
-    "vite-plugin-pages": "^0.32.1"
+    "vite-plugin-pages": "^0.32.1",
+    "vite-plugin-pwa": "^0.20.0"
   }
 }
