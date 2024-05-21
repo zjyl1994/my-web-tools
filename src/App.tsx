@@ -21,7 +21,7 @@ function App() {
       <Navbar expand="lg" sticky="top" bg="light" collapseOnSelect>
         <Container>
           <Navbar.Brand as={Link} to="/">
-            <img src="/apple-touch-icon.png" width="30" height="30" className="d-inline-block align-top me-2" />
+            <img src="/android-chrome-192x192.png" width="30" height="30" className="d-inline-block align-top me-2" />
             <span>鱼 sifu 工具包</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

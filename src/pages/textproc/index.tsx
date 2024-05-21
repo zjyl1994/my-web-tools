@@ -31,9 +31,9 @@ const TextProcPage: React.FC = () => {
             <InputGroup className="mt-2">
                 <InputGroup.Text>正则表达式</InputGroup.Text>
                 <Form.Control onChange={e => setRegexValue(e.target.value)} />
-                <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, false))}>包含</Button>
-                <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, true))}>排除</Button>
-                <Button variant="outline-primary" onClick={action(regex_extract_lines(regexValue))}>提取</Button>
+                <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, false))} title="保留符合正则的行">包含</Button>
+                <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, true))} title="删除符合正则的行">排除</Button>
+                <Button variant="outline-primary" onClick={action(regex_extract_lines(regexValue))} title="提取正则匹配到的组为 Excel 文本">提取</Button>
 
             </InputGroup>
 
