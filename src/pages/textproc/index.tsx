@@ -1,22 +1,25 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import InputGroup from 'react-bootstrap/InputGroup';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
 import { useBasic } from '@/hooks/use-basic';
 import {
     split_by_comma, join_with_comma,
-    trim_line_space, remove_empty_line,
+    trim_line_space, remove_empty_line, split_by_blank,
     add_quote, remove_quote, uniq_line,
     add_comma_suffix, remove_comma_suffix,
     nums_average, nums_max, nums_min,
     sort_asc, sort_desc, sort_len_asc, sort_len_desc,
+    regex_filter_lines, regex_extract_lines,
 } from './utils';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 
 const TextProcPage: React.FC = () => {
     const { value, setValue, action, copy, paste } = useBasic('');
+    const [regexValue, setRegexValue] = useState('');
 
     const valueLines = useMemo(() => value.split('\n').map(x => x.trim()).filter(x => x.length > 0), [value]);
     const valueLinesLength = useMemo(() => valueLines.map(x => x.length), [valueLines]);
@@ -24,6 +27,15 @@ const TextProcPage: React.FC = () => {
     return (
         <>
             <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} />
+
+            <InputGroup className="mt-2">
+                <InputGroup.Text>正则表达式</InputGroup.Text>
+                <Form.Control onChange={e => setRegexValue(e.target.value)} />
+                <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, false))}>包含</Button>
+                <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, true))}>排除</Button>
+                <Button variant="outline-primary" onClick={action(regex_extract_lines(regexValue))}>提取</Button>
+
+            </InputGroup>
 
             <div className="mt-2">
                 <span className="me-2">总长度 {value.length}</span>
@@ -47,7 +59,10 @@ const TextProcPage: React.FC = () => {
                     <Button variant="outline-primary" onClick={action(remove_comma_suffix)}>行尾去逗号</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2">
+                    <Button variant="outline-primary" onClick={action(split_by_blank)}>空白切行</Button>
                     <Button variant="outline-primary" onClick={action(trim_line_space)}>去除两边空白</Button>
+                </ButtonGroup>
+                <ButtonGroup className="me-2">
                     <Button variant="outline-primary" onClick={action(remove_empty_line)}>去除空行</Button>
                     <Button variant="outline-primary" onClick={action(uniq_line)}>去除重复行</Button>
                 </ButtonGroup>
