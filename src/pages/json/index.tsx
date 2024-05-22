@@ -14,13 +14,13 @@ const JsonPage: React.FC = () => {
         <>
             <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} />
 
-            <ButtonToolbar className="mt-2">
-                <ButtonGroup className="me-2">
+            <ButtonToolbar>
+                <ButtonGroup className="me-2 mt-2">
                     <Button variant="outline-primary" onClick={action(format_json)}>格式化</Button>
                     <Button variant="outline-primary" onClick={action(enhanced_format_json)}>增强格式化</Button>
                     <Button variant="outline-primary" onClick={action(compress_json)}>压缩</Button>
                 </ButtonGroup>
-                <ButtonGroup className="me-2">
+                <ButtonGroup className="me-2 mt-2">
                     <Button variant="outline-primary" onClick={copy}>复制</Button>
                     <Button variant="outline-primary" onClick={paste}>粘贴</Button>
                     <Button variant="outline-primary" onClick={() => setValue('')}>清空</Button>

@@ -28,6 +28,11 @@ export default defineConfig({
                 short_name: '工具包',
                 description: '鱼 sifu 的在线小工具合集包',
                 theme_color: 'rgb(248, 249, 250)',
+                background_color: 'white',
+                lang: 'zh-CN',
+                start_url: '/',
+                dir: 'ltr',
+                display: 'standalone',
                 icons: [
                     {
                         src: 'android-chrome-192x192.png',
@@ -38,6 +43,28 @@ export default defineConfig({
                         src: 'android-chrome-512x512.png',
                         sizes: '512x512',
                         type: 'image/png'
+                    }
+                ],
+                shortcuts: [
+                    {
+                        name: 'JSON',
+                        url: '/json',
+                    },
+                    {
+                        name: '编解码',
+                        url: '/encoder',
+                    },
+                    {
+                        name: '文本处理',
+                        url: '/textproc',
+                    },
+                    {
+                        name: '大卡计算',
+                        url: '/kcal',
+                    },
+                    {
+                        name: '密码机',
+                        url: '/code',
                     }
                 ]
             }
