@@ -14,6 +14,12 @@ export default defineConfig({
         react(),
         VitePWA({
             registerType: 'autoUpdate',
+            includeAssets: [
+                'favicon.ico',
+                'apple-touch-icon.png',
+                'favicon-16x16.png',
+                'favicon-32x32.png',
+            ],
             manifest: {
                 name: '鱼 sifu 工具包',
                 short_name: '工具包',
