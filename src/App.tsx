@@ -23,7 +23,7 @@ function App() {
       <Navbar expand="lg" sticky="top" bg="light" collapseOnSelect>
         <Container>
           <Navbar.Brand as={Link} to="/">
-            <img src="/android-chrome-192x192.png" width="30" height="30" className="d-inline-block align-top me-2" />
+            <img src="/images/android-chrome-192x192.png" width="30" height="30" className="d-inline-block align-top me-2" />
             <span>鱼 sifu 工具包</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -53,7 +53,9 @@ function App() {
           <Route path="/textproc" element={<TextProcPage />} />
           <Route path="/lottery" element={<LotteryPage />} />
         </Routes>
-        <footer className="text-center mt-2" style={{ color: 'grey' }}>BUILD_TIME: {dayjs(BUILD_DATE).format('YYYY-MM-DD HH:mm:ss')}</footer>
+        <footer className="text-center mt-2" style={{color:'gray'}}>
+          BUILD {dayjs(__BUILD_TIMESTAMP__).format('YYYY-MM-DD HH:mm:ss')}
+        </footer>
       </Container>
       <ToastContainer />
     </>

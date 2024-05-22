@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-
 // https://vitejs.dev/config/
 export default defineConfig({
     resolve: {
@@ -11,7 +10,7 @@ export default defineConfig({
         },
     },
     define: {
-        BUILD_DATE: new Date().getTime(),
+        __BUILD_TIMESTAMP__: new Date().getTime(),
     },
     plugins: [
         react(),
@@ -19,10 +18,10 @@ export default defineConfig({
             registerType: 'autoUpdate',
             includeAssets: [
                 'favicon.ico',
-                'apple-touch-icon.png',
-                'favicon-16x16.png',
-                'favicon-32x32.png',
-                'shortcuts-icon.png',
+                'images/apple-touch-icon.png',
+                'images/favicon-16x16.png',
+                'images/favicon-32x32.png',
+                'images/shortcuts-icon.png',
             ],
             manifest: {
                 name: '鱼 sifu 工具包',
@@ -36,12 +35,12 @@ export default defineConfig({
                 display: 'standalone',
                 icons: [
                     {
-                        src: 'android-chrome-192x192.png',
+                        src: 'images/android-chrome-192x192.png',
                         sizes: '192x192',
                         type: 'image/png'
                     },
                     {
-                        src: 'android-chrome-512x512.png',
+                        src: 'images/android-chrome-512x512.png',
                         sizes: '512x512',
                         type: 'image/png'
                     }
@@ -52,7 +51,7 @@ export default defineConfig({
                         url: '/json',
                         icons: [
                             {
-                                src: 'shortcuts-icon.png',
+                                src: 'images/shortcuts-icon.png',
                                 sizes: '96x96',
                                 type: 'image/png'
                             }
@@ -63,7 +62,7 @@ export default defineConfig({
                         url: '/encoder',
                         icons: [
                             {
-                                src: 'shortcuts-icon.png',
+                                src: 'images/shortcuts-icon.png',
                                 sizes: '96x96',
                                 type: 'image/png'
                             }
@@ -72,14 +71,35 @@ export default defineConfig({
                     {
                         name: '文本处理',
                         url: '/textproc',
+                        icons: [
+                            {
+                                src: 'images/shortcuts-icon.png',
+                                sizes: '96x96',
+                                type: 'image/png'
+                            }
+                        ],
                     },
                     {
                         name: '大卡计算',
                         url: '/kcal',
+                        icons: [
+                            {
+                                src: 'images/shortcuts-icon.png',
+                                sizes: '96x96',
+                                type: 'image/png'
+                            }
+                        ],
                     },
                     {
                         name: '密码机',
                         url: '/code',
+                        icons: [
+                            {
+                                src: 'images/shortcuts-icon.png',
+                                sizes: '96x96',
+                                type: 'image/png'
+                            }
+                        ],
                     }
                 ]
             }

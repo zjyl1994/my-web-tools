@@ -1,3 +1,3 @@
 /// <reference types="vite/client" />
 
-declare const BUILD_DATE: number;
+declare const __BUILD_TIMESTAMP__: number;
