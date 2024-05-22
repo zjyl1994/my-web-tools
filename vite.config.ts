@@ -10,6 +10,9 @@ export default defineConfig({
             '@': '/src',
         },
     },
+    define: {
+        BUILD_DATE: new Date().getTime(),
+    },
     plugins: [
         react(),
         VitePWA({

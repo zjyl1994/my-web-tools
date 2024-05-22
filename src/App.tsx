@@ -51,6 +51,7 @@ function App() {
           <Route path="/textproc" element={<TextProcPage />} />
           <Route path="/lottery" element={<LotteryPage />} />
         </Routes>
+        <footer className="text-center mt-2">BUILD: {new Date(BUILD_DATE).toLocaleString()}</footer>
       </Container>
       <ToastContainer />
     </>
