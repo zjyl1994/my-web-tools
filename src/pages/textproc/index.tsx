@@ -25,10 +25,14 @@ const TextProcPage: React.FC = () => {
     const valueLines = useMemo(() => value.split('\n').map(x => x.trim()).filter(x => x.length > 0), [value]);
     const valueLinesLength = useMemo(() => valueLines.map(x => x.length), [valueLines]);
 
-    const memory_load = () => setValue(localStorage.getItem("textproc_memory") ?? '');
+    const memory_load = () => {
+        if (confirm('是否使用存储区的内容替换当前内容?')) {
+            setValue(localStorage.getItem("textproc_memory") ?? '');
+        }
+    }
     const memory_save = () => {
         localStorage.setItem("textproc_memory", value);
-        toast.info('已保存', { autoClose: 3000 });
+        toast.info('已保存到存储区', { autoClose: 3000 });
     }
 
     return (
