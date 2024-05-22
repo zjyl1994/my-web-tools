@@ -22,6 +22,7 @@ export default defineConfig({
                 'apple-touch-icon.png',
                 'favicon-16x16.png',
                 'favicon-32x32.png',
+                'shortcuts-icon.png',
             ],
             manifest: {
                 name: '鱼 sifu 工具包',
@@ -49,10 +50,24 @@ export default defineConfig({
                     {
                         name: 'JSON',
                         url: '/json',
+                        icons: [
+                            {
+                                src: 'shortcuts-icon.png',
+                                sizes: '96x96',
+                                type: 'image/png'
+                            }
+                        ],
                     },
                     {
                         name: '编解码',
                         url: '/encoder',
+                        icons: [
+                            {
+                                src: 'shortcuts-icon.png',
+                                sizes: '96x96',
+                                type: 'image/png'
+                            }
+                        ],
                     },
                     {
                         name: '文本处理',

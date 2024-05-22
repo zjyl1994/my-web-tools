@@ -4,7 +4,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 
 import { useBasic } from '@/hooks/use-basic';
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 
 const nowTs = () => dayjs().unix().toString();
 const timestamp2str = (ts: string) => dayjs.unix(Number(ts)).format('YYYY-MM-DD HH:mm:ss');

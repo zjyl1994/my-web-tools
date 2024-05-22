@@ -15,6 +15,8 @@ import LotteryPage from '@/pages/lottery';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import dayjs from 'dayjs'
+
 function App() {
   return (
     <>
@@ -51,7 +53,7 @@ function App() {
           <Route path="/textproc" element={<TextProcPage />} />
           <Route path="/lottery" element={<LotteryPage />} />
         </Routes>
-        <footer className="text-center fw-light opacity-25 mt-2">BUILD: {new Date(BUILD_DATE).toLocaleString()}</footer>
+        <footer className="text-center mt-2" style={{ color: 'grey' }}>BUILD_TIME: {dayjs(BUILD_DATE).format('YYYY-MM-DD HH:mm:ss')}</footer>
       </Container>
       <ToastContainer />
     </>
