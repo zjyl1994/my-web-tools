@@ -15,6 +15,7 @@ import {
     regex_filter_lines, regex_extract_lines,
 } from './utils';
 import { useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 
 
 const TextProcPage: React.FC = () => {
@@ -24,13 +25,19 @@ const TextProcPage: React.FC = () => {
     const valueLines = useMemo(() => value.split('\n').map(x => x.trim()).filter(x => x.length > 0), [value]);
     const valueLinesLength = useMemo(() => valueLines.map(x => x.length), [valueLines]);
 
+    const memory_load = () => setValue(localStorage.getItem("textproc_memory") ?? '');
+    const memory_save = () => {
+        localStorage.setItem("textproc_memory", value);
+        toast.info('已保存', { autoClose: 3000 });
+    }
+
     return (
         <>
             <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} />
 
             <InputGroup className="mt-2">
                 <InputGroup.Text>正则表达式</InputGroup.Text>
-                <Form.Control onChange={e => setRegexValue(e.target.value)} spellCheck={false}/>
+                <Form.Control onChange={e => setRegexValue(e.target.value)} spellCheck={false} />
                 <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, false))} title="保留符合正则的行">包含</Button>
                 <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, true))} title="删除符合正则的行">排除</Button>
                 <Button variant="outline-primary" onClick={action(regex_extract_lines(regexValue))} title="提取正则匹配到的组为 Excel 文本">提取</Button>
@@ -73,6 +80,10 @@ const TextProcPage: React.FC = () => {
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="outline-primary" onClick={action(sort_len_asc)}>长度升序排序</Button>
                     <Button variant="outline-primary" onClick={action(sort_len_desc)}>长度降序排序</Button>
+                </ButtonGroup>
+                <ButtonGroup className="me-2 mt-2">
+                    <Button variant="outline-primary" onClick={memory_save}>记忆存</Button>
+                    <Button variant="outline-primary" onClick={memory_load}>记忆取</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="outline-primary" onClick={copy}>复制</Button>
