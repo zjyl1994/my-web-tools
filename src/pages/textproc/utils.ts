@@ -49,3 +49,5 @@ export const regex_extract_lines = (regex: string) => (data: string) => {
 
     return proc_lines(list => list.map(line => line_proc(line)).filter(x => x.length > 0))(data);
 };
+
+export const text_replace = (from: string, to: string) => proc_lines(list => list.map(x => x.replaceAll(from, to)));

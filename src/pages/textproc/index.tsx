@@ -12,7 +12,7 @@ import {
     add_comma_suffix, remove_comma_suffix,
     nums_average, nums_max, nums_min,
     sort_asc, sort_desc, sort_len_asc, sort_len_desc,
-    regex_filter_lines, regex_extract_lines,
+    regex_filter_lines, regex_extract_lines, text_replace,
 } from './utils';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -21,6 +21,8 @@ import { toast } from 'react-toastify';
 const TextProcPage: React.FC = () => {
     const { value, setValue, action, copy, paste } = useBasic('');
     const [regexValue, setRegexValue] = useState('');
+    const [replaceSourceValue, setReplaceSourceValue] = useState('');
+    const [replaceDestinationValue, setReplaceDestinationValue] = useState('');
 
     const valueLines = useMemo(() => value.split('\n').map(x => x.trim()).filter(x => x.length > 0), [value]);
     const valueLinesLength = useMemo(() => valueLines.map(x => x.length), [valueLines]);
@@ -46,6 +48,12 @@ const TextProcPage: React.FC = () => {
                 <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, true))} title="删除符合正则的行">排除</Button>
                 <Button variant="outline-primary" onClick={action(regex_extract_lines(regexValue))} title="提取正则匹配到的组为 Excel 文本">提取</Button>
 
+            </InputGroup>
+            <InputGroup className="mt-2">
+                <Form.Control onChange={e => setReplaceSourceValue(e.target.value)} spellCheck={false} />
+                <InputGroup.Text>替换为</InputGroup.Text>
+                <Form.Control onChange={e => setReplaceDestinationValue(e.target.value)} spellCheck={false} />
+                <Button variant="outline-primary" onClick={action(text_replace(replaceSourceValue, replaceDestinationValue))}>替换</Button>
             </InputGroup>
 
             <div className="mt-2">
