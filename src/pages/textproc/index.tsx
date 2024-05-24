@@ -39,7 +39,7 @@ const TextProcPage: React.FC = () => {
 
     return (
         <>
-            <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} />
+            <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
 
             <InputGroup className="mt-2">
                 <InputGroup.Text>正则表达式</InputGroup.Text>

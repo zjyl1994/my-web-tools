@@ -12,7 +12,7 @@ const SQLPage: React.FC = () => {
 
     return (
         <>
-            <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} />
+            <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
 
             <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
