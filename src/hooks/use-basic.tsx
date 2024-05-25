@@ -42,9 +42,9 @@ export const useBasic = (defaultValue: string) => {
     const functionButtonGroup = <ButtonGroup className="me-2 mt-2">
         <Button variant="outline-primary" onClick={copy}>复制</Button>
         <Button variant="outline-primary" onClick={paste}>粘贴</Button>
+        <Button variant="outline-primary" onClick={() => { setValue(''); clearHistory; }}>清空</Button>
         <Button variant="outline-primary" onClick={undo} disabled={!canUndo}>撤销</Button>
         <Button variant="outline-primary" onClick={redo} disabled={!canRedo}>重做</Button>
-        <Button variant="outline-primary" onClick={() => { setValue(''); clearHistory; }}>清空</Button>
     </ButtonGroup>
     useHotkeys('ctrl+z', undo);
     useHotkeys('ctrl+y', redo);
