@@ -25,9 +25,11 @@ export const sort_len_asc = proc_lines(list => list.map(x => x.trim()).sort((a, 
 export const sort_len_desc = proc_lines(list => list.map(x => x.trim()).sort((a, b) => b.length - a.length));
 
 export const regex_filter_lines = (regex: string, exclude: boolean) => (data: string) => {
-    const re = new RegExp(regex);
+    const re = new_regex_from_str(regex);
     return proc_lines(list => list.filter(x => re.test(x) !== exclude))(data);
 };
+
+const new_regex_from_str = (regex: string) => new RegExp(regex, "g");
 
 const escape_cell_value = (str: string) => {
     if (str.includes('\t') || str.includes('\n') || str.includes('"')) {
@@ -38,9 +40,9 @@ const escape_cell_value = (str: string) => {
 }
 
 export const regex_extract_lines = (regex: string) => (data: string) => {
-    const re = new RegExp(regex);
+    const re = new_regex_from_str(regex);
     const line_proc = (line: string): string => {
-        const result = re.exec(line);
+        const result = line.match(re);
         if (result == null) {
             return "";
         }
@@ -51,3 +53,10 @@ export const regex_extract_lines = (regex: string) => (data: string) => {
 };
 
 export const text_replace = (from: string, to: string) => proc_lines(list => list.map(x => x.replaceAll(from, to)));
+
+export const predefined_regex_list = [
+    { key: "纯数字", value: "(\\d+)" },
+    { key: "中国手机号", value: "(1\\d{10})" },
+    { key: "纯字母", value: "([a-zA-Z]+)" },
+    { key: "字母数字下划线", value: "(\\w+)" },
+];

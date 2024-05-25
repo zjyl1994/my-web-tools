@@ -3,6 +3,8 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import Modal from 'react-bootstrap/Modal';
 
 import { useBasic } from '@/hooks/use-basic';
@@ -13,7 +15,8 @@ import {
     add_comma_suffix, remove_comma_suffix,
     nums_average, nums_max, nums_min,
     sort_asc, sort_desc, sort_len_asc, sort_len_desc,
-    regex_filter_lines, regex_extract_lines, text_replace,
+    regex_filter_lines, regex_extract_lines, predefined_regex_list,
+    text_replace,
 } from './utils';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -46,8 +49,10 @@ const TextProcPage: React.FC = () => {
             <Form.Control as="textarea" rows={15} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
 
             <InputGroup className="mt-2">
-                <InputGroup.Text>正则表达式</InputGroup.Text>
-                <Form.Control onChange={e => setRegexValue(e.target.value)} spellCheck={false} />
+                <DropdownButton variant="outline-primary" title="正则表达式" id="input-group-dropdown-1">
+                    {predefined_regex_list.map(item => <Dropdown.Item onClick={() => setRegexValue(item.value)} key={item.key}>{item.key}</Dropdown.Item>)}
+                </DropdownButton>
+                <Form.Control onChange={e => setRegexValue(e.target.value)} value={regexValue} spellCheck={false} />
                 <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, false))} title="保留符合正则的行">包含</Button>
                 <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, true))} title="删除符合正则的行">排除</Button>
                 <Button variant="outline-primary" onClick={action(regex_extract_lines(regexValue))} title="提取正则匹配到的组为 Excel 文本">提取</Button>
@@ -115,4 +120,4 @@ const TextProcPage: React.FC = () => {
     )
 }
 
-export default TextProcPage
+export default TextProcPage;
