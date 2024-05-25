@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Modal from 'react-bootstrap/Modal';
 
 import { useBasic } from '@/hooks/use-basic';
 import {
@@ -23,6 +24,9 @@ const TextProcPage: React.FC = () => {
     const [regexValue, setRegexValue] = useState('');
     const [replaceSourceValue, setReplaceSourceValue] = useState('');
     const [replaceDestinationValue, setReplaceDestinationValue] = useState('');
+
+    const [statisticsShow, setStatisticsShow] = useState(false);
+    const handleStatisticsDialogClose = () => setStatisticsShow(false);
 
     const valueLines = useMemo(() => value.split('\n').map(x => x.trim()).filter(x => x.length > 0), [value]);
     const valueLinesLength = useMemo(() => valueLines.map(x => x.length), [valueLines]);
@@ -55,14 +59,6 @@ const TextProcPage: React.FC = () => {
                 <Form.Control onChange={e => setReplaceDestinationValue(e.target.value)} spellCheck={false} />
                 <Button variant="outline-primary" onClick={action(text_replace(replaceSourceValue, replaceDestinationValue))}>替换</Button>
             </InputGroup>
-
-            <div className="mt-2">
-                <span className="me-2">总长度 {value.length}</span>
-                <span className="me-2">总行数 {valueLines.length}</span>
-                <span className="me-2">最长行长度 {nums_max(valueLinesLength)}</span>
-                <span className="me-2">最短行长度 {nums_min(valueLinesLength)}</span>
-                <span className="me-2">平均行长度 {nums_average(valueLinesLength).toFixed(2)}</span>
-            </div>
 
             <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
@@ -97,8 +93,24 @@ const TextProcPage: React.FC = () => {
                     <Button variant="outline-primary" onClick={memory_save}>记忆存</Button>
                     <Button variant="outline-primary" onClick={memory_load}>记忆取</Button>
                 </ButtonGroup>
+                <ButtonGroup className="me-2 mt-2">
+                    <Button variant="outline-primary" onClick={() => setStatisticsShow(true)}>统计</Button>
+                </ButtonGroup>
                 {functionButtonGroup}
             </ButtonToolbar>
+
+            <Modal show={statisticsShow} onHide={handleStatisticsDialogClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>统计</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>总长度 {value.length}</div>
+                    <div>总行数 {valueLines.length}</div>
+                    <div>最长行长度 {nums_max(valueLinesLength)}</div>
+                    <div>最短行长度 {nums_min(valueLinesLength)}</div>
+                    <div>平均行长度 {nums_average(valueLinesLength).toFixed(2)}</div>
+                </Modal.Body>
+            </Modal>
         </>
     )
 }
