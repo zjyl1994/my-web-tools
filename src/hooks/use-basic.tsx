@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
+import { useHistoryState } from "@uidotdev/usehooks";
 
 export const useCopy = (text: string) => {
     return useCallback(() => {
@@ -28,9 +29,12 @@ export const useActionCreater = (
 };
 
 export const useBasic = (defaultValue: string) => {
-    const [value, setValue] = useState(defaultValue);
+    const { state, set, undo, redo, clear, canUndo, canRedo } = useHistoryState(defaultValue);
+    const value = state;
+    const setValue = set;
+    const clearHistory = clear;
     const action = useActionCreater(value, setValue);
     const copy = useCopy(value);
     const paste = usePaste(setValue);
-    return { value, setValue, action, copy, paste };
+    return { value, setValue, action, copy, paste, undo, redo, clearHistory, canUndo, canRedo };
 }

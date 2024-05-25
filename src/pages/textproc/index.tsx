@@ -16,10 +16,13 @@ import {
 } from './utils';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
-
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const TextProcPage: React.FC = () => {
-    const { value, setValue, action, copy, paste } = useBasic('');
+    const { value, setValue, action, copy, paste, undo, redo, clearHistory, canUndo, canRedo } = useBasic('');
+    useHotkeys('ctrl+z', undo);
+    useHotkeys('ctrl+y', redo);
+
     const [regexValue, setRegexValue] = useState('');
     const [replaceSourceValue, setReplaceSourceValue] = useState('');
     const [replaceDestinationValue, setReplaceDestinationValue] = useState('');
@@ -100,7 +103,9 @@ const TextProcPage: React.FC = () => {
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="outline-primary" onClick={copy}>复制</Button>
                     <Button variant="outline-primary" onClick={paste}>粘贴</Button>
-                    <Button variant="outline-primary" onClick={() => setValue('')}>清空</Button>
+                    <Button variant="outline-primary" onClick={undo} disabled={!canUndo}>撤销</Button>
+                    <Button variant="outline-primary" onClick={redo} disabled={!canRedo}>重做</Button>
+                    <Button variant="outline-primary" onClick={() => { setValue(''); clearHistory; }}>清空</Button>
                 </ButtonGroup>
             </ButtonToolbar>
         </>
