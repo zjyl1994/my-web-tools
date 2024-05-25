@@ -16,12 +16,9 @@ import {
 } from './utils';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useHotkeys } from 'react-hotkeys-hook';
 
 const TextProcPage: React.FC = () => {
-    const { value, setValue, action, copy, paste, undo, redo, clearHistory, canUndo, canRedo } = useBasic('');
-    useHotkeys('ctrl+z', undo);
-    useHotkeys('ctrl+y', redo);
+    const { value, setValue, action, functionButtonGroup } = useBasic('');
 
     const [regexValue, setRegexValue] = useState('');
     const [replaceSourceValue, setReplaceSourceValue] = useState('');
@@ -42,7 +39,7 @@ const TextProcPage: React.FC = () => {
 
     return (
         <>
-            <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
+            <Form.Control as="textarea" rows={15} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
 
             <InputGroup className="mt-2">
                 <InputGroup.Text>正则表达式</InputGroup.Text>
@@ -100,13 +97,7 @@ const TextProcPage: React.FC = () => {
                     <Button variant="outline-primary" onClick={memory_save}>记忆存</Button>
                     <Button variant="outline-primary" onClick={memory_load}>记忆取</Button>
                 </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="outline-primary" onClick={copy}>复制</Button>
-                    <Button variant="outline-primary" onClick={paste}>粘贴</Button>
-                    <Button variant="outline-primary" onClick={undo} disabled={!canUndo}>撤销</Button>
-                    <Button variant="outline-primary" onClick={redo} disabled={!canRedo}>重做</Button>
-                    <Button variant="outline-primary" onClick={() => { setValue(''); clearHistory; }}>清空</Button>
-                </ButtonGroup>
+                {functionButtonGroup}
             </ButtonToolbar>
         </>
     )
