@@ -1,4 +1,4 @@
-.scrollable-textarea{
+.scrollable-textarea {
     overflow: scroll;
     white-space: nowrap;
 }

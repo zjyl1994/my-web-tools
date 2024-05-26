@@ -49,57 +49,57 @@ const TextProcPage: React.FC = () => {
             <Form.Control as="textarea" rows={15} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
 
             <InputGroup className="mt-2">
-                <DropdownButton variant="outline-primary" title="正则表达式" id="input-group-dropdown-1">
+                <DropdownButton variant="light" title="正则表达式" id="input-group-dropdown-1">
                     {predefined_regex_list.map(item => <Dropdown.Item onClick={() => setRegexValue(item.value)} key={item.key}>{item.key}</Dropdown.Item>)}
                 </DropdownButton>
                 <Form.Control onChange={e => setRegexValue(e.target.value)} value={regexValue} spellCheck={false} />
-                <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, false))} title="保留符合正则的行">包含</Button>
-                <Button variant="outline-primary" onClick={action(regex_filter_lines(regexValue, true))} title="删除符合正则的行">排除</Button>
-                <Button variant="outline-primary" onClick={action(regex_extract_lines(regexValue))} title="提取正则匹配到的组为 Excel 文本">提取</Button>
+                <Button variant="light" onClick={action(regex_filter_lines(regexValue, false))} title="保留符合正则的行">包含</Button>
+                <Button variant="light" onClick={action(regex_filter_lines(regexValue, true))} title="删除符合正则的行">排除</Button>
+                <Button variant="light" onClick={action(regex_extract_lines(regexValue))} title="提取正则匹配到的组为 Excel 文本">提取</Button>
 
             </InputGroup>
             <InputGroup className="mt-2">
                 <Form.Control onChange={e => setReplaceSourceValue(e.target.value)} spellCheck={false} />
                 <InputGroup.Text>替换为</InputGroup.Text>
                 <Form.Control onChange={e => setReplaceDestinationValue(e.target.value)} spellCheck={false} />
-                <Button variant="outline-primary" onClick={action(text_replace(replaceSourceValue, replaceDestinationValue))}>替换</Button>
+                <Button variant="light" onClick={action(text_replace(replaceSourceValue, replaceDestinationValue))}>替换</Button>
             </InputGroup>
 
             <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="outline-primary" onClick={action(split_by_comma)}>逗号切行</Button>
-                    <Button variant="outline-primary" onClick={action(join_with_comma)}>逗号合行</Button>
+                    <Button variant="light" onClick={action(split_by_comma)}>逗号切行</Button>
+                    <Button variant="light" onClick={action(join_with_comma)}>逗号合行</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="outline-primary" onClick={action(remove_quote)}>去引号</Button>
-                    <Button variant="outline-primary" onClick={action(add_quote)}>加引号</Button>
+                    <Button variant="light" onClick={action(remove_quote)}>去引号</Button>
+                    <Button variant="light" onClick={action(add_quote)}>加引号</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="outline-primary" onClick={action(add_comma_suffix)}>行尾加逗号</Button>
-                    <Button variant="outline-primary" onClick={action(remove_comma_suffix)}>行尾去逗号</Button>
+                    <Button variant="light" onClick={action(add_comma_suffix)}>行尾加逗号</Button>
+                    <Button variant="light" onClick={action(remove_comma_suffix)}>行尾去逗号</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="outline-primary" onClick={action(split_by_blank)}>空白切行</Button>
-                    <Button variant="outline-primary" onClick={action(trim_line_space)}>去除两边空白</Button>
+                    <Button variant="light" onClick={action(split_by_blank)}>空白切行</Button>
+                    <Button variant="light" onClick={action(trim_line_space)}>去除两边空白</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="outline-primary" onClick={action(remove_empty_line)}>去除空行</Button>
-                    <Button variant="outline-primary" onClick={action(uniq_line)}>去除重复行</Button>
+                    <Button variant="light" onClick={action(remove_empty_line)}>去除空行</Button>
+                    <Button variant="light" onClick={action(uniq_line)}>去除重复行</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="outline-primary" onClick={action(sort_asc)}>字典升序排序</Button>
-                    <Button variant="outline-primary" onClick={action(sort_desc)}>字典降序排序</Button>
+                    <Button variant="light" onClick={action(sort_asc)}>字典升序排序</Button>
+                    <Button variant="light" onClick={action(sort_desc)}>字典降序排序</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="outline-primary" onClick={action(sort_len_asc)}>长度升序排序</Button>
-                    <Button variant="outline-primary" onClick={action(sort_len_desc)}>长度降序排序</Button>
+                    <Button variant="light" onClick={action(sort_len_asc)}>长度升序排序</Button>
+                    <Button variant="light" onClick={action(sort_len_desc)}>长度降序排序</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="outline-primary" onClick={memory_save}>记忆存</Button>
-                    <Button variant="outline-primary" onClick={memory_load}>记忆取</Button>
+                    <Button variant="light" onClick={memory_save}>记忆存</Button>
+                    <Button variant="light" onClick={memory_load}>记忆取</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="outline-primary" onClick={() => setStatisticsShow(true)}>统计</Button>
+                    <Button variant="light" onClick={() => setStatisticsShow(true)}>统计</Button>
                 </ButtonGroup>
                 {functionButtonGroup}
             </ButtonToolbar>

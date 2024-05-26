@@ -55,8 +55,8 @@ export const regex_extract_lines = (regex: string) => (data: string) => {
 export const text_replace = (from: string, to: string) => proc_lines(list => list.map(x => x.replaceAll(from, to)));
 
 export const predefined_regex_list = [
-    { key: "纯数字", value: "(\\d+)" },
-    { key: "中国手机号", value: "(1\\d{10})" },
-    { key: "纯字母", value: "([a-zA-Z]+)" },
-    { key: "字母数字下划线", value: "(\\w+)" },
+    { key: "纯数字", value: "\\d+" },
+    { key: "中国手机号", value: "1\\d{10}" },
+    { key: "纯字母", value: "[a-zA-Z]+" },
+    { key: "字母数字下划线", value: "\\w+" },
 ];

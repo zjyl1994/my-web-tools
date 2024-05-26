@@ -16,9 +16,9 @@ const JsonPage: React.FC = () => {
 
             <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="outline-primary" onClick={action(format_json)}>格式化</Button>
-                    <Button variant="outline-primary" onClick={action(enhanced_format_json)}>增强格式化</Button>
-                    <Button variant="outline-primary" onClick={action(compress_json)}>压缩</Button>
+                    <Button variant="light" onClick={action(format_json)}>格式化</Button>
+                    <Button variant="light" onClick={action(enhanced_format_json)}>增强格式化</Button>
+                    <Button variant="light" onClick={action(compress_json)}>压缩</Button>
                 </ButtonGroup>
                 {functionButtonGroup}
             </ButtonToolbar>

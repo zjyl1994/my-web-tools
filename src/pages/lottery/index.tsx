@@ -44,12 +44,12 @@ const LotteryGen: React.FC = () => {
                     <Card.Title>彩票选号机</Card.Title>
                     <Card.Text className="font-monospace fs-5">{value}</Card.Text>
                     <ButtonGroup className="me-2">
-                        <Button variant="outline-primary" onClick={action(superLottoGen)}>生成 大乐透</Button>
-                        <Button variant="outline-primary" onClick={action(markSixGen)}>生成 六合彩</Button>
+                        <Button variant="light" onClick={action(superLottoGen)}>生成 大乐透</Button>
+                        <Button variant="light" onClick={action(markSixGen)}>生成 六合彩</Button>
                     </ButtonGroup>
                     <ButtonGroup className="me-2">
-                        <Button variant="outline-primary" onClick={saveCode}>储存</Button>
-                        <Button variant="outline-primary" onClick={cleanList}>清空</Button>
+                        <Button variant="light" onClick={saveCode}>储存</Button>
+                        <Button variant="light" onClick={cleanList}>清空</Button>
                     </ButtonGroup>
                 </Card.Body>
             </Card>
