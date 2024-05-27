@@ -40,7 +40,7 @@ function App() {
                 <NavDropdown.Item as={Link} to="/lottery" active={Boolean(useMatch('/lottery'))} eventKey="lottery">彩票选号机</NavDropdown.Item>
               </NavDropdown>
             </Nav>
-            <Nav.Link as={Link} to="/about">关于</Nav.Link>
+            <Nav.Link as={Link} to="/about" active={Boolean(useMatch('/about'))} eventKey="about">关于</Nav.Link>
           </Navbar.Collapse>
         </Container>
       </Navbar>
