@@ -4,7 +4,6 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import Modal from 'react-bootstrap/Modal';
 
 import { useBasic } from '@/hooks/use-basic';
@@ -49,9 +48,13 @@ const TextProcPage: React.FC = () => {
             <Form.Control as="textarea" rows={15} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
 
             <InputGroup className="mt-2">
-                <DropdownButton variant="light" title="正则表达式" id="input-group-dropdown-1">
-                    {predefined_regex_list.map(item => <Dropdown.Item onClick={() => setRegexValue(item.value)} key={item.key}>{item.key}</Dropdown.Item>)}
-                </DropdownButton>
+                <Dropdown>
+                    <Dropdown.Toggle variant="light" className="border">正则表达式</Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        {predefined_regex_list.map(item => <Dropdown.Item onClick={() => setRegexValue(item.value)} key={item.key}>{item.key}</Dropdown.Item>)}
+                    </Dropdown.Menu>
+                </Dropdown>
+
                 <Form.Control onChange={e => setRegexValue(e.target.value)} value={regexValue} spellCheck={false} />
                 <Button variant="light" className="border" onClick={action(regex_filter_lines(regexValue, false))} title="保留符合正则的行">包含</Button>
                 <Button variant="light" className="border" onClick={action(regex_filter_lines(regexValue, true))} title="删除符合正则的行">排除</Button>

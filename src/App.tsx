@@ -20,7 +20,7 @@ import dayjs from 'dayjs'
 function App() {
   return (
     <>
-      <Navbar expand="lg" sticky="top" bg="light" collapseOnSelect className="border-bottom">
+      <Navbar expand="lg" sticky="top" bg="light" collapseOnSelect className="border-bottom border-2">
         <Container>
           <Navbar.Brand as={Link} to="/">
             <img src="/images/android-chrome-192x192.png" width="30" height="30" className="d-inline-block align-top me-2" />
