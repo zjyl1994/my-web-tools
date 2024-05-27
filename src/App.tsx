@@ -53,7 +53,7 @@ function App() {
           <Route path="/textproc" element={<TextProcPage />} />
           <Route path="/lottery" element={<LotteryPage />} />
         </Routes>
-        <footer className="text-center mt-2 font-monospace" style={{color:'#ccc'}}>
+        <footer className="text-center mt-2 font-monospace" style={{ textShadow: '3px 3px 5px #aaa' }}>
           BUILD {dayjs(__BUILD_TIMESTAMP__).format('YYYY-MM-DD HH:mm:ss')}
         </footer>
       </Container>
