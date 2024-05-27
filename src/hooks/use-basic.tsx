@@ -40,11 +40,11 @@ export const useBasic = (defaultValue: string) => {
     const copy = useCopy(value);
     const paste = usePaste(setValue);
     const functionButtonGroup = <ButtonGroup className="me-2 mt-2">
-        <Button variant="light" onClick={copy}>复制</Button>
-        <Button variant="light" onClick={paste}>粘贴</Button>
-        <Button variant="light" onClick={() => { setValue(''); clearHistory; }}>清空</Button>
-        <Button variant="light" onClick={undo} disabled={!canUndo}>撤销</Button>
-        <Button variant="light" onClick={redo} disabled={!canRedo}>重做</Button>
+        <Button variant="light" className="border" onClick={copy}>复制</Button>
+        <Button variant="light" className="border" onClick={paste}>粘贴</Button>
+        <Button variant="light" className="border" onClick={() => { setValue(''); clearHistory; }}>清空</Button>
+        <Button variant="light" className="border" onClick={undo} disabled={!canUndo}>撤销</Button>
+        <Button variant="light" className="border" onClick={redo} disabled={!canRedo}>重做</Button>
     </ButtonGroup>
     useHotkeys('ctrl+z', undo);
     useHotkeys('ctrl+y', redo);

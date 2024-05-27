@@ -15,8 +15,8 @@ const Uuid: React.FC = () => {
                 <Card.Title>UUID</Card.Title>
                 <Card.Text className="font-monospace fs-5">{value}</Card.Text>
                 <ButtonGroup>
-                    <Button variant="light" onClick={action(() => uuid())}>生成</Button>
-                    <Button variant="light" onClick={copy}>复制</Button>
+                    <Button variant="light" className="border" onClick={action(() => uuid())}>生成</Button>
+                    <Button variant="light" className="border" onClick={copy}>复制</Button>
                 </ButtonGroup>
             </Card.Body>
         </Card>

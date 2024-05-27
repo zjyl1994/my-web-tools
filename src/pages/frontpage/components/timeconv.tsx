@@ -21,10 +21,10 @@ const TimeConv: React.FC = () => {
                     <Form.Control value={value} onChange={e => setValue(e.target.value)} />
                 </Card.Text>
                 <ButtonGroup>
-                    <Button variant="light" onClick={action(nowTs)}>当前时间戳</Button>
-                    <Button variant="light" onClick={action(timestamp2str)}>时间戳转字符串</Button>
-                    <Button variant="light" onClick={action(str2timestamp)}>字符串转时间戳</Button>
-                    <Button variant="light" onClick={copy}>复制</Button>
+                    <Button variant="light" className="border" onClick={action(nowTs)}>当前时间戳</Button>
+                    <Button variant="light" className="border" onClick={action(timestamp2str)}>时间戳转字符串</Button>
+                    <Button variant="light" className="border" onClick={action(str2timestamp)}>字符串转时间戳</Button>
+                    <Button variant="light" className="border" onClick={copy}>复制</Button>
                 </ButtonGroup>
             </Card.Body>
         </Card>

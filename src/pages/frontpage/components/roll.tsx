@@ -17,8 +17,8 @@ const Roll: React.FC = () => {
                 <Card.Title>Roll</Card.Title>
                 <Card.Text className="font-monospace fs-1">{value}</Card.Text>
                 <ButtonGroup>
-                    <Button variant="light" onClick={action(() => rollNum().toString())}>生成</Button>
-                    <Button variant="light" onClick={copy}>复制</Button>
+                    <Button variant="light" className="border" onClick={action(() => rollNum().toString())}>生成</Button>
+                    <Button variant="light" className="border" onClick={copy}>复制</Button>
                 </ButtonGroup>
             </Card.Body>
         </Card>

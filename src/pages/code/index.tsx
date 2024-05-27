@@ -30,7 +30,7 @@ const CodePage: React.FC = () => {
         <Form.Control type="text" value={calcCode} readOnly />
       </Form.Group>
       <p className="font-monospace fs-2">{displayCalcCode}</p>
-      <Button variant="light" onClick={copy}>复制</Button>
+      <Button variant="light" className="border" onClick={copy}>复制</Button>
     </>
   )
 }
