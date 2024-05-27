@@ -2,3 +2,9 @@
     overflow: scroll;
     white-space: nowrap;
 }
+
+body {
+    background-color: #fefefe;
+    background-image: url("/images/circuit.png");
+    background-repeat: repeat-x, repeat-x;
+}
