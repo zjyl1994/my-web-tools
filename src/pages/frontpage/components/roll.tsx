@@ -14,10 +14,10 @@ const Roll: React.FC = () => {
     return (
         <Card className="mt-3">
             <Card.Body>
-                <Card.Title>Roll</Card.Title>
+                <Card.Title>随机数 (1-100)</Card.Title>
                 <Card.Text className="font-monospace fs-1">{value}</Card.Text>
                 <ButtonGroup>
-                    <Button variant="light" className="border" onClick={action(() => rollNum().toString())}>生成</Button>
+                    <Button variant="light" className="border" onClick={action(() => rollNum().toString())}>Roll !</Button>
                     <Button variant="light" className="border" onClick={copy}>复制</Button>
                 </ButtonGroup>
             </Card.Body>

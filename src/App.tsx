@@ -12,10 +12,11 @@ import CodeCalcPage from '@/pages/code';
 import SQLFmtPage from '@/pages/sqlfmt';
 import TextProcPage from '@/pages/textproc';
 import LotteryPage from '@/pages/lottery';
+import AboutPage from '@/pages/about';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import dayjs from 'dayjs'
+
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
                 <NavDropdown.Item as={Link} to="/lottery" active={Boolean(useMatch('/lottery'))} eventKey="lottery">彩票选号机</NavDropdown.Item>
               </NavDropdown>
             </Nav>
+            <Nav.Link as={Link} to="/about">关于</Nav.Link>
           </Navbar.Collapse>
         </Container>
       </Navbar>
@@ -52,10 +54,8 @@ function App() {
           <Route path="/sqlfmt" element={<SQLFmtPage />} />
           <Route path="/textproc" element={<TextProcPage />} />
           <Route path="/lottery" element={<LotteryPage />} />
+          <Route path="/about" element={<AboutPage />} />
         </Routes>
-        <footer className="text-center mt-2 font-monospace" style={{color:'gray'}}>
-          BUILD {dayjs(__BUILD_TIMESTAMP__).format('YYYY-MM-DD HH:mm:ss')}
-        </footer>
       </Container>
       <ToastContainer />
     </>
