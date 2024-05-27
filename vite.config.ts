@@ -22,6 +22,7 @@ export default defineConfig({
                 'images/favicon-16x16.png',
                 'images/favicon-32x32.png',
                 'images/shortcuts-icon.png',
+                'images/circuit.png',
             ],
             manifest: {
                 name: '鱼 sifu 工具包',

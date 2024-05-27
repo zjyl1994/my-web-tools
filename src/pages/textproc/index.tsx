@@ -10,7 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import { useBasic } from '@/hooks/use-basic';
 import {
     split_by_comma, join_with_comma,
-    trim_line_space, remove_empty_line, split_by_blank,
+    trim_line_space, remove_empty_line, split_by_blank, join_by_blank,
     add_quote, remove_quote, uniq_line,
     add_comma_suffix, remove_comma_suffix,
     nums_average, nums_max, nums_min,
@@ -80,6 +80,7 @@ const TextProcPage: React.FC = () => {
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" onClick={action(split_by_blank)}>空白切行</Button>
+                    <Button variant="light" onClick={action(join_by_blank)}>空白合行</Button>
                     <Button variant="light" onClick={action(trim_line_space)}>去除两边空白</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
@@ -97,9 +98,7 @@ const TextProcPage: React.FC = () => {
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" onClick={memory_save}>记忆存</Button>
                     <Button variant="light" onClick={memory_load}>记忆取</Button>
-                </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" onClick={() => setStatisticsShow(true)}>统计</Button>
+                    <Button variant="light" onClick={() => setStatisticsShow(true)}>行统计</Button>
                 </ButtonGroup>
                 {functionButtonGroup}
             </ButtonToolbar>
