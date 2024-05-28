@@ -18,16 +18,16 @@ const EncoderPage: React.FC = () => {
 
             <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(Base64.encode)}>Base64 编码</Button>
-                    <Button variant="light" className="border" onClick={action(Base64.encodeURI)}>Base64 URL 编码</Button>
-                    <Button variant="light" className="border" onClick={action(Base64.decode)}>Base64 通用解码</Button>
+                    <Button variant="light" className="border" onClick={action(Base64.encode)} title="原版 Base64">Base64 编码</Button>
+                    <Button variant="light" className="border" onClick={action(Base64.encodeURI)} title="URL 安全版本">Base64 URL 编码</Button>
+                    <Button variant="light" className="border" onClick={action(Base64.decode)} title="两种 Base64 都能解">Base64 通用解码</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(encodeURIComponent)}>URL 编码</Button>
-                    <Button variant="light" className="border" onClick={action(decodeURIComponent)}>URL 解码</Button>
+                    <Button variant="light" className="border" onClick={action(encodeURIComponent)} title="encodeURIComponent">URL 编码</Button>
+                    <Button variant="light" className="border" onClick={action(decodeURIComponent)} title="decodeURIComponent">URL 解码</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(decode_oct_utf8)}>八进制 UTF8 解码</Button>
+                    <Button variant="light" className="border" onClick={action(decode_oct_utf8)} title="解码'\123\456'这种字符串">八进制 UTF8 解码</Button>
                 </ButtonGroup>
                 {functionButtonGroup}
             </ButtonToolbar>

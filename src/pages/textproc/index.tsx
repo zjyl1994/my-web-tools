@@ -10,7 +10,7 @@ import { useBasic } from '@/hooks/use-basic';
 import {
     split_by_comma, join_with_comma,
     trim_line_space, remove_empty_line, split_by_blank, join_by_blank,
-    add_quote, remove_quote, uniq_line,
+    add_quote, remove_quote, uniq_line, shuffle_line,
     add_comma_suffix, remove_comma_suffix,
     nums_average, nums_max, nums_min,
     sort_asc, sort_desc, sort_len_asc, sort_len_desc,
@@ -70,38 +70,41 @@ const TextProcPage: React.FC = () => {
 
             <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(split_by_comma)}>逗号切行</Button>
-                    <Button variant="light" className="border" onClick={action(join_with_comma)}>逗号合行</Button>
+                    <Button variant="light" className="border" onClick={action(split_by_comma)} title="根据逗号切割成好多行">逗号切行</Button>
+                    <Button variant="light" className="border" onClick={action(join_with_comma)} title="逗号分隔合并所有行">逗号合行</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(remove_quote)}>去引号</Button>
-                    <Button variant="light" className="border" onClick={action(add_quote)}>加引号</Button>
+                    <Button variant="light" className="border" onClick={action(remove_quote)} title="行两边删除双引号">去引号</Button>
+                    <Button variant="light" className="border" onClick={action(add_quote)} title="行两边添加双引号">加引号</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(add_comma_suffix)}>行尾加逗号</Button>
-                    <Button variant="light" className="border" onClick={action(remove_comma_suffix)}>行尾去逗号</Button>
+                    <Button variant="light" className="border" onClick={action(add_comma_suffix)} title="行尾追加逗号">行尾加逗号</Button>
+                    <Button variant="light" className="border" onClick={action(remove_comma_suffix)} title="行尾删除逗号">行尾去逗号</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(split_by_blank)}>空白切行</Button>
-                    <Button variant="light" className="border" onClick={action(join_by_blank)}>空白合行</Button>
-                    <Button variant="light" className="border" onClick={action(trim_line_space)}>去除两边空白</Button>
+                    <Button variant="light" className="border" onClick={action(split_by_blank)} title="根据空白切割成好多行">空白切行</Button>
+                    <Button variant="light" className="border" onClick={action(join_by_blank)} title="用空格合并所有行">空白合行</Button>
+                    <Button variant="light" className="border" onClick={action(trim_line_space)} title="删除行两边的空白">去除两边空白</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(remove_empty_line)}>去除空行</Button>
-                    <Button variant="light" className="border" onClick={action(uniq_line)}>去除重复行</Button>
+                    <Button variant="light" className="border" onClick={action(remove_empty_line)} title="删除只有空白没有内容的行">去除空行</Button>
+                    <Button variant="light" className="border" onClick={action(uniq_line)} title="删除重复的行">去除重复行</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(sort_asc)}>字典升序排序</Button>
-                    <Button variant="light" className="border" onClick={action(sort_desc)}>字典降序排序</Button>
+                    <Button variant="light" className="border" onClick={action(sort_asc)} title="a在前z在后">字典升序排序</Button>
+                    <Button variant="light" className="border" onClick={action(sort_desc)} title="z在前a在后">字典降序排序</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(sort_len_asc)}>长度升序排序</Button>
-                    <Button variant="light" className="border" onClick={action(sort_len_desc)}>长度降序排序</Button>
+                    <Button variant="light" className="border" onClick={action(sort_len_asc)} title="短在前长在后">长度升序排序</Button>
+                    <Button variant="light" className="border" onClick={action(sort_len_desc)} title="长在前短在后">长度降序排序</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={memory_save}>记忆存</Button>
-                    <Button variant="light" className="border" onClick={memory_load}>记忆取</Button>
-                    <Button variant="light" className="border" onClick={() => setStatisticsShow(true)}>行统计</Button>
+                    <Button variant="light" className="border" onClick={action(shuffle_line)} title="随机洗牌打乱所有行的顺序">随机排序</Button>
+                    <Button variant="light" className="border" onClick={() => setStatisticsShow(true)} title="行平均长度等信息">行统计</Button>
+                </ButtonGroup>
+                <ButtonGroup className="me-2 mt-2">
+                    <Button variant="light" className="border" onClick={memory_save} title="暂存当前结果">记忆存</Button>
+                    <Button variant="light" className="border" onClick={memory_load} title="拿出存的结果">记忆取</Button>
                 </ButtonGroup>
                 {functionButtonGroup}
             </ButtonToolbar>
