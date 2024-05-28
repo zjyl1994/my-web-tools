@@ -8,3 +8,7 @@ body {
     background-image: url("/images/circuit.png");
     background-repeat: repeat-x, repeat-x;
 }
+
+a.nav-link.active {
+    font-weight: bold;
+}
