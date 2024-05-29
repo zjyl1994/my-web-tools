@@ -3,7 +3,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Card from 'react-bootstrap/Card';
 
 import { useBasic } from '@/hooks/use-basic';
-import { getRandomInt } from './utils.ts';
+import { getRandomInt } from '@/utils/rand.ts';
 
 const pad2 = (num: number) => num < 10 ? '0' + num : num;
 const rollNum = () => pad2(getRandomInt(1, 100));
