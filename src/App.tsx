@@ -25,7 +25,7 @@ function App() {
         <Container>
           <Navbar.Brand as={Link} to="/">
             <img src="/images/android-chrome-192x192.png" width="30" height="30" className="d-inline-block align-top me-2" />
-            <span>鱼 sifu 工具包</span>
+            <span style={{ fontWeight: Boolean(useMatch('/')) ? "bold" : "normal" }}>鱼 sifu 工具包</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
