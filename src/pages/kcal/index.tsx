@@ -12,19 +12,19 @@ const KcalPage: React.FC = () => {
         <>
             <Form.Group className="mb-3">
                 <Form.Label>每份能量(千焦)</Form.Label>
-                <Form.Control type="number" value={partEnergy} onChange={e => setPartEnergy(Number(e.target.value))} />
+                <Form.Control type="number" value={partEnergy.toString()} onChange={e => setPartEnergy(Number(e.target.value))} />
             </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>每份重量</Form.Label>
-                <Form.Control type="number" value={partWeight} onChange={e => setPartWeight(Number(e.target.value))} />
+                <Form.Control type="number" value={partWeight.toString()} onChange={e => setPartWeight(Number(e.target.value))} />
             </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>总重量</Form.Label>
-                <Form.Control type="number" value={totalWeight} onChange={e => setTotalWeight(Number(e.target.value))} />
+                <Form.Control type="number" value={totalWeight.toString()} onChange={e => setTotalWeight(Number(e.target.value))} />
             </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>总能量(大卡)</Form.Label>
-                <Form.Control type="number" value={totalEnergy} readOnly />
+                <Form.Control type="number" value={totalEnergy.toString()} readOnly />
             </Form.Group>
         </>
     )

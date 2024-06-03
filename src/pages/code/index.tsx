@@ -19,11 +19,11 @@ const CodePage: React.FC = () => {
     <>
       <Form.Group className="mb-3">
         <Form.Label>主密码</Form.Label>
-        <Form.Control type="password" value={mainPassword} onChange={e => setMainPassword(e.target.value)} />
+        <Form.Control type="password" onChange={e => setMainPassword(e.target.value.trim())} />
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>助记符</Form.Label>
-        <Form.Control type="text" value={rememberName} onChange={e => setRememberName(e.target.value)} />
+        <Form.Control type="text" onChange={e => setRememberName(e.target.value.trim())} />
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label>最终密码</Form.Label>
