@@ -13,6 +13,7 @@ import SQLFmtPage from '@/pages/sqlfmt';
 import TextProcPage from '@/pages/textproc';
 import LotteryPage from '@/pages/lottery';
 import AboutPage from '@/pages/about';
+import LazyGoPage from '@/pages/lazygo';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -36,6 +37,7 @@ function App() {
               <Nav.Link as={Link} to="/kcal" active={Boolean(useMatch('/kcal'))} eventKey="kcal">大卡计算</Nav.Link>
               <NavDropdown title="其他" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to="/code" active={Boolean(useMatch('/code'))} eventKey="code">密码机</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/lazygo" active={Boolean(useMatch('/lazygo'))} eventKey="lazygo">LazyGo 生成器</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/sqlfmt" active={Boolean(useMatch('/sqlfmt'))} eventKey="sqlfmt">SQL 格式化</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/lottery" active={Boolean(useMatch('/lottery'))} eventKey="lottery">彩票选号机</NavDropdown.Item>
               </NavDropdown>
@@ -55,6 +57,7 @@ function App() {
           <Route path="/textproc" element={<TextProcPage />} />
           <Route path="/lottery" element={<LotteryPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/lazygo" element={<LazyGoPage />} />
         </Routes>
       </Container>
       <ToastContainer />
