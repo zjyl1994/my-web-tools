@@ -6,7 +6,7 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import { useBasic } from '@/hooks/use-basic';
 import {
     clean_struct_tag, add_json_struct_tag, add_gorm_column_tag,
-    append_struct_conv,
+    gen_struct_conv, clean_comment, combine_empty_line,
 } from './utils';
 
 const LazyGoPage: React.FC = () => {
@@ -22,7 +22,11 @@ const LazyGoPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(add_gorm_column_tag)}>添加 GORM 列名</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(append_struct_conv)}>生成两结构体互转代码</Button>
+                    <Button variant="light" className="border" onClick={action(gen_struct_conv)}>结构体互转</Button>
+                </ButtonGroup>
+                <ButtonGroup className="me-2 mt-2">
+                    <Button variant="light" className="border" onClick={action(clean_comment)}>移除注释</Button>
+                    <Button variant="light" className="border" onClick={action(combine_empty_line)}>合并空行</Button>
                 </ButtonGroup>
                 {functionButtonGroup}
             </ButtonToolbar>

@@ -1,6 +1,6 @@
 export const toSnakeCase = (str: string): string => str.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
 
-export const clean_struct_tag = (str: string): string => str.replace(/(.*?\s+\w+\s+\w+)\s+`[^`]*`/g, '$1');
+export const clean_struct_tag = (str: string): string => str.replace(/(.*?\s+\w+\s+\w+)\s+`[^`]*`/g, '$1').replace(/\s+$/gm,'');
 
 export const add_json_struct_tag = (str: string): string => str.replace(/(\s+)([A-Z]\w*)\s+(\w+)/g,
     (_, spaces, fieldName, fieldType) => {
@@ -9,7 +9,7 @@ export const add_json_struct_tag = (str: string): string => str.replace(/(\s+)([
         } else {
             return `${spaces}${fieldName} ${fieldType} \`json:"${toSnakeCase(fieldName)}"\``
         }
-    }).replace(/`(\s+)`/g, '$1');
+    }).replace(/`(\s+)`/g, '$1').replace(/\s+$/gm,'');
 
 export const add_gorm_column_tag = (str: string): string => str.replace(/(\s+)([A-Z]\w*)\s+(\w+)/g,
     (_, spaces, fieldName, fieldType) => {
@@ -18,9 +18,9 @@ export const add_gorm_column_tag = (str: string): string => str.replace(/(\s+)([
         } else {
             return `${spaces}${fieldName} ${fieldType} \`gorm:"column:${toSnakeCase(fieldName)}"\``
         }
-    }).replace(/`(\s+)`/g, '$1');
+    }).replace(/`(\s+)`/g, '$1').replace(/\s+$/gm,'');
 
-export const append_struct_conv = (str: string): string => {
+export const gen_struct_conv = (str: string): string => {
     const structs = extractStructs(str);
     if (structs.length !== 2) {
         throw new Error("需要两个结构体进行互转生成");
@@ -30,7 +30,10 @@ export const append_struct_conv = (str: string): string => {
     return conversionFunctions;
 }
 
+export const clean_comment = (str: string): string => str.replace(/^\s*\/\/.*$/gm, '').trim().replace(/\/\/.*$/gm, '').replace(/\s+$/gm, '');
+export const combine_empty_line = (str: string): string => str.replace(/\n\s*\n/g, '\n').replace(/\s+$/gm, '');
 
+// go struct parser by ChatGPT
 const structRegex = /type (\w+) struct {([^}]*)}/g;
 
 const fieldRegex = /(\w+)\s+(\w+)/g;
