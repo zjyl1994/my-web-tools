@@ -23,7 +23,7 @@ export const useActionCreater = (
 ) => {
     return useCallback((action: (origin: string) => string) => () => {
         try {
-            const result = action(inputValue);
+            const result = action(inputValue) + "\n";
             if (result) setInputValue(result);
         } catch (e) {
             toast.error(String(e), { autoClose: 10000 });
