@@ -1,11 +1,11 @@
-import { uniq,shuffle } from 'lodash';
+import { uniq, shuffle } from 'lodash';
 
 const proc_lines = (fn: (x: string[]) => string[]) => (data: string) => fn(data.split('\n')).join('\n');
 
 export const split_by_comma = (data: string) => data.replaceAll(',', '\n');
-export const join_with_comma = (data: string) => data.replaceAll('\n', ',');
+export const join_with_comma = (data: string) => remove_empty_line(data).replaceAll('\n', ',');
 export const split_by_blank = (data: string) => data.replaceAll(/\s+/g, '\n');
-export const join_by_blank = (data: string) => data.replaceAll('\n', ' ');
+export const join_by_blank = (data: string) => remove_empty_line(data).replaceAll('\n', ' ');
 
 export const trim_line_space = proc_lines(list => list.map(x => x.trim()));
 export const remove_empty_line = proc_lines(list => list.map(x => x.trim()).filter(x => x.length > 0));
