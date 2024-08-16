@@ -6,7 +6,7 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import { useBasic } from '@/hooks/use-basic';
 
 import {
-    format_json, enhanced_format_json,
+    format_json, enhanced_format_json,paste_and_format,
     compress_json, escape_json, unescape_json,
     single_quote, trim_json, multiline_trim_json, multiline_to_one, smart_process
 } from './utils';
@@ -22,6 +22,7 @@ const JsonPage: React.FC = () => {
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(format_json)} title="格式化当前JSON">格式化</Button>
                     <Button variant="light" className="border" onClick={action(enhanced_format_json)} title="递归格式化内嵌于字符串的JSON">增强格式化</Button>
+                    <Button variant="light" className="border" onClick={action(paste_and_format)} title="粘贴并进行增强格式化">粘贴 & 格式化</Button>
                     <Button variant="light" className="border" onClick={action(compress_json)} title="压缩成一行">压缩</Button>
                     <Button variant="light" className="border" onClick={action(escape_json)} title="转义为字符串">转义</Button>
                     <Button variant="light" className="border" onClick={action(unescape_json)} title="去除字符串转义">去转义</Button>

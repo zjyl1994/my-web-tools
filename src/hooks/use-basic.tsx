@@ -7,13 +7,13 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 export const useCopy = (text: string) => {
     return useCallback(() => {
-        return navigator.clipboard.writeText(text).catch(err => console.error(err));
+        return navigator.clipboard.writeText(text).catch(err => toast.error(String(err), { autoClose: 10000 }));
     }, [text]);
 };
 
 export const usePaste = (setInputValue: (value: string) => void) => {
     return useCallback(() => {
-        return navigator.clipboard.readText().then(text => setInputValue(text)).catch(err => console.error(err));
+        return navigator.clipboard.readText().then(text => setInputValue(text)).catch(err => toast.error(String(err), { autoClose: 10000 }));
     }, [setInputValue]);
 };
 
@@ -21,10 +21,18 @@ export const useActionCreater = (
     inputValue: string,
     setInputValue: (value: string) => void,
 ) => {
-    return useCallback((action: (origin: string) => string) => () => {
+    return useCallback((action: (origin: string) => (string | Promise<string>)) => () => {
+        const setResult = function (value: string) {
+            if (value)
+                setInputValue(value + '\n');
+        };
         try {
-            const result = action(inputValue) + "\n";
-            if (result) setInputValue(result);
+            const result = action(inputValue);
+            if (typeof result === "string") {
+                setResult(result);
+            } else {
+                result.then(text => setResult(text));
+            }
         } catch (e) {
             toast.error(String(e), { autoClose: 10000 });
         }

@@ -1,4 +1,5 @@
 import * as LosslessJSON from 'lossless-json';
+import { toast } from 'react-toastify';
 
 export const deepParse = (s: string): unknown => LosslessJSON.parse(s, (_, v) => {
     try {
@@ -11,6 +12,16 @@ export const deepParse = (s: string): unknown => LosslessJSON.parse(s, (_, v) =>
 export const format_json = (data: string) => LosslessJSON.stringify(LosslessJSON.parse(data), null, 4)!;
 
 export const enhanced_format_json = (data: string) => LosslessJSON.stringify(deepParse(data), null, 4)!;
+
+export const paste_and_format = async (_: string): Promise<string> => {
+    const text = await navigator.clipboard.readText();
+    try {
+        return enhanced_format_json(text);
+    } catch (e) {
+        toast.error(String(e), { autoClose: 10000 });
+        return text;
+    }
+}
 
 export const compress_json = (data: string) => LosslessJSON.stringify(LosslessJSON.parse(data))!;
 
