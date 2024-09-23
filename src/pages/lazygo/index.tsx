@@ -16,6 +16,7 @@ const LazyGoPage: React.FC = () => {
             <Form.Control as="textarea" rows={15} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
 
             <ButtonToolbar>
+                {functionButtonGroup}
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(clean_struct_tag)}>清理结构体标签</Button>
                     <Button variant="light" className="border" onClick={action(add_json_struct_tag)}>添加 JSON 标签</Button>
@@ -28,7 +29,6 @@ const LazyGoPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(clean_comment)}>移除注释</Button>
                     <Button variant="light" className="border" onClick={action(combine_empty_line)}>合并空行</Button>
                 </ButtonGroup>
-                {functionButtonGroup}
             </ButtonToolbar>
         </>
     )
