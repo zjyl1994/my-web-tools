@@ -18,6 +18,9 @@ const EncoderPage: React.FC = () => {
 
             <ButtonToolbar>
                 {functionButtonGroup}
+            </ButtonToolbar>
+
+            <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(Base64.encode)} title="原版 Base64">Base64 编码</Button>
                     <Button variant="light" className="border" onClick={action(Base64.encodeURI)} title="URL 安全版本">Base64 URL 编码</Button>

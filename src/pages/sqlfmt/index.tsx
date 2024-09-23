@@ -16,6 +16,8 @@ const SQLPage: React.FC = () => {
 
             <ButtonToolbar>
                 {functionButtonGroup}
+            </ButtonToolbar>
+            <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(text => format(text, { language: 'mysql' }))}>格式化</Button>
                 </ButtonGroup>

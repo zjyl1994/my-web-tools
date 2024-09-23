@@ -17,6 +17,9 @@ const LazyGoPage: React.FC = () => {
 
             <ButtonToolbar>
                 {functionButtonGroup}
+            </ButtonToolbar>
+            
+            <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(clean_struct_tag)}>清理结构体标签</Button>
                     <Button variant="light" className="border" onClick={action(add_json_struct_tag)}>添加 JSON 标签</Button>

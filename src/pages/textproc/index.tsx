@@ -47,6 +47,10 @@ const TextProcPage: React.FC = () => {
         <>
             <Form.Control as="textarea" rows={15} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
 
+            <ButtonToolbar>
+                {functionButtonGroup}
+            </ButtonToolbar>
+
             <InputGroup className="mt-2">
                 <Dropdown>
                     <Dropdown.Toggle variant="light" className="border">正则表达式</Dropdown.Toggle>
@@ -69,7 +73,6 @@ const TextProcPage: React.FC = () => {
             </InputGroup>
 
             <ButtonToolbar>
-                {functionButtonGroup}
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(split_by_comma)} title="根据逗号切割成好多行">逗号切行</Button>
                     <Button variant="light" className="border" onClick={action(join_with_comma)} title="逗号分隔合并所有行">逗号合行</Button>

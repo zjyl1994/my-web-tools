@@ -20,6 +20,9 @@ const JsonPage: React.FC = () => {
 
             <ButtonToolbar>
                 {functionButtonGroup}
+            </ButtonToolbar>
+
+            <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(format_json)} title="格式化当前JSON">格式化</Button>
                     <Button variant="light" className="border" onClick={action(enhanced_format_json)} title="递归格式化内嵌于字符串的JSON">增强格式化</Button>
