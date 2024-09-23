@@ -69,6 +69,7 @@ const TextProcPage: React.FC = () => {
             </InputGroup>
 
             <ButtonToolbar>
+                {functionButtonGroup}
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(split_by_comma)} title="根据逗号切割成好多行">逗号切行</Button>
                     <Button variant="light" className="border" onClick={action(join_with_comma)} title="逗号分隔合并所有行">逗号合行</Button>
@@ -106,7 +107,6 @@ const TextProcPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={memory_save} title="暂存当前结果">记忆存</Button>
                     <Button variant="light" className="border" onClick={memory_load} title="拿出存的结果">记忆取</Button>
                 </ButtonGroup>
-                {functionButtonGroup}
             </ButtonToolbar>
 
             <Modal show={statisticsShow} onHide={handleStatisticsDialogClose} centered>

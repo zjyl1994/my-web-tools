@@ -17,6 +17,7 @@ const EncoderPage: React.FC = () => {
             <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
 
             <ButtonToolbar>
+                {functionButtonGroup}
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(Base64.encode)} title="原版 Base64">Base64 编码</Button>
                     <Button variant="light" className="border" onClick={action(Base64.encodeURI)} title="URL 安全版本">Base64 URL 编码</Button>
@@ -29,7 +30,6 @@ const EncoderPage: React.FC = () => {
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(decode_oct_utf8)} title="解码'\123\456'这种字符串">八进制 UTF8 解码</Button>
                 </ButtonGroup>
-                {functionButtonGroup}
             </ButtonToolbar>
         </>
     );

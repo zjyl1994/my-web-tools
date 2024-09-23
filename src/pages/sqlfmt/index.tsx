@@ -15,10 +15,10 @@ const SQLPage: React.FC = () => {
             <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
 
             <ButtonToolbar>
+                {functionButtonGroup}
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(text => format(text, { language: 'mysql' }))}>格式化</Button>
                 </ButtonGroup>
-                {functionButtonGroup}
             </ButtonToolbar>
         </>
     )

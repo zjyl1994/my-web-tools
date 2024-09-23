@@ -19,6 +19,7 @@ const JsonPage: React.FC = () => {
             <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
 
             <ButtonToolbar>
+                {functionButtonGroup}
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(format_json)} title="格式化当前JSON">格式化</Button>
                     <Button variant="light" className="border" onClick={action(enhanced_format_json)} title="递归格式化内嵌于字符串的JSON">增强格式化</Button>
@@ -34,7 +35,6 @@ const JsonPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(multiline_trim_json)} title="去除每一行两边非 JSON 内容">多行 TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_to_one)} title="多行 JSON 转数组">多行 JSON 格式化</Button>
                 </ButtonGroup>
-                {functionButtonGroup}
             </ButtonToolbar>
         </>
     )
