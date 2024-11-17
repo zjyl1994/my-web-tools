@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
 import { useState, useMemo } from 'react';
+import { uniq } from 'lodash';
 
 interface PriceItem {
     price: number;
@@ -12,20 +13,23 @@ interface PriceItem {
 }
 
 const PriceCalcPage: React.FC = () => {
+    const STORAGE_NAME = 'price_calc_items';
+    const CALC_PREC = 4;
+
     const [price, setPrice] = useState(0);
     const [unitNum, setUnitNum] = useState(100);
 
     const unitPrice = useMemo(() => Number(price / unitNum), [price, unitNum]);
 
-    const STORAGE_NAME = 'price_calc_items';
-
     const loadPriceList = () => JSON.parse(localStorage.getItem(STORAGE_NAME) ?? '[]');
 
     const [priceList, setPriceList] = useState<PriceItem[]>(loadPriceList());
 
+    const minUnitPrice = useMemo(() => Math.min(...priceList.map((item) => item.unitPrice)), [priceList]);
+
     const savePrice = () => setPriceList(prev => {
         const priceItem: PriceItem = { price: price, unitNum: unitNum, unitPrice: unitPrice };
-        const newList = [priceItem, ...prev];
+        const newList = uniq([priceItem, ...prev]);
         localStorage.setItem(STORAGE_NAME, JSON.stringify(newList));
         return newList;
     });
@@ -63,7 +67,7 @@ const PriceCalcPage: React.FC = () => {
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>单价</Form.Label>
-                        <Form.Control type="number" value={unitPrice.toFixed(2)} readOnly />
+                        <Form.Control type="number" value={unitPrice.toFixed(CALC_PREC)} readOnly />
                     </Form.Group>
                     <ButtonGroup className="me-2">
                         <Button variant="light" className="border" onClick={savePrice}>储存</Button>
@@ -74,7 +78,7 @@ const PriceCalcPage: React.FC = () => {
             <Card className="mt-3">
                 <Card.Body>
                     <Card.Title>比价记录列表</Card.Title>
-                    <Table striped bordered hover>
+                    <Table>
                         <thead>
                             <tr>
                                 <th>总价</th>
@@ -88,7 +92,10 @@ const PriceCalcPage: React.FC = () => {
                                 <tr key={index}>
                                     <td>{item.price}</td>
                                     <td>{item.unitNum}</td>
-                                    <td>{item.unitPrice.toFixed(2)}</td>
+                                    <td style={{
+                                        color: item.unitPrice === minUnitPrice ? "red" : "black",
+                                        fontWeight: item.unitPrice === minUnitPrice ? "bold" : "normal",
+                                    }}>{item.unitPrice.toFixed(CALC_PREC)}{item.unitPrice === minUnitPrice && " (最便宜)"}</td>
                                     <td><button type="button" className="btn-close" onClick={deletePrice(index)}></button></td>
                                 </tr>
                             )}
