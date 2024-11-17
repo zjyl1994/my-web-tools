@@ -17,23 +17,33 @@ const PriceCalcPage: React.FC = () => {
 
     const unitPrice = useMemo(() => Number(price / unitNum), [price, unitNum]);
 
-    const [priceList, setPriceList] = useState<PriceItem[]>([]);
+    const STORAGE_NAME = 'price_calc_items';
+
+    const loadPriceList = () => JSON.parse(localStorage.getItem(STORAGE_NAME) ?? '[]');
+
+    const [priceList, setPriceList] = useState<PriceItem[]>(loadPriceList());
 
     const savePrice = () => setPriceList(prev => {
         const priceItem: PriceItem = { price: price, unitNum: unitNum, unitPrice: unitPrice };
         const newList = [priceItem, ...prev];
+        localStorage.setItem(STORAGE_NAME, JSON.stringify(newList));
         return newList;
     });
 
     const cleanList = () => {
         if (confirm('真的要清空吗?'))
-            setPriceList([]);
+            setPriceList(() => {
+                localStorage.removeItem(STORAGE_NAME);
+                return [];
+            })
     };
 
     const deletePrice = (index: number) => () => {
         if (confirm('真的要删除吗?'))
             setPriceList(prev => {
-                return prev.filter((_, i) => i !== index);
+                const newList = prev.filter((_, i) => i !== index);
+                localStorage.setItem(STORAGE_NAME, JSON.stringify(newList));
+                return newList;
             });
     };
 
@@ -43,20 +53,18 @@ const PriceCalcPage: React.FC = () => {
             <Card className="mt-3">
                 <Card.Body>
                     <Card.Title>比价计算机</Card.Title>
-                    <Card.Text className="font-monospace">
-                        <Form.Group className="mb-3">
-                            <Form.Label>总价</Form.Label>
-                            <Form.Control type="number" value={price.toString()} onChange={e => setPrice(Number(e.target.value))} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>份数</Form.Label>
-                            <Form.Control type="number" value={unitNum.toString()} onChange={e => setUnitNum(Number(e.target.value))} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>单价</Form.Label>
-                            <Form.Control type="number" value={unitPrice.toFixed(2)} readOnly />
-                        </Form.Group>
-                    </Card.Text>
+                    <Form.Group className="mb-3">
+                        <Form.Label>总价</Form.Label>
+                        <Form.Control type="number" value={price.toString()} onChange={e => setPrice(Number(e.target.value))} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>份数</Form.Label>
+                        <Form.Control type="number" value={unitNum.toString()} onChange={e => setUnitNum(Number(e.target.value))} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>单价</Form.Label>
+                        <Form.Control type="number" value={unitPrice.toFixed(2)} readOnly />
+                    </Form.Group>
                     <ButtonGroup className="me-2">
                         <Button variant="light" className="border" onClick={savePrice}>储存</Button>
                         <Button variant="light" className="border" onClick={cleanList}>清空</Button>
@@ -77,7 +85,7 @@ const PriceCalcPage: React.FC = () => {
                         </thead>
                         <tbody>
                             {priceList.map((item: PriceItem, index: number) =>
-                                <tr>
+                                <tr key={index}>
                                     <td>{item.price}</td>
                                     <td>{item.unitNum}</td>
                                     <td>{item.unitPrice.toFixed(2)}</td>
