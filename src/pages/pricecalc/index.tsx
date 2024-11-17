@@ -1,0 +1,95 @@
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
+import Table from 'react-bootstrap/Table';
+import { useState, useMemo } from 'react';
+
+interface PriceItem {
+    price: number;
+    unitNum: number;
+    unitPrice: number;
+}
+
+const PriceCalcPage: React.FC = () => {
+    const [price, setPrice] = useState(0);
+    const [unitNum, setUnitNum] = useState(100);
+
+    const unitPrice = useMemo(() => Number(price / unitNum), [price, unitNum]);
+
+    const [priceList, setPriceList] = useState<PriceItem[]>([]);
+
+    const savePrice = () => setPriceList(prev => {
+        const priceItem: PriceItem = { price: price, unitNum: unitNum, unitPrice: unitPrice };
+        const newList = [priceItem, ...prev];
+        return newList;
+    });
+
+    const cleanList = () => {
+        if (confirm('真的要清空吗?'))
+            setPriceList([]);
+    };
+
+    const deletePrice = (index: number) => () => {
+        if (confirm('真的要删除吗?'))
+            setPriceList(prev => {
+                return prev.filter((_, i) => i !== index);
+            });
+    };
+
+
+    return (
+        <>
+            <Card className="mt-3">
+                <Card.Body>
+                    <Card.Title>比价计算机</Card.Title>
+                    <Card.Text className="font-monospace">
+                        <Form.Group className="mb-3">
+                            <Form.Label>总价</Form.Label>
+                            <Form.Control type="number" value={price.toString()} onChange={e => setPrice(Number(e.target.value))} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>份数</Form.Label>
+                            <Form.Control type="number" value={unitNum.toString()} onChange={e => setUnitNum(Number(e.target.value))} />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>单价</Form.Label>
+                            <Form.Control type="number" value={unitPrice.toFixed(2)} readOnly />
+                        </Form.Group>
+                    </Card.Text>
+                    <ButtonGroup className="me-2">
+                        <Button variant="light" className="border" onClick={savePrice}>储存</Button>
+                        <Button variant="light" className="border" onClick={cleanList}>清空</Button>
+                    </ButtonGroup>
+                </Card.Body>
+            </Card>
+            <Card className="mt-3">
+                <Card.Body>
+                    <Card.Title>比价记录列表</Card.Title>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>总价</th>
+                                <th>份数</th>
+                                <th>单价</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {priceList.map((item: PriceItem, index: number) =>
+                                <tr>
+                                    <td>{item.price}</td>
+                                    <td>{item.unitNum}</td>
+                                    <td>{item.unitPrice.toFixed(2)}</td>
+                                    <td><button type="button" className="btn-close" onClick={deletePrice(index)}></button></td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </Table>
+                </Card.Body>
+            </Card>
+        </>
+    )
+}
+
+export default PriceCalcPage
