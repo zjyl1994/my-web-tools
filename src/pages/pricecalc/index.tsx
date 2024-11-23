@@ -9,6 +9,7 @@ import { uniq } from 'lodash';
 interface PriceItem {
     price: number;
     unitNum: number;
+    netContent: number;
     unitPrice: number;
 }
 
@@ -17,9 +18,10 @@ const PriceCalcPage: React.FC = () => {
     const CALC_PREC = 4;
 
     const [price, setPrice] = useState(0);
-    const [unitNum, setUnitNum] = useState(100);
+    const [unitNum, setUnitNum] = useState(1);
+    const [netContent, setNetContent] = useState(100);
 
-    const unitPrice = useMemo(() => Number(price / unitNum), [price, unitNum]);
+    const unitPrice = useMemo(() => Number(price / (unitNum * netContent)), [price, unitNum, netContent]);
 
     const loadPriceList = () => JSON.parse(localStorage.getItem(STORAGE_NAME) ?? '[]');
 
@@ -28,27 +30,25 @@ const PriceCalcPage: React.FC = () => {
     const minUnitPrice = useMemo(() => Math.min(...priceList.map((item) => item.unitPrice)), [priceList]);
 
     const savePrice = () => setPriceList(prev => {
-        const priceItem: PriceItem = { price: price, unitNum: unitNum, unitPrice: unitPrice };
+        const priceItem: PriceItem = { price: price, unitNum: unitNum, netContent: netContent, unitPrice: unitPrice };
         const newList = uniq([priceItem, ...prev]);
         localStorage.setItem(STORAGE_NAME, JSON.stringify(newList));
         return newList;
     });
 
     const cleanList = () => {
-        if (confirm('真的要清空吗?'))
-            setPriceList(() => {
-                localStorage.removeItem(STORAGE_NAME);
-                return [];
-            })
+        setPriceList(() => {
+            localStorage.removeItem(STORAGE_NAME);
+            return [];
+        })
     };
 
     const deletePrice = (index: number) => () => {
-        if (confirm('真的要删除吗?'))
-            setPriceList(prev => {
-                const newList = prev.filter((_, i) => i !== index);
-                localStorage.setItem(STORAGE_NAME, JSON.stringify(newList));
-                return newList;
-            });
+        setPriceList(prev => {
+            const newList = prev.filter((_, i) => i !== index);
+            localStorage.setItem(STORAGE_NAME, JSON.stringify(newList));
+            return newList;
+        });
     };
 
 
@@ -64,6 +64,10 @@ const PriceCalcPage: React.FC = () => {
                     <Form.Group className="mb-3">
                         <Form.Label>份数</Form.Label>
                         <Form.Control type="number" value={unitNum.toString()} onChange={e => setUnitNum(Number(e.target.value))} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>净含量</Form.Label>
+                        <Form.Control type="number" value={netContent.toString()} onChange={e => setNetContent(Number(e.target.value))} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>单价</Form.Label>
@@ -83,6 +87,7 @@ const PriceCalcPage: React.FC = () => {
                             <tr>
                                 <th>总价</th>
                                 <th>份数</th>
+                                <th>净含量</th>
                                 <th>单价</th>
                                 <th></th>
                             </tr>
@@ -92,6 +97,7 @@ const PriceCalcPage: React.FC = () => {
                                 <tr key={index}>
                                     <td>{item.price}</td>
                                     <td>{item.unitNum}</td>
+                                    <td>{item.netContent}</td>
                                     <td style={{
                                         color: item.unitPrice === minUnitPrice ? "red" : "black",
                                         fontWeight: item.unitPrice === minUnitPrice ? "bold" : "normal",
