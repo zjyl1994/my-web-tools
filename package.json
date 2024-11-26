@@ -15,6 +15,7 @@
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.11",
     "js-base64": "^3.7.7",
+    "js-convert-case": "^4.2.0",
     "js-sha1": "^0.7.0",
     "lodash": "^4.17.21",
     "lossless-json": "^4.0.1",

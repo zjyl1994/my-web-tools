@@ -1,4 +1,5 @@
 import { uniq, shuffle } from 'lodash';
+import { toCamelCase, toSnakeCase, toKebabCase, toLowerCase, toUpperCase } from 'js-convert-case';
 
 const proc_lines = (fn: (x: string[]) => string[]) => (data: string) => fn(data.split('\n')).join('\n');
 
@@ -25,6 +26,13 @@ export const sort_asc = proc_lines(list => list.map(x => x.trim()).sort());
 export const sort_desc = proc_lines(list => list.map(x => x.trim()).sort().reverse());
 export const sort_len_asc = proc_lines(list => list.map(x => x.trim()).sort((a, b) => a.length - b.length));
 export const sort_len_desc = proc_lines(list => list.map(x => x.trim()).sort((a, b) => b.length - a.length));
+
+export const to_upper_case = proc_lines(list => list.map(x => toUpperCase(x)));
+export const to_lower_case = proc_lines(list => list.map(x => toLowerCase(x)));
+export const to_camel_case = proc_lines(list => list.map(x => toCamelCase(x)));
+export const to_snake_case = proc_lines(list => list.map(x => toSnakeCase(x)));
+export const to_kebab_case = proc_lines(list => list.map(x => toKebabCase(x)));
+export const to_const_case = proc_lines(list => list.map(x => toUpperCase(toSnakeCase(x))));
 
 export const regex_filter_lines = (regex: string, exclude: boolean) => (data: string) => {
     const re = new_regex_from_str(regex);

@@ -14,8 +14,8 @@ import {
     add_comma_suffix, remove_comma_suffix,
     nums_average, nums_max, nums_min,
     sort_asc, sort_desc, sort_len_asc, sort_len_desc,
-    regex_filter_lines, regex_extract_lines, predefined_regex_list,
-    text_replace,
+    regex_filter_lines, regex_extract_lines, predefined_regex_list,text_replace,
+    to_upper_case,to_lower_case,to_camel_case,to_snake_case,to_kebab_case,to_const_case,
 } from './utils';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -97,6 +97,14 @@ const TextProcPage: React.FC = () => {
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(sort_asc)} title="a在前z在后">字典升序排序</Button>
                     <Button variant="light" className="border" onClick={action(sort_desc)} title="z在前a在后">字典降序排序</Button>
+                </ButtonGroup>
+                <ButtonGroup className="me-2 mt-2">
+                    <Button variant="light" className="border" onClick={action(to_upper_case)} title="UPPER CASE">大写</Button>
+                    <Button variant="light" className="border" onClick={action(to_lower_case)} title="lower case">小写</Button>
+                    <Button variant="light" className="border" onClick={action(to_camel_case)} title="camelCase">驼峰</Button>
+                    <Button variant="light" className="border" onClick={action(to_snake_case)} title="snake_case">蛇形</Button>
+                    <Button variant="light" className="border" onClick={action(to_kebab_case)} title="kebab-case">烤串</Button>
+                    <Button variant="light" className="border" onClick={action(to_const_case)} title="CONST_CASE">大蛇</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(sort_len_asc)} title="短在前长在后">长度升序排序</Button>
