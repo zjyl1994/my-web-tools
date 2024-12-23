@@ -2,7 +2,6 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import Modal from 'react-bootstrap/Modal';
 import { useState } from 'react';
 
 import { useBasic } from '@/hooks/use-basic';
@@ -19,13 +18,16 @@ const JsonPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('');
 
     const [jsonViewerShow, setJsonViewerShow] = useState(false);
-    const handleJsonViewerDialogClose = () => setJsonViewerShow(false);
+
+    function jsonViewer() {
+        if (jsonViewerShow) {
+            return <div className="me-2 mt-2"><ReactJson src={parse_json_no_error(value)} /></div>
+        }
+    }
 
     return (
         <>
             <Form.Control as="textarea" rows={20} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
-
-            
 
             <ButtonToolbar>
                 {functionButtonGroup}
@@ -46,18 +48,11 @@ const JsonPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(trim_json)} title="去除两边非 JSON 内容">TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_trim_json)} title="去除每一行两边非 JSON 内容">多行 TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_to_one)} title="多行 JSON 转数组">多行 JSON 格式化</Button>
-                    <Button variant="light" className="border" onClick={() => setJsonViewerShow(true)} title="结构化展示 JSON">JSON Viewer</Button>
+                    <Button variant="light" className="border" onClick={() => setJsonViewerShow(!jsonViewerShow)} title="结构化展示 JSON">JSON Viewer</Button>
                 </ButtonGroup>
             </ButtonToolbar>
 
-            <Modal show={jsonViewerShow} onHide={handleJsonViewerDialogClose} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>JSONViewer</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <ReactJson src={parse_json_no_error(value)} />
-                </Modal.Body>
-            </Modal>
+            {jsonViewer()}
         </>
     )
 }
