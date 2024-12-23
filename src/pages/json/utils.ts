@@ -73,6 +73,15 @@ export const smart_process = (data: string) => {
     }
 };
 
+export function parse_json_no_error(input: string): object {
+    try {
+        const result = JSON.parse(input);
+        return result;
+    } catch (error) {
+        return { error: `解析失败: ${(error as Error).message}` };
+    }
+};
+
 // 自动转化单引号为主的内容
 function auto_single_quote(input: string): string {
     const char_ratios = getCharacterRatios(input);
