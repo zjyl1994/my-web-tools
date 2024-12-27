@@ -2,7 +2,6 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import { useState } from 'react';
 
 import { useBasic } from '@/hooks/use-basic';
 
@@ -10,19 +9,18 @@ import ReactJson from 'react-json-view';
 
 import {
     format_json, enhanced_format_json, paste_and_format,
-    compress_json, escape_json, unescape_json, parse_json_no_error,
+    compress_json, escape_json, unescape_json,
     single_quote, trim_json, multiline_trim_json, multiline_to_one, smart_process
 } from './utils';
 
 const JsonPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('');
 
-    const [jsonViewerShow, setJsonViewerShow] = useState(false);
-
     function jsonViewer() {
-        if (jsonViewerShow) {
-            return <div className="me-2 mt-2"><ReactJson src={parse_json_no_error(value)} /></div>
-        }
+        try {
+            const result = JSON.parse(value);
+            return <div className="me-2 mt-2"><ReactJson src={result} /></div>;
+        } catch (err) { }
     }
 
     return (
@@ -48,7 +46,6 @@ const JsonPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(trim_json)} title="去除两边非 JSON 内容">TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_trim_json)} title="去除每一行两边非 JSON 内容">多行 TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_to_one)} title="多行 JSON 转数组">多行 JSON 格式化</Button>
-                    <Button variant="light" className="border" onClick={() => setJsonViewerShow(!jsonViewerShow)} title="结构化展示 JSON">JSON Viewer</Button>
                 </ButtonGroup>
             </ButtonToolbar>
 
