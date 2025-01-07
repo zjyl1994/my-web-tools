@@ -19,7 +19,7 @@ const JsonPage: React.FC = () => {
     function jsonViewer() {
         try {
             const result = JSON.parse(value);
-            return <div className="me-2 mt-2"><ReactJson src={result} /></div>;
+            return <div className="me-2 mt-2"><ReactJson src={result} collapsed={true} /></div>;
         } catch (err) { }
     }
 
