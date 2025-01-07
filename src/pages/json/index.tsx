@@ -2,6 +2,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Card from 'react-bootstrap/Card';
 
 import { useBasic } from '@/hooks/use-basic';
 
@@ -19,7 +20,9 @@ const JsonPage: React.FC = () => {
     function jsonViewer() {
         try {
             const result = JSON.parse(value);
-            return <div className="me-2 mt-2"><ReactJson src={result} collapsed={true} /></div>;
+            return <Card className='mt-2'><Card.Body>
+                <ReactJson src={result} collapsed={true} />
+            </Card.Body></Card>;
         } catch (err) { }
     }
 
