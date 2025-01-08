@@ -7,7 +7,7 @@ import { Base64 } from 'js-base64';
 
 import { useBasic } from '@/hooks/use-basic';
 
-import { decode_oct_utf8 } from './utils';
+import { decode_oct_utf8, encode_gzip, decode_gzip } from './utils';
 
 const EncoderPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('');
@@ -29,6 +29,10 @@ const EncoderPage: React.FC = () => {
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(encodeURIComponent)} title="encodeURIComponent">URL 编码</Button>
                     <Button variant="light" className="border" onClick={action(decodeURIComponent)} title="decodeURIComponent">URL 解码</Button>
+                </ButtonGroup>
+                <ButtonGroup className="me-2 mt-2">
+                    <Button variant="light" className="border" onClick={action(encode_gzip)} title="Gzip后编码到Base64">Gzip 编码</Button>
+                    <Button variant="light" className="border" onClick={action(decode_gzip)} title="解码Base64后的Gzip">Gzip 解码</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(decode_oct_utf8)} title="解码'\123\456'这种字符串">八进制 UTF8 解码</Button>

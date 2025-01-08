@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/pako": "^2.0.3",
     "@uidotdev/usehooks": "^2.4.1",
     "blueimp-md5": "^2.19.0",
     "bootstrap": "^5.3.3",
@@ -19,6 +20,7 @@
     "js-sha1": "^0.7.0",
     "lodash": "^4.17.21",
     "lossless-json": "^4.0.1",
+    "pako": "^2.1.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.2.0",

@@ -1,5 +1,7 @@
 import * as LosslessJSON from 'lossless-json';
 import { toast } from 'react-toastify';
+import { Base64 } from 'js-base64';
+import pako from 'pako';
 
 export const deepParse = (s: string): unknown => LosslessJSON.parse(s, (_, v) => {
     try {
@@ -52,10 +54,23 @@ export const multiline_to_one = (data: string) => {
 export const smart_process = (data: string) => {
     // 处理单行函数
     const proc_one_line = (x: string) => {
+        // 尝试解读base64
+        const base64_content = extractBase64(x);
+        if (base64_content !== null) {
+            const decodedB64 = Base64.toUint8Array(base64_content);
+            try { // 尝试gzip解压，如果能解开就解压，否则就直接使用文本
+                const decompressed = pako.ungzip(decodedB64, { to: 'string' });
+                x = decompressed;
+            } catch (e) {
+                x = new TextDecoder().decode(decodedB64);
+            }
+        }
+        // 尝试提取内部json
         const content = extractJsonString(x);
         if (content === null) {
             throw new Error('json not found');
         }
+        // 自动处理两侧的引号
         const json_content = auto_single_quote(content);
         return LosslessJSON.parse(json_content);
     }
@@ -139,4 +154,26 @@ function getCharacterRatios(input: string): { [char: string]: number } {
     }
 
     return charRatios;
+}
+
+function trimmedInput(input: string) {
+    return input.trim().replace(/^['"]|['"]$/g, '');
+}
+
+// 检查是否为 Base64 编码
+function isBase64(str: string): boolean {
+    const base64Regex = /^(?:[A-Za-z0-9+\/]{4})*\n?(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/;
+    return base64Regex.test(str);
+};
+
+// 尝试提取base64内容
+function extractBase64(str: string): string | null {
+    if (isBase64(str)) {
+        return str;
+    }
+    const trimmed = trimmedInput(str);
+    if (isBase64(trimmed)) {
+        return trimmed;
+    }
+    return null;
 }

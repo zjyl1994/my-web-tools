@@ -18,12 +18,15 @@ const JsonPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('');
 
     function jsonViewer() {
+        var result: any
         try {
-            const result = JSON.parse(value);
+            result = JSON.parse(value);
+        } catch (err) { }
+        if (typeof result === "object") {
             return <Card className='mt-2'><Card.Body>
                 <ReactJson src={result} collapsed={true} />
             </Card.Body></Card>;
-        } catch (err) { }
+        }
     }
 
     return (
@@ -51,6 +54,10 @@ const JsonPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(multiline_to_one)} title="多行 JSON 转数组">多行 JSON 格式化</Button>
                 </ButtonGroup>
             </ButtonToolbar>
+
+            <div className='mt-2' style={{
+                color: 'rgba(0, 0, 128, .5)',
+            }}>智能处理功能目前支持自动base64解码,gzip解压,去除两端非json内容,单双引号修复,能覆盖80%的日常场景了。</div>
 
             {jsonViewer()}
         </>
