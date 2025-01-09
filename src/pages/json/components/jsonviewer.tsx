@@ -32,11 +32,15 @@ const JsonViewer: React.FC<JsonViewerProps> = (props) => {
                 <Form.Control
                     type="text"
                     placeholder="搜索 JSON Key 或 Value"
+                    value={jsonViewerFilter}
                     onChange={e => setJsonViewerFilter(e.target.value)}
                     className='my-2'
                 />
-                <JsonView data={filterObjectByKeywordIgnoreCase(parsedObj, debouncedFilterKeyword)}
-                    shouldExpandNode={allExpanded} style={defaultStyles} />
+                <JsonView
+                    data={filterObjectByKeywordIgnoreCase(parsedObj, debouncedFilterKeyword)}
+                    shouldExpandNode={allExpanded} style={defaultStyles}
+                />
+
             </Modal.Body>
         </Modal>
     )
