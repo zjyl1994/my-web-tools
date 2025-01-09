@@ -206,7 +206,34 @@ export function lossless_parse(str: string): (object) {
 
 type JsonObject = { [key: string]: any };
 
-export function filterObjectByKeywordIgnoreCase(obj: JsonObject, keyword: string): JsonObject {
+// 深度清理空数组和空对象
+function deepCleanEmpty(obj: JsonObject): JsonObject | null {
+    if (Array.isArray(obj)) {
+        // 如果是数组，递归清理每个元素，保留非空的部分
+        const cleanedArray = obj
+            .map((item) => (typeof item === "object" ? deepCleanEmpty(item) : item))
+            .filter((item) => item !== null && item !== undefined);
+
+        return cleanedArray.length > 0 ? cleanedArray : null; // 如果数组为空，返回 null
+    } else if (typeof obj === "object" && obj !== null) {
+        // 如果是对象，递归清理每个键值对，保留非空的部分
+        const cleanedObject: JsonObject = {};
+        for (const key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                const cleanedValue = deepCleanEmpty(obj[key]);
+                if (cleanedValue !== null) {
+                    cleanedObject[key] = cleanedValue;
+                }
+            }
+        }
+        return Object.keys(cleanedObject).length > 0 ? cleanedObject : null; // 如果对象为空，返回 null
+    }
+    // 如果是基本值，直接返回
+    return obj;
+}
+
+// 按关键词过滤对象
+export function filterObjectByKeywordIgnoreCase(obj: JsonObject, keyword: string): object {
     const result: JsonObject = {};
     const lowerKeyword = keyword.toLowerCase(); // 将关键词转为小写
 
@@ -226,8 +253,8 @@ export function filterObjectByKeywordIgnoreCase(obj: JsonObject, keyword: string
             // 如果 value 是对象，递归处理
             else if (typeof value === "object" && value !== null && !Array.isArray(value)) {
                 const filteredValue = filterObjectByKeywordIgnoreCase(value, keyword);
-                if (Object.keys(filteredValue).length > 0) {
-                    result[key] = filteredValue; // 仅保留非空对象
+                if (filteredValue !== null) {
+                    result[key] = filteredValue;
                 }
             }
             // 如果 value 是数组，递归处理数组中的每个元素
@@ -238,14 +265,20 @@ export function filterObjectByKeywordIgnoreCase(obj: JsonObject, keyword: string
                             ? filterObjectByKeywordIgnoreCase(item, keyword)
                             : String(item).toLowerCase().includes(lowerKeyword) ? item : null
                     )
-                    .filter((item) => item !== null); // 过滤掉空的数组项
+                    .filter((item) => item !== null);
 
                 if (filteredArray.length > 0) {
-                    result[key] = filteredArray; // 仅保留非空数组
+                    result[key] = filteredArray;
                 }
             }
         }
     }
 
-    return result;
+    // 深度清理空的对象和数组
+    const cleaned = deepCleanEmpty(result);
+    if (cleaned) {
+        return Object(cleaned);
+    } else {
+        return {}
+    }
 }
