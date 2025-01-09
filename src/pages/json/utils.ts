@@ -177,3 +177,12 @@ function extractBase64(str: string): string | null {
     }
     return null;
 }
+
+export function is_json(str: string): boolean {
+    try {
+        const result = LosslessJSON.parse(str);
+        return typeof result === "object"
+    } catch (e) {
+        return false;
+    }
+}

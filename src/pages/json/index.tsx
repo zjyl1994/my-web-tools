@@ -8,10 +8,11 @@ import { useState } from 'react';
 import { useBasic } from '@/hooks/use-basic';
 
 import ReactJson from 'react-json-view';
+import * as LosslessJSON from 'lossless-json';
 
 import {
     format_json, enhanced_format_json, paste_and_format,
-    compress_json, escape_json, unescape_json,
+    compress_json, escape_json, unescape_json, is_json,
     single_quote, trim_json, multiline_trim_json, multiline_to_one, smart_process
 } from './utils';
 
@@ -20,9 +21,17 @@ const JsonPage: React.FC = () => {
     const [showJsonViewer, setShowJsonViewer] = useState(false);
 
     const jsonViewer = function () {
+        function reviver(_: string, value: unknown) {
+            if (value instanceof LosslessJSON.LosslessNumber && value.isLosslessNumber) {
+                const numberValue = Number(value.value);
+                return numberValue.toString() == value.value ? numberValue : value.value;
+            } else {
+                return value;
+            }
+        }
         try {
-            const result = JSON.parse(value);
-            return <ReactJson src={result} collapsed={false} />;
+            const result = LosslessJSON.parse(value, reviver);
+            return <ReactJson src={Object(result)} collapsed={3} />;
         } catch (e) {
             if (e instanceof Error) return <div>{e.message}</div>
             return <div>{String(e)}</div>
@@ -52,7 +61,7 @@ const JsonPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(trim_json)} title="去除两边非 JSON 内容">TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_trim_json)} title="去除每一行两边非 JSON 内容">多行 TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_to_one)} title="多行 JSON 转数组">多行 JSON 格式化</Button>
-                    <Button variant="light" className="border" onClick={() => setShowJsonViewer(true)} title="大文件会很卡，请耐心等待">JSON Viewer</Button>
+                    <Button variant="light" className="border" onClick={() => setShowJsonViewer(true)} title="大文件会很卡，请耐心等待" disabled={!is_json(value)}>JSON Viewer</Button>
                 </ButtonGroup>
             </ButtonToolbar>
 
