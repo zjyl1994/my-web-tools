@@ -24,7 +24,7 @@ const JsonPage: React.FC = () => {
         } catch (err) { }
         if (typeof result === "object") {
             return <Card className='mt-2'><Card.Body>
-                <ReactJson src={result} collapsed={true} />
+                <ReactJson src={result} collapsed={false} />
             </Card.Body></Card>;
         }
     }
