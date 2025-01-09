@@ -2,23 +2,20 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import Modal from 'react-bootstrap/Modal';
 import { useState } from 'react';
 
 import { useBasic } from '@/hooks/use-basic';
-
-import ReactJson from 'react-json-view';
+import JsonViewer from './components/jsonviewer.tsx';
 
 import {
-    format_json, enhanced_format_json, paste_and_format, filterObjectByKeywordIgnoreCase,
-    compress_json, escape_json, unescape_json, is_json, lossless_parse,
+    format_json, enhanced_format_json, paste_and_format,
+    compress_json, escape_json, unescape_json, is_json,
     single_quote, trim_json, multiline_trim_json, multiline_to_one, smart_process
 } from './utils';
 
 const JsonPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('');
     const [showJsonViewer, setShowJsonViewer] = useState(false);
-    const [jsonViewerFilter, setJsonViewerFilter] = useState('');
 
     return (
         <>
@@ -43,29 +40,18 @@ const JsonPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(trim_json)} title="去除两边非 JSON 内容">TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_trim_json)} title="去除每一行两边非 JSON 内容">多行 TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_to_one)} title="多行 JSON 转数组">多行 JSON 格式化</Button>
+                </ButtonGroup>
+                <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={() => setShowJsonViewer(true)} title="大文件会很卡，请耐心等待" disabled={!is_json(value)}>JSON Viewer</Button>
                 </ButtonGroup>
             </ButtonToolbar>
 
             <div className='mt-2' style={{ color: 'rgba(0, 0, 128, .5)' }}>智能处理功能目前支持自动base64解码,gzip解压,去除两端非json内容,单双引号修复,能覆盖80%的日常场景了。</div>
 
-            <Modal show={showJsonViewer} fullscreen={true} onHide={() => setShowJsonViewer(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title style={{ fontWeight: 'bold', fontStyle: 'italic' }}>JsonViewer</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form.Control
-                        type="text"
-                        placeholder="搜索 JSON Key 或 Value"
-                        onChange={e => setJsonViewerFilter(e.target.value)}
-                        className='my-2'
-                    />
-                    <ReactJson
-                        src={filterObjectByKeywordIgnoreCase(lossless_parse(value), jsonViewerFilter)}
-                        collapsed={jsonViewerFilter.length > 0 ? false : 3}
-                    />
-                </Modal.Body>
-            </Modal>
+            {
+                showJsonViewer &&
+                <JsonViewer src={value} show={showJsonViewer} onHide={() => setShowJsonViewer(false)} />
+            }
         </>
     )
 }
