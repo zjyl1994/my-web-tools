@@ -18,7 +18,6 @@ type JsonViewerProps = {
 
 
 const JsonViewer: React.FC<JsonViewerProps> = (props) => {
-    const parsedObj = useMemo(() => lossless_parse(props.src), [props.src]);
 
     const [jsonViewerFilter, setJsonViewerFilter] = useState('');
     const debouncedFilterKeyword = useDebounce(jsonViewerFilter, 300);
@@ -36,10 +35,14 @@ const JsonViewer: React.FC<JsonViewerProps> = (props) => {
                     onChange={e => setJsonViewerFilter(e.target.value)}
                     className='my-2'
                 />
-                <JsonView
-                    data={filterObjectByKeywordIgnoreCase(parsedObj, debouncedFilterKeyword)}
-                    shouldExpandNode={allExpanded} style={defaultStyles}
-                />
+                {useMemo(() => {
+                    const parsedObj = lossless_parse(props.src);
+                    const filteredObj = filterObjectByKeywordIgnoreCase(parsedObj, debouncedFilterKeyword);
+                    return <JsonView
+                        data={filteredObj}
+                        shouldExpandNode={allExpanded} style={defaultStyles}
+                    />
+                }, [props.src, debouncedFilterKeyword])}
 
             </Modal.Body>
         </Modal>
