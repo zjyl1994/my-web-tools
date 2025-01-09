@@ -186,3 +186,66 @@ export function is_json(str: string): boolean {
         return false;
     }
 }
+
+export function lossless_parse(str: string): (object) {
+    function reviver(_: string, value: unknown) {
+        if (value instanceof LosslessJSON.LosslessNumber && value.isLosslessNumber) {
+            const numberValue = Number(value.value);
+            return numberValue.toString() == value.value ? numberValue : value.value;
+        } else {
+            return value;
+        }
+    }
+    try {
+        const result = LosslessJSON.parse(str, reviver);
+        return Object(result);
+    } catch (e) {
+        return { "ParseError": String(e) }
+    }
+}
+
+type JsonObject = { [key: string]: any };
+
+export function filterObjectByKeywordIgnoreCase(obj: JsonObject, keyword: string): JsonObject {
+    const result: JsonObject = {};
+    const lowerKeyword = keyword.toLowerCase(); // 将关键词转为小写
+
+    for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            const value = obj[key];
+            const stringValue = String(value).toLowerCase(); // 将 value 转为字符串并忽略大小写
+
+            // 如果 key 包含关键词（忽略大小写），保留
+            if (key.toLowerCase().includes(lowerKeyword)) {
+                result[key] = value;
+            }
+            // 如果 value 的字符串形式包含关键词，保留
+            else if (stringValue.includes(lowerKeyword)) {
+                result[key] = value;
+            }
+            // 如果 value 是对象，递归处理
+            else if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+                const filteredValue = filterObjectByKeywordIgnoreCase(value, keyword);
+                if (Object.keys(filteredValue).length > 0) {
+                    result[key] = filteredValue; // 仅保留非空对象
+                }
+            }
+            // 如果 value 是数组，递归处理数组中的每个元素
+            else if (Array.isArray(value)) {
+                const filteredArray = value
+                    .map((item) =>
+                        typeof item === "object" && item !== null
+                            ? filterObjectByKeywordIgnoreCase(item, keyword)
+                            : String(item).toLowerCase().includes(lowerKeyword) ? item : null
+                    )
+                    .filter((item) => item !== null); // 过滤掉空的数组项
+
+                if (filteredArray.length > 0) {
+                    result[key] = filteredArray; // 仅保留非空数组
+                }
+            }
+        }
+    }
+
+    return result;
+}

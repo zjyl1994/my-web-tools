@@ -8,35 +8,17 @@ import { useState } from 'react';
 import { useBasic } from '@/hooks/use-basic';
 
 import ReactJson from 'react-json-view';
-import * as LosslessJSON from 'lossless-json';
 
 import {
-    format_json, enhanced_format_json, paste_and_format,
-    compress_json, escape_json, unescape_json, is_json,
+    format_json, enhanced_format_json, paste_and_format, filterObjectByKeywordIgnoreCase,
+    compress_json, escape_json, unescape_json, is_json, lossless_parse,
     single_quote, trim_json, multiline_trim_json, multiline_to_one, smart_process
 } from './utils';
 
 const JsonPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('');
     const [showJsonViewer, setShowJsonViewer] = useState(false);
-
-    const jsonViewer = function () {
-        function reviver(_: string, value: unknown) {
-            if (value instanceof LosslessJSON.LosslessNumber && value.isLosslessNumber) {
-                const numberValue = Number(value.value);
-                return numberValue.toString() == value.value ? numberValue : value.value;
-            } else {
-                return value;
-            }
-        }
-        try {
-            const result = LosslessJSON.parse(value, reviver);
-            return <ReactJson src={Object(result)} collapsed={3} />;
-        } catch (e) {
-            if (e instanceof Error) return <div>{e.message}</div>
-            return <div>{String(e)}</div>
-        }
-    }
+    const [jsonViewerFilter, setJsonViewerFilter] = useState('');
 
     return (
         <>
@@ -72,7 +54,16 @@ const JsonPage: React.FC = () => {
                     <Modal.Title style={{ fontWeight: 'bold', fontStyle: 'italic' }}>JsonViewer</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {jsonViewer()}
+                    <Form.Control
+                        type="text"
+                        placeholder="搜索 JSON Key 或 Value"
+                        onChange={e => setJsonViewerFilter(e.target.value)}
+                        className='my-2'
+                    />
+                    <ReactJson
+                        src={filterObjectByKeywordIgnoreCase(lossless_parse(value), jsonViewerFilter)}
+                        collapsed={jsonViewerFilter.length > 0 ? false : 3}
+                    />
                 </Modal.Body>
             </Modal>
         </>
