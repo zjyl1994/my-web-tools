@@ -2,7 +2,8 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import Card from 'react-bootstrap/Card';
+import Modal from 'react-bootstrap/Modal';
+import { useState } from 'react';
 
 import { useBasic } from '@/hooks/use-basic';
 
@@ -16,16 +17,15 @@ import {
 
 const JsonPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('');
+    const [showJsonViewer, setShowJsonViewer] = useState(false);
 
-    function jsonViewer() {
-        var result: any
+    const jsonViewer = function () {
         try {
-            result = JSON.parse(value);
-        } catch (err) { }
-        if (typeof result === "object") {
-            return <Card className='mt-2'><Card.Body>
-                <ReactJson src={result} collapsed={false} />
-            </Card.Body></Card>;
+            const result = JSON.parse(value);
+            return <ReactJson src={result} collapsed={false} />;
+        } catch (e) {
+            if (e instanceof Error) return <div>{e.message}</div>
+            return <div>{String(e)}</div>
         }
     }
 
@@ -52,14 +52,20 @@ const JsonPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(trim_json)} title="去除两边非 JSON 内容">TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_trim_json)} title="去除每一行两边非 JSON 内容">多行 TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_to_one)} title="多行 JSON 转数组">多行 JSON 格式化</Button>
+                    <Button variant="light" className="border" onClick={() => setShowJsonViewer(true)} title="大文件会很卡，请耐心等待">JSON Viewer</Button>
                 </ButtonGroup>
             </ButtonToolbar>
 
-            <div className='mt-2' style={{
-                color: 'rgba(0, 0, 128, .5)',
-            }}>智能处理功能目前支持自动base64解码,gzip解压,去除两端非json内容,单双引号修复,能覆盖80%的日常场景了。</div>
+            <div className='mt-2' style={{ color: 'rgba(0, 0, 128, .5)' }}>智能处理功能目前支持自动base64解码,gzip解压,去除两端非json内容,单双引号修复,能覆盖80%的日常场景了。</div>
 
-            {jsonViewer()}
+            <Modal show={showJsonViewer} fullscreen={true} onHide={() => setShowJsonViewer(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title style={{ fontWeight: 'bold', fontStyle: 'italic' }}>JsonViewer</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {jsonViewer()}
+                </Modal.Body>
+            </Modal>
         </>
     )
 }
