@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import { JsonView, allExpanded, defaultStyles } from 'react-json-view-lite';
 import 'react-json-view-lite/dist/index.css';
 import { useDebounce } from "@uidotdev/usehooks";
-import { useMemo, useState } from 'react';
+import { useMemo, useState, startTransition } from 'react';
 
 import {
     filterObjectByKeywordIgnoreCase,
@@ -18,9 +18,10 @@ type JsonViewerProps = {
 
 
 const JsonViewer: React.FC<JsonViewerProps> = (props) => {
-
     const [jsonViewerFilter, setJsonViewerFilter] = useState('');
-    const debouncedFilterKeyword = useDebounce(jsonViewerFilter, 300);
+    const [filterKeyword, setFilterKeyword] = useState('');
+    const debouncedFilterKeyword = useDebounce(filterKeyword, 200);
+    const parsedObj = useMemo(() => lossless_parse(props.src), [props.src])
 
     return (
         <Modal show={props.show} fullscreen={true} onHide={props.onHide}>
@@ -32,17 +33,19 @@ const JsonViewer: React.FC<JsonViewerProps> = (props) => {
                     type="text"
                     placeholder="搜索 JSON Key 或 Value"
                     value={jsonViewerFilter}
-                    onChange={e => setJsonViewerFilter(e.target.value)}
+                    onChange={e => {
+                        setJsonViewerFilter(e.target.value);
+                        startTransition(() => setFilterKeyword(e.target.value))
+                    }}
                     className='my-2'
                 />
                 {useMemo(() => {
-                    const parsedObj = lossless_parse(props.src);
                     const filteredObj = filterObjectByKeywordIgnoreCase(parsedObj, debouncedFilterKeyword);
                     return <JsonView
                         data={filteredObj}
                         shouldExpandNode={allExpanded} style={defaultStyles}
                     />
-                }, [props.src, debouncedFilterKeyword])}
+                }, [parsedObj, debouncedFilterKeyword])}
 
             </Modal.Body>
         </Modal>
