@@ -1,7 +1,7 @@
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import { JsonView, allExpanded, defaultStyles } from 'react-json-view-lite';
-import 'react-json-view-lite/dist/index.css';
+import JsonView from 'react18-json-view';
+import 'react18-json-view/src/style.css';
 import { useDebounce } from "@uidotdev/usehooks";
 import { useMemo, useState, startTransition } from 'react';
 
@@ -40,8 +40,8 @@ const JsonViewer: React.FC<JsonViewerProps> = (props) => {
                     className='my-2'
                 />
                 {useMemo(() => <JsonView
-                    data={filterObjectByKeywordIgnoreCase(parsedObj, debouncedFilterKeyword)}
-                    shouldExpandNode={allExpanded} style={defaultStyles}
+                    src={filterObjectByKeywordIgnoreCase(parsedObj, debouncedFilterKeyword)}
+                    //collapsed={debouncedFilterKeyword.length > 0 ? false : 3}
                 />, [parsedObj, debouncedFilterKeyword])}
 
             </Modal.Body>
