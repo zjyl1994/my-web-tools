@@ -39,13 +39,10 @@ const JsonViewer: React.FC<JsonViewerProps> = (props) => {
                     }}
                     className='my-2'
                 />
-                {useMemo(() => {
-                    const filteredObj = filterObjectByKeywordIgnoreCase(parsedObj, debouncedFilterKeyword);
-                    return <JsonView
-                        data={filteredObj}
-                        shouldExpandNode={allExpanded} style={defaultStyles}
-                    />
-                }, [parsedObj, debouncedFilterKeyword])}
+                {useMemo(() => <JsonView
+                    data={filterObjectByKeywordIgnoreCase(parsedObj, debouncedFilterKeyword)}
+                    shouldExpandNode={allExpanded} style={defaultStyles}
+                />, [parsedObj, debouncedFilterKeyword])}
 
             </Modal.Body>
         </Modal>
