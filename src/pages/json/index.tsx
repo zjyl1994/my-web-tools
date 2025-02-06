@@ -10,7 +10,8 @@ import JsonViewer from './components/jsonviewer.tsx';
 import {
     format_json, enhanced_format_json, paste_and_format,
     compress_json, escape_json, unescape_json, is_json,
-    single_quote, trim_json, multiline_trim_json, multiline_to_one, smart_process
+    single_quote, trim_json, multiline_trim_json, multiline_to_one, smart_process,
+    python_print_to_json
 } from './utils';
 
 const JsonPage: React.FC = () => {
@@ -40,6 +41,7 @@ const JsonPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(trim_json)} title="去除两边非 JSON 内容">TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_trim_json)} title="去除每一行两边非 JSON 内容">多行 TRIM</Button>
                     <Button variant="light" className="border" onClick={action(multiline_to_one)} title="多行 JSON 转数组">多行 JSON 格式化</Button>
+                    <Button variant="light" className="border" onClick={action(python_print_to_json)} title="尝试转换 Python 打印内容到 JSON 格式">Python?</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={() => setShowJsonViewer(true)} title="大文件会很卡，请耐心等待" disabled={!is_json(value)}>JSON Viewer</Button>

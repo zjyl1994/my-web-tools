@@ -282,3 +282,11 @@ export function filterObjectByKeywordIgnoreCase(obj: JsonObject, keyword: string
         return {}
     }
 }
+
+export function python_print_to_json(input: string): string {
+    return input
+        .replace(/'/g, '"')        // 替换单引号为双引号
+        .replace(/\bNone\b/g, "null") // 替换 None
+        .replace(/\bTrue\b/g, "true") // 替换 True
+        .replace(/\bFalse\b/g, "false"); // 替换 False
+}

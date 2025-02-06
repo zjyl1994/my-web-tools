@@ -15,6 +15,8 @@ export const shuffle_line = proc_lines(list => shuffle(list));
 
 export const add_quote = proc_lines(list => list.map(x => '"' + x + '"'));
 export const remove_quote = proc_lines(list => list.map(x => x.replace(/^"|"$/g, '')));
+export const add_single_quote = proc_lines(list => list.map(x => '\'' + x + '\''));
+export const remove_single_quote = proc_lines(list => list.map(x => x.replace(/^'|'$/g, '')));
 export const add_comma_suffix = proc_lines(list => list.map(x => x + ','));
 export const remove_comma_suffix = proc_lines(list => list.map(x => x.replace(/(,*$)/g, '')));
 

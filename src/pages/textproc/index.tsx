@@ -10,7 +10,7 @@ import { useBasic } from '@/hooks/use-basic';
 import {
     split_by_comma, join_with_comma,
     trim_line_space, remove_empty_line, split_by_blank, join_by_blank,
-    add_quote, remove_quote, uniq_line, shuffle_line,
+    add_quote, remove_quote,add_single_quote, remove_single_quote, uniq_line, shuffle_line,
     add_comma_suffix, remove_comma_suffix,
     nums_average, nums_max, nums_min,
     sort_asc, sort_desc, sort_len_asc, sort_len_desc,
@@ -78,8 +78,10 @@ const TextProcPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(join_with_comma)} title="逗号分隔合并所有行">逗号合行</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(remove_quote)} title="行两边删除双引号">去引号</Button>
-                    <Button variant="light" className="border" onClick={action(add_quote)} title="行两边添加双引号">加引号</Button>
+                    <Button variant="light" className="border" onClick={action(remove_quote)} title="行两边删除双引号">去双引号</Button>
+                    <Button variant="light" className="border" onClick={action(add_quote)} title="行两边添加双引号">加双引号</Button>
+                    <Button variant="light" className="border" onClick={action(remove_single_quote)} title="行两边删除单引号">去单引号</Button>
+                    <Button variant="light" className="border" onClick={action(add_single_quote)} title="行两边添加单引号">加单引号</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(add_comma_suffix)} title="行尾追加逗号">行尾加逗号</Button>
