@@ -24,7 +24,7 @@ export const useActionCreater = (
     return useCallback((action: (origin: string) => (string | Promise<string>)) => () => {
         const setResult = function (value: string) {
             if (value)
-                setInputValue(value + '\n');
+                setInputValue(value);
         };
         try {
             const result = action(inputValue);
