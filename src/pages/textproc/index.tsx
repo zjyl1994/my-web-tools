@@ -9,7 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 import { useBasic } from '@/hooks/use-basic';
 import {
     split_by_comma, join_with_comma,
-    trim_line_space, remove_empty_line, split_by_blank, join_by_blank,
+    trim_line_space, remove_empty_line, split_by_blank, join_by_blank,sperate_with_blank_row,
     add_quote, remove_quote,add_single_quote, remove_single_quote, uniq_line, shuffle_line,
     add_comma_suffix, remove_comma_suffix,
     nums_average, nums_max, nums_min,
@@ -91,6 +91,7 @@ const TextProcPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(split_by_blank)} title="根据空白切割成好多行">空白切行</Button>
                     <Button variant="light" className="border" onClick={action(join_by_blank)} title="用空格合并所有行">空白合行</Button>
                     <Button variant="light" className="border" onClick={action(trim_line_space)} title="删除行两边的空白">去除两边空白</Button>
+                    <Button variant="light" className="border" onClick={action(sperate_with_blank_row)} title="两行中间增加空行">空白隔行</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(remove_empty_line)} title="删除只有空白没有内容的行">去除空行</Button>

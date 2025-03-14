@@ -7,6 +7,7 @@ export const split_by_comma = (data: string) => data.replaceAll(',', '\n');
 export const join_with_comma = (data: string) => remove_empty_line(data).replaceAll('\n', ',');
 export const split_by_blank = (data: string) => data.replaceAll(/\s+/g, '\n');
 export const join_by_blank = (data: string) => remove_empty_line(data).replaceAll('\n', ' ');
+export const sperate_with_blank_row = (data: string) => data.replaceAll('\n', '\n\n');
 
 export const trim_line_space = proc_lines(list => list.map(x => x.trim()));
 export const remove_empty_line = proc_lines(list => list.map(x => x.trim()).filter(x => x.length > 0));
