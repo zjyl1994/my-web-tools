@@ -15,6 +15,7 @@ import LotteryPage from '@/pages/lottery';
 import AboutPage from '@/pages/about';
 import LazyGoPage from '@/pages/lazygo';
 import PriceCalcPage from "./pages/pricecalc";
+import HmacPage from "./pages/hmac";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -42,6 +43,7 @@ function App() {
                 <NavDropdown.Item as={Link} to="/sqlfmt" active={Boolean(useMatch('/sqlfmt'))} eventKey="sqlfmt">SQL 格式化</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/lottery" active={Boolean(useMatch('/lottery'))} eventKey="lottery">彩票选号机</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/pricecalc" active={Boolean(useMatch('/pricecalc'))} eventKey="pricecalc">比价计算机</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/hmac" active={Boolean(useMatch('/hmac'))} eventKey="hmac">HMAC计算器</NavDropdown.Item>
               </NavDropdown>
             </Nav>
             <Nav.Link as={Link} to="/about" active={Boolean(useMatch('/about'))} eventKey="about">关于</Nav.Link>
@@ -61,6 +63,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/lazygo" element={<LazyGoPage />} />
           <Route path="/pricecalc" element={<PriceCalcPage />} />
+          <Route path="/hmac" element={<HmacPage />} />
         </Routes>
       </Container>
       <ToastContainer />
