@@ -20,7 +20,7 @@ const LazyGoPage: React.FC = () => {
                 value={value} 
                 onChange={e => setValue(e.target.value)} 
                 className='scrollable-textarea'
-                style={{ fontFamily: 'monospace' }}
+                style={{ fontFamily: '"Lucida Console", Courier, monospace' }}
             />
 
             <ButtonToolbar>
