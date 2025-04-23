@@ -45,7 +45,15 @@ const TextProcPage: React.FC = () => {
 
     return (
         <>
-            <Form.Control as="textarea" rows={15} spellCheck={false} value={value} onChange={e => setValue(e.target.value)} className='scrollable-textarea' />
+            <Form.Control 
+                as="textarea" 
+                rows={15} 
+                spellCheck={false} 
+                value={value} 
+                onChange={e => setValue(e.target.value)} 
+                className='scrollable-textarea'
+                style={{ fontFamily: 'monospace' }}
+            />
 
             <ButtonToolbar>
                 {functionButtonGroup}
