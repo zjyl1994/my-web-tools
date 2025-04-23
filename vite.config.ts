@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import fs from 'fs';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,6 +13,7 @@ export default defineConfig({
     },
     define: {
         __BUILD_TIMESTAMP__: new Date().getTime(),
+        __README_CONTENT__: JSON.stringify(fs.readFileSync(path.resolve(__dirname, 'README.md'), 'utf-8')),
     },
     plugins: [
         react(),

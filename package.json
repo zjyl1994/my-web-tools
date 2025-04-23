@@ -34,6 +34,7 @@
     "react-hotkeys-hook": "^4.6.1",
     "react-json-view": "^1.21.3",
     "react-json-view-lite": "^2.3.0",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.1.5",
     "react-toastify": "^11.0.3",
     "react18-json-view": "0.2.9-canary.9",
