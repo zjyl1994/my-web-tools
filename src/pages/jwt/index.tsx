@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { Eye, EyeSlash, Plus, Trash, Copy } from 'react-bootstrap-icons';
 import { useCopy } from '@/hooks/use-basic';
+import { Base64 } from 'js-base64';
 import DateTime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 
@@ -44,16 +45,18 @@ const JwtPage: React.FC = () => {
             ['sign']
         );
 
-        const encodedHeader = btoa(JSON.stringify(header));
-        const encodedPayload = btoa(JSON.stringify(payload));
+        // 使用 Base64.encodeURI 进行 URL 安全的 Base64 编码
+        const encodedHeader = Base64.encodeURI(JSON.stringify(header));
+        const encodedPayload = Base64.encodeURI(JSON.stringify(payload));
+        
         const signature = await crypto.subtle.sign(
             'HMAC',
             key,
             encoder.encode(`${encodedHeader}.${encodedPayload}`)
         );
 
-        const signatureArray = Array.from(new Uint8Array(signature));
-        const signatureBase64 = btoa(String.fromCharCode(...signatureArray));
+        // 将签名转换为 URL 安全的 Base64 格式
+        const signatureBase64 = Base64.fromUint8Array(new Uint8Array(signature),true);
 
         return `${encodedHeader}.${encodedPayload}.${signatureBase64}`;
     }
