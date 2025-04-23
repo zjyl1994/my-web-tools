@@ -21,7 +21,7 @@ import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 const TextProcPage: React.FC = () => {
-    const { value, setValue, action, functionButtonGroup } = useBasic('');
+    const { value, setValue, action, functionButtonGroup } = useBasic('','textproc');
 
     const [regexValue, setRegexValue] = useState('');
     const [replaceSourceValue, setReplaceSourceValue] = useState('');
@@ -30,8 +30,8 @@ const TextProcPage: React.FC = () => {
     const [statisticsShow, setStatisticsShow] = useState(false);
     const handleStatisticsDialogClose = () => setStatisticsShow(false);
 
-    const valueLines = useMemo(() => value.split('\n').map(x => x.trim()).filter(x => x.length > 0), [value]);
-    const valueLinesLength = useMemo(() => valueLines.map(x => x.length), [valueLines]);
+const valueLines = useMemo(() => value.split('\n').map((x: string) => x.trim()).filter((x: string) => x.length > 0), [value]);
+const valueLinesLength = useMemo(() => valueLines.map((x: string) => x.length), [valueLines]);
 
     const memory_load = () => {
         if (confirm('是否使用存储区的内容替换当前内容?')) {
@@ -51,8 +51,7 @@ const TextProcPage: React.FC = () => {
                 spellCheck={false} 
                 value={value} 
                 onChange={e => setValue(e.target.value)} 
-                className='scrollable-textarea'
-                style={{ fontFamily: '"Lucida Console", Courier, monospace' }}
+                className='scrollable-textarea textarea-font'
             />
 
             <ButtonToolbar>

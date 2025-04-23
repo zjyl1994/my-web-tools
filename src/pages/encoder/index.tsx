@@ -10,7 +10,7 @@ import { useBasic } from '@/hooks/use-basic';
 import { decode_oct_utf8, encode_gzip, decode_gzip } from './utils';
 
 const EncoderPage: React.FC = () => {
-    const { value, setValue, action, functionButtonGroup } = useBasic('');
+    const { value, setValue, action, functionButtonGroup } = useBasic('','encoder');
 
     return (
         <>
@@ -20,8 +20,7 @@ const EncoderPage: React.FC = () => {
                 spellCheck={false} 
                 value={value} 
                 onChange={e => setValue(e.target.value)} 
-                className='scrollable-textarea'
-                style={{ fontFamily: '"Lucida Console", Courier, monospace' }}
+                className='scrollable-textarea textarea-font'
             />
 
             <ButtonToolbar>

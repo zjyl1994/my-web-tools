@@ -10,7 +10,7 @@ import {
 } from './utils';
 
 const LazyGoPage: React.FC = () => {
-    const { value, setValue, action, functionButtonGroup } = useBasic('');
+    const { value, setValue, action, functionButtonGroup } = useBasic('','lazygo');
     return (
         <>
             <Form.Control 
@@ -19,8 +19,7 @@ const LazyGoPage: React.FC = () => {
                 spellCheck={false} 
                 value={value} 
                 onChange={e => setValue(e.target.value)} 
-                className='scrollable-textarea'
-                style={{ fontFamily: '"Lucida Console", Courier, monospace' }}
+                className='scrollable-textarea textarea-font'
             />
 
             <ButtonToolbar>

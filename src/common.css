@@ -13,3 +13,7 @@ body {
 a.nav-link.active {
     font-weight: bold;
 }
+
+.textarea-font {
+    font-family: "Lucida Console", "Courier New", "Monaco", "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", monospace;
+}
