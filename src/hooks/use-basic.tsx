@@ -41,11 +41,12 @@ export const useActionCreater = (
     }, [inputValue, setInputValue]);
 };
 
-export const useBasic = (defaultValue: string, type: string) => {
-    const storageKey = `${STORAGE_KEY_PREFIX}${type}`;
+export const useBasic = (defaultValue: string, historyType: string) => {
+    const storageKey = `${STORAGE_KEY_PREFIX}${historyType}`;
     
     // 从localStorage加载初始值
     const getInitialValue = () => {
+        if (!historyType) return defaultValue;
         try {
             const storedValue = localStorage.getItem(storageKey);
             return storedValue ? JSON.parse(storedValue) : defaultValue;
@@ -59,12 +60,13 @@ export const useBasic = (defaultValue: string, type: string) => {
     
     // 保存到localStorage的effect
     useEffect(() => {
+        if (!historyType) return;  // 新增：type为空时不保存
         try {
             localStorage.setItem(storageKey, JSON.stringify(value));
         } catch (err) {
             toast.error('Failed to save to localStorage: ' + String(err));
         }
-    }, [value, storageKey]);
+    }, [value, storageKey, historyType]);  // 新增：添加type到依赖项
 
     const setValue = (newValue: string) => {
         set(newValue);
@@ -72,6 +74,7 @@ export const useBasic = (defaultValue: string, type: string) => {
 
     const clearHistory = () => {
         clear();
+        if (!historyType) return;  // 新增：type为空时不清理
         try {
             localStorage.removeItem(storageKey);
         } catch (err) {

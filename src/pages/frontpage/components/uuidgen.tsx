@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid';
 import { useBasic } from '@/hooks/use-basic';
 
 const Uuid: React.FC = () => {
-    const { value, action, copy } = useBasic(uuid());
+    const { value, action, copy } = useBasic(uuid(),'');
 
     return (
         <Card className="mt-3">

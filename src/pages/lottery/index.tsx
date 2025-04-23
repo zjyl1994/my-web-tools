@@ -12,7 +12,7 @@ const LotteryGen: React.FC = () => {
     const loadCodeList = () => JSON.parse(localStorage.getItem("lottery_codes") ?? '[]');
 
     const [codeList, setCodeList] = useState<string[]>(loadCodeList())
-    const { value, action } = useBasic(superLottoGen());
+    const { value, action } = useBasic(superLottoGen(), '');
 
     const saveCode = () => setCodeList(prev => {
         const newList = uniq([value, ...prev]);

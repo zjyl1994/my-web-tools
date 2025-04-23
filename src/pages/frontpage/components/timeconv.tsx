@@ -11,7 +11,7 @@ const timestamp2str = (ts: string) => dayjs.unix(Number(ts)).format('YYYY-MM-DD 
 const str2timestamp = (value: string) => dayjs(value).unix().toString();
 
 const TimeConv: React.FC = () => {
-    const { value, setValue, action, copy, paste } = useBasic(nowTs());
+    const { value, setValue, action, copy, paste } = useBasic(nowTs(),'');
 
     return (
         <Card className="mt-3">
