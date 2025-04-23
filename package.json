@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@types/pako": "^2.0.3",
+    "@types/react-datepicker": "^7.0.0",
+    "@types/react-datetime-picker": "^5.0.0",
     "@uidotdev/usehooks": "^2.4.1",
     "@uiw/react-json-view": "2.0.0-alpha.30",
     "blueimp-md5": "^2.19.0",
@@ -25,6 +27,9 @@
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-bootstrap-icons": "^1.11.5",
+    "react-datepicker": "^8.3.0",
+    "react-datetime": "^3.3.1",
+    "react-datetime-picker": "^6.0.1",
     "react-dom": "^19.0.0",
     "react-hotkeys-hook": "^4.6.1",
     "react-json-view": "^1.21.3",
@@ -56,5 +61,6 @@
     "onlyBuiltDependencies": [
       "esbuild"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.7.1+sha512.2d92c86b7928dc8284f53494fb4201f983da65f0fb4f0d40baafa5cf628fa31dae3e5968f12466f17df7e97310e30f343a648baea1b9b350685dafafffdf5808"
 }
