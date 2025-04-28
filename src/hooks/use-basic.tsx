@@ -43,9 +43,9 @@ export const useActionCreater = (
 
 export const useBasic = (defaultValue: string, historyType: string) => {
     const storageKey = `${STORAGE_KEY_PREFIX}${historyType}`;
-    
+
     // 从localStorage加载初始值
-    const getInitialValue = () => {
+    const getInitialValue = (): string => {
         if (!historyType) return defaultValue;
         try {
             const storedValue = localStorage.getItem(storageKey);
@@ -57,7 +57,7 @@ export const useBasic = (defaultValue: string, historyType: string) => {
 
     const { state, set, undo, redo, clear, canUndo, canRedo } = useHistoryState(getInitialValue());
     const value = state;
-    
+
     // 保存到localStorage的effect
     useEffect(() => {
         if (!historyType) return;  // 新增：type为空时不保存
@@ -85,7 +85,7 @@ export const useBasic = (defaultValue: string, historyType: string) => {
     const action = useActionCreater(value, setValue);
     const copy = useCopy(value);
     const paste = usePaste(setValue);
-    
+
     const functionButtonGroup = <ButtonGroup className="me-2 mt-2">
         <Button variant="light" className="border" onClick={copy}>复制</Button>
         <Button variant="light" className="border" onClick={paste}>粘贴</Button>
@@ -96,6 +96,6 @@ export const useBasic = (defaultValue: string, historyType: string) => {
 
     useHotkeys('ctrl+z', undo);
     useHotkeys('ctrl+y', redo);
-    
+
     return { value, setValue, action, copy, paste, undo, redo, clearHistory, canUndo, canRedo, functionButtonGroup };
 }

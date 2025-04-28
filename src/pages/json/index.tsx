@@ -15,17 +15,17 @@ import {
 } from './utils';
 
 const JsonPage: React.FC = () => {
-    const { value, setValue, action, functionButtonGroup } = useBasic('','json');
+    const { value, setValue, action, functionButtonGroup } = useBasic('', 'json');
     const [showJsonViewer, setShowJsonViewer] = useState(false);
 
     return (
         <>
-            <Form.Control 
-                as="textarea" 
-                rows={20} 
-                spellCheck={false} 
-                value={value} 
-                onChange={e => setValue(e.target.value)} 
+            <Form.Control
+                as="textarea"
+                rows={20}
+                spellCheck={false}
+                value={value}
+                onChange={e => setValue(e.target.value)}
                 className='scrollable-textarea textarea-font'
             />
 
