@@ -18,7 +18,7 @@ const JsonPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('', 'json');
     const [showJsonViewer, setShowJsonViewer] = useState(false);
 
-    const { rows, textareaRef } = useTextareaResize('json_rows', 20);
+    const { rows, textareaRef } = useTextareaResize('json', 20);
 
     return (
         <>

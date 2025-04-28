@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 const STORAGE_KEY_PREFIX = 'textarea_history_';
+const TEXTAREA_ROWS_KEY_PREFIX = 'textarea_rows_';
 
 export const useCopy = (text: string) => {
     return useCallback(() => {
@@ -101,7 +102,8 @@ export const useBasic = (defaultValue: string, historyType: string) => {
 }
 
 
-export const useTextareaResize = (storageKey: string, defaultRows: number) => {
+export const useTextareaResize = (textareaType: string, defaultRows: number) => {
+    const storageKey = `${TEXTAREA_ROWS_KEY_PREFIX}${textareaType}`;
     const [rows, setRows] = useState(defaultRows);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const lineHeight = useRef(0);
@@ -116,8 +118,7 @@ export const useTextareaResize = (storageKey: string, defaultRows: number) => {
             for (const entry of entries) {
                 const newHeight = entry.contentRect.height;
                 const calculatedRows = Math.round(newHeight / lineHeight.current);
-
-                if (calculatedRows !== rows) {
+                if (calculatedRows > 0 && calculatedRows !== rows) {
                     setRows(calculatedRows);
                     localStorage.setItem(storageKey, calculatedRows.toString());
                 }

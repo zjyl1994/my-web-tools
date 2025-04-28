@@ -12,7 +12,7 @@ import { decode_oct_utf8, encode_gzip, decode_gzip } from './utils';
 const EncoderPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('','encoder');
 
-    const { rows, textareaRef } = useTextareaResize('encoder_rows', 20);
+    const { rows, textareaRef } = useTextareaResize('encoder', 20);
 
     return (
         <>

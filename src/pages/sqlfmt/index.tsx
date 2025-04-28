@@ -10,7 +10,7 @@ import { format } from 'sql-formatter';
 const SQLPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('', 'sql');
 
-    const { rows, textareaRef } = useTextareaResize('sqlfmt_rows', 20);
+    const { rows, textareaRef } = useTextareaResize('sql', 20);
 
 
     return (

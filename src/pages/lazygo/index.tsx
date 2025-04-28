@@ -12,7 +12,7 @@ import {
 const LazyGoPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('', 'lazygo');
 
-    const { rows, textareaRef } = useTextareaResize('lazygo_rows', 15);
+    const { rows, textareaRef } = useTextareaResize('lazygo', 15);
 
     return (
         <>

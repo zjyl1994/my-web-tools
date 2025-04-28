@@ -33,7 +33,7 @@ const TextProcPage: React.FC = () => {
     const valueLines = useMemo(() => value.split('\n').map((x: string) => x.trim()).filter((x: string) => x.length > 0), [value]);
     const valueLinesLength = useMemo(() => valueLines.map((x: string) => x.length), [valueLines]);
 
-    const { rows, textareaRef } = useTextareaResize('textproc_rows', 15);
+    const { rows, textareaRef } = useTextareaResize('textproc', 15);
 
     const memory_load = () => {
         if (confirm('是否使用存储区的内容替换当前内容?')) {
