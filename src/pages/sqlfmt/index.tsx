@@ -3,21 +3,25 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
-import { useBasic } from '@/hooks/use-basic';
+import { useBasic, useTextareaResize } from '@/hooks/use-basic';
 import { format } from 'sql-formatter';
 
 
 const SQLPage: React.FC = () => {
-    const { value, setValue, action, functionButtonGroup } = useBasic('','sql');
+    const { value, setValue, action, functionButtonGroup } = useBasic('', 'sql');
+
+    const { rows, textareaRef } = useTextareaResize('sqlfmt_rows', 20);
+
 
     return (
         <>
-            <Form.Control 
-                as="textarea" 
-                rows={20} 
-                spellCheck={false} 
-                value={value} 
-                onChange={e => setValue(e.target.value)} 
+            <Form.Control
+                as="textarea"
+                ref={textareaRef}
+                rows={rows}
+                spellCheck={false}
+                value={value}
+                onChange={e => setValue(e.target.value)}
                 className='scrollable-textarea textarea-font'
             />
 

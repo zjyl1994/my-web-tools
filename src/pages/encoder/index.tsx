@@ -5,18 +5,21 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 
 import { Base64 } from 'js-base64';
 
-import { useBasic } from '@/hooks/use-basic';
+import { useBasic,useTextareaResize } from '@/hooks/use-basic';
 
 import { decode_oct_utf8, encode_gzip, decode_gzip } from './utils';
 
 const EncoderPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('','encoder');
 
+    const { rows, textareaRef } = useTextareaResize('encoder_rows', 20);
+
     return (
         <>
             <Form.Control 
                 as="textarea" 
-                rows={20} 
+                ref={textareaRef}
+                rows={rows} 
                 spellCheck={false} 
                 value={value} 
                 onChange={e => setValue(e.target.value)} 

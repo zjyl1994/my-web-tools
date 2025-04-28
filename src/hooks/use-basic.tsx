@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { useHistoryState } from "@uidotdev/usehooks";
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -99,3 +99,46 @@ export const useBasic = (defaultValue: string, historyType: string) => {
 
     return { value, setValue, action, copy, paste, undo, redo, clearHistory, canUndo, canRedo, functionButtonGroup };
 }
+
+
+export const useTextareaResize = (storageKey: string, defaultRows: number) => {
+    const [rows, setRows] = useState(defaultRows);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const lineHeight = useRef(0);
+
+    useEffect(() => {
+        const savedRows = localStorage.getItem(storageKey);
+        if (savedRows) {
+            setRows(parseInt(savedRows, 10));
+        }
+
+        const observer = new ResizeObserver(entries => {
+            for (const entry of entries) {
+                const newHeight = entry.contentRect.height;
+                const calculatedRows = Math.round(newHeight / lineHeight.current);
+
+                if (calculatedRows !== rows) {
+                    setRows(calculatedRows);
+                    localStorage.setItem(storageKey, calculatedRows.toString());
+                }
+            }
+        });
+
+        if (textareaRef.current) {
+            // 获取实际行高
+            const style = window.getComputedStyle(textareaRef.current);
+            lineHeight.current = parseFloat(style.lineHeight) || 19;
+
+            observer.observe(textareaRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [storageKey, rows]);
+
+    const resetRows = () => {
+        setRows(defaultRows);
+        localStorage.removeItem(storageKey);
+    };
+
+    return { rows, textareaRef, resetRows };
+};

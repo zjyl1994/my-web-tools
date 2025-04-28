@@ -4,7 +4,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import { useState } from 'react';
 
-import { useBasic } from '@/hooks/use-basic';
+import { useBasic, useTextareaResize } from '@/hooks/use-basic';
 import JsonViewer from './components/jsonviewer.tsx';
 
 import {
@@ -18,11 +18,14 @@ const JsonPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('', 'json');
     const [showJsonViewer, setShowJsonViewer] = useState(false);
 
+    const { rows, textareaRef } = useTextareaResize('json_rows', 20);
+
     return (
         <>
             <Form.Control
+                ref={textareaRef}
                 as="textarea"
-                rows={20}
+                rows={rows}
                 spellCheck={false}
                 value={value}
                 onChange={e => setValue(e.target.value)}

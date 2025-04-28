@@ -6,22 +6,22 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Modal from 'react-bootstrap/Modal';
 
-import { useBasic } from '@/hooks/use-basic';
+import { useBasic, useTextareaResize } from '@/hooks/use-basic';
 import {
     split_by_comma, join_with_comma,
-    trim_line_space, remove_empty_line, split_by_blank, join_by_blank,sperate_with_blank_row,
-    add_quote, remove_quote,add_single_quote, remove_single_quote, uniq_line, shuffle_line,
+    trim_line_space, remove_empty_line, split_by_blank, join_by_blank, sperate_with_blank_row,
+    add_quote, remove_quote, add_single_quote, remove_single_quote, uniq_line, shuffle_line,
     add_comma_suffix, remove_comma_suffix,
     nums_average, nums_max, nums_min,
     sort_asc, sort_desc, sort_len_asc, sort_len_desc,
-    regex_filter_lines, regex_extract_lines, predefined_regex_list,text_replace,
-    to_upper_case,to_lower_case,to_camel_case,to_snake_case,to_kebab_case,to_const_case,
+    regex_filter_lines, regex_extract_lines, predefined_regex_list, text_replace,
+    to_upper_case, to_lower_case, to_camel_case, to_snake_case, to_kebab_case, to_const_case,
 } from './utils';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 const TextProcPage: React.FC = () => {
-    const { value, setValue, action, functionButtonGroup } = useBasic('','textproc');
+    const { value, setValue, action, functionButtonGroup } = useBasic('', 'textproc');
 
     const [regexValue, setRegexValue] = useState('');
     const [replaceSourceValue, setReplaceSourceValue] = useState('');
@@ -30,8 +30,10 @@ const TextProcPage: React.FC = () => {
     const [statisticsShow, setStatisticsShow] = useState(false);
     const handleStatisticsDialogClose = () => setStatisticsShow(false);
 
-const valueLines = useMemo(() => value.split('\n').map((x: string) => x.trim()).filter((x: string) => x.length > 0), [value]);
-const valueLinesLength = useMemo(() => valueLines.map((x: string) => x.length), [valueLines]);
+    const valueLines = useMemo(() => value.split('\n').map((x: string) => x.trim()).filter((x: string) => x.length > 0), [value]);
+    const valueLinesLength = useMemo(() => valueLines.map((x: string) => x.length), [valueLines]);
+
+    const { rows, textareaRef } = useTextareaResize('textproc_rows', 15);
 
     const memory_load = () => {
         if (confirm('是否使用存储区的内容替换当前内容?')) {
@@ -45,12 +47,13 @@ const valueLinesLength = useMemo(() => valueLines.map((x: string) => x.length), 
 
     return (
         <>
-            <Form.Control 
-                as="textarea" 
-                rows={15} 
-                spellCheck={false} 
-                value={value} 
-                onChange={e => setValue(e.target.value)} 
+            <Form.Control
+                as="textarea"
+                ref={textareaRef}
+                rows={rows} 
+                spellCheck={false}
+                value={value}
+                onChange={e => setValue(e.target.value)}
                 className='scrollable-textarea textarea-font'
             />
 
