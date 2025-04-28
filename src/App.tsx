@@ -16,6 +16,7 @@ import AboutPage from '@/pages/about';
 import LazyGoPage from '@/pages/lazygo';
 import PriceCalcPage from "./pages/pricecalc";
 import JwtPage from "./pages/jwt";
+import RemoveBgPage from "./pages/removebg";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -44,6 +45,7 @@ function App() {
                 <NavDropdown.Item as={Link} to="/lottery" active={Boolean(useMatch('/lottery'))} eventKey="lottery">彩票选号机</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/pricecalc" active={Boolean(useMatch('/pricecalc'))} eventKey="pricecalc">比价计算机</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/jwt" active={Boolean(useMatch('/jwt'))} eventKey="jwt">JWT 生成器</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/removebg" active={Boolean(useMatch('/removebg'))} eventKey="removebg">去底速刷</NavDropdown.Item>
               </NavDropdown>
             </Nav>
             <Nav.Link as={Link} to="/about" active={Boolean(useMatch('/about'))} eventKey="about">关于</Nav.Link>
@@ -64,6 +66,7 @@ function App() {
           <Route path="/lazygo" element={<LazyGoPage />} />
           <Route path="/pricecalc" element={<PriceCalcPage />} />
           <Route path="/jwt" element={<JwtPage />} />
+          <Route path="/removebg" element={<RemoveBgPage />} />
         </Routes>
       </Container>
       <ToastContainer />
