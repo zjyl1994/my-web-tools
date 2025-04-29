@@ -1,12 +1,15 @@
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import React, { useRef, useState } from 'react';
-import { performFloodFill } from './utils';
+import { performFloodFill, performLegncy } from './utils';
 
 const RemoveBgPage: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [backgroundColor, setBackgroundColor] = useState<string>('#ffffff'); // 默认颜色为白色
+    const [backgroundColor, setBackgroundColor] = useState<string>('#ffffff');
+    const [algorithm, setAlgorithm] = useState<string>('Flood Fill算法'); // 新增算法状态
 
     const handleOpenImage = () => {
         const input = document.createElement('input');
@@ -71,20 +74,25 @@ const RemoveBgPage: React.FC = () => {
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const [targetR, targetG, targetB] = hexToRgb(backgroundColor);
 
-                // 从四个角开始 Flood Fill
-                const corners = [
-                    [0, 0],  // 左上角
-                    [canvas.width - 1, 0],  // 右上角
-                    [0, canvas.height - 1],  // 左下角
-                    [canvas.width - 1, canvas.height - 1]  // 右下角
-                ];
+                if (algorithm === 'Flood Fill算法') {
+                    // 从四个角开始 Flood Fill
+                    const corners = [
+                        [0, 0],  // 左上角
+                        [canvas.width - 1, 0],  // 右上角
+                        [0, canvas.height - 1],  // 左下角
+                        [canvas.width - 1, canvas.height - 1]  // 右下角
+                    ];
 
-                corners.forEach(([x, y]) => {
-                    performFloodFill(imageData, canvas.width, canvas.height, targetR, targetG, targetB, 50, x, y);
-                });
+                    corners.forEach(([x, y]) => {
+                        performFloodFill(imageData, canvas.width, canvas.height, targetR, targetG, targetB, 50, x, y);
+                    });
+                } else {
+                    // 使用Legncy算法处理
+                    performLegncy(imageData, canvas.width, canvas.height, targetR, targetG, targetB, 50);
+                }
 
                 ctx.putImageData(imageData, 0, 0);
-                console.log("基于Flood Fill去除底色");
+                console.log(`基于${algorithm}去除底色`);
             }
         }
     };
@@ -123,11 +131,23 @@ const RemoveBgPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={handleSelectBackground}>指定底色</Button>
                     <Button variant="light" className="border" onClick={handleRemoveBackground}>去除底色</Button>
                     <Button variant="light" className="border" onClick={handleSaveImage}>保存图片</Button>
+
+                </ButtonGroup>
+                <ButtonGroup className="mt-2">
+                    <DropdownButton
+                        as={ButtonGroup}
+                        variant="light"
+                        className="border"
+                        title={algorithm}
+                        onSelect={(eventKey) => setAlgorithm(eventKey || 'Flood Fill算法')}
+                    >
+                        <Dropdown.Item eventKey="Flood Fill算法">Flood Fill算法</Dropdown.Item>
+                        <Dropdown.Item eventKey="Legncy算法">Legncy算法</Dropdown.Item>
+                    </DropdownButton>
                 </ButtonGroup>
             </ButtonToolbar>
         </>
     )
 }
-
 
 export default RemoveBgPage;

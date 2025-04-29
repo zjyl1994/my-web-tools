@@ -54,3 +54,33 @@ export const performFloodFill = (
         });
     }
 };
+
+export const performLegncy = (
+    imageData: ImageData,
+    width: number,
+    height: number,
+    targetR: number,
+    targetG: number,
+    targetB: number,
+    threshold: number
+) => {
+    const data = imageData.data;
+    
+    // 遍历所有像素点
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            const index = (y * width + x) * 4;
+            const r = data[index];
+            const g = data[index + 1];
+            const b = data[index + 2];
+            
+            // 计算颜色相似度
+            const diff = Math.abs(r - targetR) + Math.abs(g - targetG) + Math.abs(b - targetB);
+            
+            // 如果相似度低于阈值，则设为透明
+            if (diff < threshold) {
+                data[index + 3] = 0; // 设置alpha通道为0
+            }
+        }
+    }
+};
