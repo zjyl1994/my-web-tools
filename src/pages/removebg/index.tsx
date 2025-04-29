@@ -2,6 +2,7 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import React, { useRef, useState } from 'react';
+import { performFloodFill } from './utils';
 
 const RemoveBgPage: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -68,26 +69,9 @@ const RemoveBgPage: React.FC = () => {
             const ctx = canvas.getContext('2d');
             if (ctx) {
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const data = imageData.data;
                 const [targetR, targetG, targetB] = hexToRgb(backgroundColor);
-                const threshold = 50;
-                const visited = new Uint8Array(canvas.width * canvas.height);
-                const queue: number[] = [];
 
-                // 边界检查函数
-                const isValid = (x: number, y: number) => {
-                    return x >= 0 && x < canvas.width && y >= 0 && y < canvas.height;
-                };
-
-                // 颜色差异检查
-                const shouldRemove = (index: number) => {
-                    const r = data[index];
-                    const g = data[index + 1];
-                    const b = data[index + 2];
-                    return Math.abs(r - targetR) + Math.abs(g - targetG) + Math.abs(b - targetB) < threshold;
-                };
-
-                // 从四个角初始化种子点
+                // 从四个角开始 Flood Fill
                 const corners = [
                     [0, 0],  // 左上角
                     [canvas.width - 1, 0],  // 右上角
@@ -96,35 +80,8 @@ const RemoveBgPage: React.FC = () => {
                 ];
 
                 corners.forEach(([x, y]) => {
-                    const index = (y * canvas.width + x) * 4;
-                    if (!visited[index/4] && shouldRemove(index)) {
-                        queue.push(x, y);
-                        visited[index/4] = 1;
-                    }
+                    performFloodFill(imageData, canvas.width, canvas.height, targetR, targetG, targetB, 50, x, y);
                 });
-
-                // Flood Fill算法
-                while (queue.length > 0) {
-                    const x = queue.shift()!;
-                    const y = queue.shift()!;
-                    const index = (y * canvas.width + x) * 4;
-
-                    data[index + 3] = 0; // 设置透明
-
-                    // 检查四个方向
-                    const directions = [[1,0], [-1,0], [0,1], [0,-1]];
-                    directions.forEach(([dx, dy]) => {
-                        const nx = x + dx;
-                        const ny = y + dy;
-                        if (isValid(nx, ny)) {
-                            const nIndex = (ny * canvas.width + nx) * 4;
-                            if (!visited[ny * canvas.width + nx] && shouldRemove(nIndex)) {
-                                visited[ny * canvas.width + nx] = 1;
-                                queue.push(nx, ny);
-                            }
-                        }
-                    });
-                }
 
                 ctx.putImageData(imageData, 0, 0);
                 console.log("基于Flood Fill去除底色");
@@ -172,4 +129,5 @@ const RemoveBgPage: React.FC = () => {
     )
 }
 
-export default RemoveBgPage
+
+export default RemoveBgPage;
