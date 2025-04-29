@@ -25,29 +25,9 @@ const RemoveBgPage: React.FC = () => {
                                 canvas.width = img.width;
                                 canvas.height = img.height;
 
-                                // 创建棋盘格背景
-                                const patternCanvas = document.createElement('canvas');
-                                const patternCtx = patternCanvas.getContext('2d');
-                                if (patternCtx) {
-                                    patternCanvas.width = 20;
-                                    patternCanvas.height = 20;
-                                    patternCtx.fillStyle = '#e0e0e0';
-                                    patternCtx.fillRect(0, 0, 20, 20);
-                                    patternCtx.fillStyle = '#ffffff';
-                                    patternCtx.fillRect(0, 0, 10, 10);
-                                    patternCtx.fillRect(10, 10, 10, 10);
-                                    const pattern = ctx.createPattern(patternCanvas, 'repeat');
-                                    
-                                    // 先绘制棋盘格背景
-                                    if (pattern) {
-                                        ctx.fillStyle = pattern;
-                                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                                    }
-                                }
-                        
                                 // 再绘制图片
                                 ctx.drawImage(img, 0, 0);
-                                
+
                                 // 获取 (0,0) 坐标点的颜色
                                 const pixelData = ctx.getImageData(0, 0, 1, 1).data;
                                 const r = pixelData[0];
@@ -91,22 +71,22 @@ const RemoveBgPage: React.FC = () => {
                 const data = imageData.data;
                 const [targetR, targetG, targetB] = hexToRgb(backgroundColor);
                 const threshold = 50; // 颜色差异阈值
-    
+
                 for (let i = 0; i < data.length; i += 4) {
                     const r = data[i];
                     const g = data[i + 1];
                     const b = data[i + 2];
-                    
+
                     // 计算颜色差异（曼哈顿距离）
-                    const delta = Math.abs(r - targetR) + 
-                                 Math.abs(g - targetG) + 
-                                 Math.abs(b - targetB);
-                    
+                    const delta = Math.abs(r - targetR) +
+                        Math.abs(g - targetG) +
+                        Math.abs(b - targetB);
+
                     if (delta < threshold) {
                         data[i + 3] = 0; // 设置透明
                     }
                 }
-    
+
                 ctx.putImageData(imageData, 0, 0);
                 console.log("去除底色及相近颜色");
             }
@@ -134,9 +114,10 @@ const RemoveBgPage: React.FC = () => {
 
     return (
         <>
-            <canvas ref={canvasRef} style={{ 
-                border: '2px dashed #000',
-                background: 'transparent',  // 移除默认背景
+            <canvas ref={canvasRef} style={{
+                border: '1px solid #000',
+                backgroundImage: 'conic-gradient(#eee 0 25%, white 0 50%, #eee 0 75%, white 0)',
+                backgroundSize: '16px 16px',
                 width: '100%'
             }}></canvas>
 
