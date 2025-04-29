@@ -70,25 +70,64 @@ const RemoveBgPage: React.FC = () => {
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
                 const [targetR, targetG, targetB] = hexToRgb(backgroundColor);
-                const threshold = 50; // 颜色差异阈值
+                const threshold = 50;
+                const visited = new Uint8Array(canvas.width * canvas.height);
+                const queue: number[] = [];
 
-                for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
+                // 边界检查函数
+                const isValid = (x: number, y: number) => {
+                    return x >= 0 && x < canvas.width && y >= 0 && y < canvas.height;
+                };
 
-                    // 计算颜色差异（曼哈顿距离）
-                    const delta = Math.abs(r - targetR) +
-                        Math.abs(g - targetG) +
-                        Math.abs(b - targetB);
+                // 颜色差异检查
+                const shouldRemove = (index: number) => {
+                    const r = data[index];
+                    const g = data[index + 1];
+                    const b = data[index + 2];
+                    return Math.abs(r - targetR) + Math.abs(g - targetG) + Math.abs(b - targetB) < threshold;
+                };
 
-                    if (delta < threshold) {
-                        data[i + 3] = 0; // 设置透明
+                // 从四个角初始化种子点
+                const corners = [
+                    [0, 0],  // 左上角
+                    [canvas.width - 1, 0],  // 右上角
+                    [0, canvas.height - 1],  // 左下角
+                    [canvas.width - 1, canvas.height - 1]  // 右下角
+                ];
+
+                corners.forEach(([x, y]) => {
+                    const index = (y * canvas.width + x) * 4;
+                    if (!visited[index/4] && shouldRemove(index)) {
+                        queue.push(x, y);
+                        visited[index/4] = 1;
                     }
+                });
+
+                // Flood Fill算法
+                while (queue.length > 0) {
+                    const x = queue.shift()!;
+                    const y = queue.shift()!;
+                    const index = (y * canvas.width + x) * 4;
+
+                    data[index + 3] = 0; // 设置透明
+
+                    // 检查四个方向
+                    const directions = [[1,0], [-1,0], [0,1], [0,-1]];
+                    directions.forEach(([dx, dy]) => {
+                        const nx = x + dx;
+                        const ny = y + dy;
+                        if (isValid(nx, ny)) {
+                            const nIndex = (ny * canvas.width + nx) * 4;
+                            if (!visited[ny * canvas.width + nx] && shouldRemove(nIndex)) {
+                                visited[ny * canvas.width + nx] = 1;
+                                queue.push(nx, ny);
+                            }
+                        }
+                    });
                 }
 
                 ctx.putImageData(imageData, 0, 0);
-                console.log("去除底色及相近颜色");
+                console.log("基于Flood Fill去除底色");
             }
         }
     };
