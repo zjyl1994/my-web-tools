@@ -39,7 +39,6 @@ const RemoveBgPage: React.FC = () => {
                                 const b = pixelData[2];
                                 const hexColor = rgbToHex(r, g, b);
                                 setBackgroundColor(hexColor);
-                                console.log("设置背景色为:", hexColor);
                             }
                         }
                     };
@@ -61,7 +60,6 @@ const RemoveBgPage: React.FC = () => {
         input.value = backgroundColor;
         input.onchange = (event: any) => {
             setBackgroundColor(event.target.value);
-            console.log("选择的底色:", event.target.value);
         };
         input.click();
     };
@@ -74,7 +72,7 @@ const RemoveBgPage: React.FC = () => {
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const [targetR, targetG, targetB] = hexToRgb(backgroundColor);
 
-                if (algorithm === 'Flood Fill算法') {
+                if (algorithm === 'flood_fill') {
                     // 从四个角开始 Flood Fill
                     const corners = [
                         [0, 0],  // 左上角
@@ -92,7 +90,6 @@ const RemoveBgPage: React.FC = () => {
                 }
 
                 ctx.putImageData(imageData, 0, 0);
-                console.log(`基于${algorithm}去除底色`);
             }
         }
     };
@@ -111,7 +108,7 @@ const RemoveBgPage: React.FC = () => {
             const image = canvas.toDataURL("image/png");
             const link = document.createElement('a');
             link.href = image;
-            link.download = 'canvas-image.png';
+            link.download = 'removebg.png';
             link.click();
         }
     };
@@ -139,10 +136,10 @@ const RemoveBgPage: React.FC = () => {
                         variant="light"
                         className="border"
                         title={algorithm}
-                        onSelect={(eventKey) => setAlgorithm(eventKey || 'Flood Fill算法')}
+                        onSelect={(eventKey) => setAlgorithm(eventKey || 'flood_fill')}
                     >
-                        <Dropdown.Item eventKey="Flood Fill算法">Flood Fill算法</Dropdown.Item>
-                        <Dropdown.Item eventKey="Legncy算法">Legncy算法</Dropdown.Item>
+                        <Dropdown.Item eventKey="flood_fill">Flood Fill 算法</Dropdown.Item>
+                        <Dropdown.Item eventKey="legncy">Legncy 算法</Dropdown.Item>
                     </DropdownButton>
                 </ButtonGroup>
             </ButtonToolbar>
