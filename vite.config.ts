@@ -108,19 +108,7 @@ export default defineConfig({
                 ]
             },
             workbox: {
-                runtimeCaching: [
-                    {
-                        urlPattern: /\.(?:wasm)$/,
-                        handler: 'NetworkOnly',
-                        options: {
-                            cacheName: 'wasm-cache',
-                            expiration: {
-                                maxEntries: 1,
-                                maxAgeSeconds: 0, // 不缓存.wasm文件
-                            },
-                        },
-                    },
-                ],
+                globPatterns: ['**/*.{js,css,html,ico,png,svg}']
             },
         }),
     ],
@@ -133,6 +121,8 @@ export default defineConfig({
                             return 'vendor-sqlfmt';
                         } else if (id.includes('react')) {
                             return 'vendor-react';
+                        } else if (id.includes('onnxruntime')) {
+                            return 'vendor-onnxruntime';
                         } else if (id.includes('transformers')) {
                             return 'vendor-transformers';
                         } else {
