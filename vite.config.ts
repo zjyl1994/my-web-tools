@@ -132,5 +132,8 @@ export default defineConfig({
                 }
             }
         }
+    },
+    optimizeDeps: {
+      exclude: ['@huggingface/transformers'] // Prevent optimization of transformers.js
     }
 })

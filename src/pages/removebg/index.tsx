@@ -2,14 +2,15 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import React, { useRef, useEffect, useState } from 'react';
-import { AutoModel, AutoProcessor, RawImage, PreTrainedModel, Processor,env } from "@huggingface/transformers";
+import { pipeline, env, RawImage, BackgroundRemovalPipeline } from "@huggingface/transformers";
 
 env.allowLocalModels = false;
+if (env.backends.onnx.wasm?.proxy)
+    env.backends.onnx.wasm.proxy = true;
 
 const RemoveBgPage: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const modelRef = useRef<PreTrainedModel>(null);
-    const processorRef = useRef<Processor>(null);
+    const segmenterRef = useRef<BackgroundRemovalPipeline>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [statusText, setStatusText] = useState('Loading');
 
@@ -17,29 +18,7 @@ const RemoveBgPage: React.FC = () => {
         (async () => {
             try {
                 const model_id = "briaai/RMBG-1.4";
-                modelRef.current ??= await AutoModel.from_pretrained(model_id, {
-                    config: {
-                        model_type: "custom",
-                        is_encoder_decoder: false, // 假设默认值为 false，可根据实际情况调整
-                        max_position_embeddings: 0, // 假设默认值为 0，可根据实际情况调整
-                        'transformers.js_config': {}, // 假设为空对象，可根据实际情况调整
-                        normalized_config: {} // 假设为空对象，可根据实际情况调整
-                    },
-                });
-                processorRef.current ??= await AutoProcessor.from_pretrained(model_id, {
-                    config: {
-                        do_normalize: true,
-                        do_pad: false,
-                        do_rescale: true,
-                        do_resize: true,
-                        image_mean: [0.5, 0.5, 0.5],
-                        feature_extractor_type: "ImageFeatureExtractor",
-                        image_std: [1, 1, 1],
-                        resample: 2,
-                        rescale_factor: 0.00392156862745098,
-                        size: { width: 1024, height: 1024 },
-                    },
-                });
+                segmenterRef.current ??= await pipeline('background-removal', model_id);
             } catch (err) {
                 setStatusText(err instanceof Error ? err.message : String(err));
             }
@@ -81,30 +60,14 @@ const RemoveBgPage: React.FC = () => {
 
     const handleRemoveBackground = async () => {
         const canvas = canvasRef.current;
-        const model = modelRef.current;
-        const processor = processorRef.current;
-        if (canvas && model && processor) {
+        const segmenter = segmenterRef.current;
+        if (canvas && segmenter) {
             const ctx = canvas.getContext('2d');
             if (ctx) {
-                const img = RawImage.fromCanvas(canvas)
-                
+                const img = await RawImage.fromURL(canvas.toDataURL())
                 setStatusText("Analysing...")
-                const { pixel_values } = await processor(img);
-
-                const { output } = await model({ input: pixel_values });
-
-                const maskData = (
-                    await RawImage.fromTensor(output[0].mul(255).to("uint8")).resize(
-                        img.width,
-                        img.height,
-                    )
-                ).data;
-
-                const pixelData = ctx.getImageData(0, 0, img.width, img.height);
-                for (let i = 0; i < maskData.length; ++i) {
-                    pixelData.data[4 * i + 3] = maskData[i];
-                }
-                ctx.putImageData(pixelData, 0, 0);
+                const output = await segmenter(img);
+                ctx.putImageData(output[0].toCanvas(), 0, 0);
                 setStatusText("Done")
             }
         }
