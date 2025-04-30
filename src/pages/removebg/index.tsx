@@ -2,11 +2,9 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import React, { useRef, useEffect, useState } from 'react';
-import { pipeline, env, RawImage, BackgroundRemovalPipeline } from "@huggingface/transformers";
+import { pipeline, env, BackgroundRemovalPipeline, RawImage } from "@huggingface/transformers";
 
 env.allowLocalModels = false;
-if (env.backends.onnx.wasm?.proxy)
-    env.backends.onnx.wasm.proxy = true;
 
 const RemoveBgPage: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -18,7 +16,9 @@ const RemoveBgPage: React.FC = () => {
         (async () => {
             try {
                 const model_id = "briaai/RMBG-1.4";
-                segmenterRef.current ??= await pipeline('background-removal', model_id);
+                setStatusText("Loading model...");
+                const rmbgPipeline = await pipeline('background-removal', model_id, { device: "webgpu" });
+                segmenterRef.current = rmbgPipeline;
             } catch (err) {
                 setStatusText(err instanceof Error ? err.message : String(err));
             }
@@ -64,10 +64,10 @@ const RemoveBgPage: React.FC = () => {
         if (canvas && segmenter) {
             const ctx = canvas.getContext('2d');
             if (ctx) {
-                const img = await RawImage.fromURL(canvas.toDataURL())
-                setStatusText("Analysing...")
+                const img = RawImage.fromCanvas(canvas);
                 const output = await segmenter(img);
-                ctx.putImageData(output[0].toCanvas(), 0, 0);
+                ctx.clearRect(0, 0, img.width, img.height);
+                ctx.drawImage(output[0].toCanvas(), 0, 0);
                 setStatusText("Done")
             }
         }
@@ -88,8 +88,7 @@ const RemoveBgPage: React.FC = () => {
         <>
             <canvas ref={canvasRef} style={{
                 border: '1px solid #000',
-                backgroundImage: 'conic-gradient(#eee 0 25%, white 0 50%, #eee 0 75%, white 0)',
-                backgroundSize: '16px 16px',
+                backgroundImage: 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAGUExURb+/v////5nD/3QAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAUSURBVBjTYwABQSCglEENMxgYGAAynwRB8BEAgQAAAABJRU5ErkJggg==")',
                 maxWidth: '100%',
                 maxHeight: '400px',
             }}></canvas>
@@ -99,7 +98,7 @@ const RemoveBgPage: React.FC = () => {
             <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={handleOpenImage}>打开图片</Button>
-                    <Button variant="light" className="border" onClick={handleRemoveBackground}>去除底色</Button>
+                    <Button variant="light" className="border" onClick={handleRemoveBackground} disabled={!Boolean(segmenterRef.current)}>去除底色</Button>
                     <Button variant="light" className="border" onClick={handleSaveImage}>保存图片</Button>
                 </ButtonGroup>
             </ButtonToolbar>
