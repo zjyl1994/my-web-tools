@@ -1,7 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import Spinner from 'react-bootstrap/Spinner';
 import React, { useRef, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { pipeline, env, BackgroundRemovalPipeline, RawImage } from "@huggingface/transformers";
@@ -17,12 +16,15 @@ const RemoveBgPage: React.FC = () => {
         (async () => {
             try {
                 const model_id = "briaai/RMBG-1.4";
-                toast.info("模型加载中，可能较慢...", { autoClose: 3000 });
-                const rmbgPipeline = await pipeline('background-removal', model_id, { device: "auto" });
+                const rmbgPipeline = await toast.promise(pipeline('background-removal', model_id, { device: "auto" }),
+                    {
+                        pending: '端侧模型加载中，可能较慢...',
+                        success: '端侧模型加载成功',
+                        error: '端侧模型加载失败'
+                    });
                 segmenterRef.current = rmbgPipeline;
-                toast.success("模型加载成功", { autoClose: 3000 });
             } catch (err) {
-                toast.error(err instanceof Error ? err.message : String(err), { autoClose: 3000 });
+                console.error(err);
             } finally {
                 setIsLoading(false);
             }
@@ -69,11 +71,15 @@ const RemoveBgPage: React.FC = () => {
                 setIsLoading(true);
                 try {
                     const img = RawImage.fromCanvas(canvas);
-                    const output = await segmenter(img);
+                    const output = await toast.promise(segmenter(img), {
+                        pending: '处理中...',
+                        success: '处理完毕',
+                        error: '处理失败'
+                    });
                     ctx.clearRect(0, 0, img.width, img.height);
                     ctx.drawImage(output[0].toCanvas(), 0, 0);
                 } catch (err) {
-                    toast.error(err instanceof Error ? err.message : String(err), { autoClose: 3000 });
+                    console.error(err);
                 } finally {
                     setIsLoading(false);
                 }
@@ -100,7 +106,6 @@ const RemoveBgPage: React.FC = () => {
                 maxWidth: '100%',
                 maxHeight: '400px',
             }}></canvas>
-            <div>{isLoading && <Spinner animation="border" />}</div>
             <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={handleOpenImage}>打开图片</Button>
