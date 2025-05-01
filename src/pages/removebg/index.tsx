@@ -1,7 +1,9 @@
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Spinner from 'react-bootstrap/Spinner';
 import React, { useRef, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { pipeline, env, BackgroundRemovalPipeline, RawImage } from "@huggingface/transformers";
 
 env.allowLocalModels = false;
@@ -10,20 +12,20 @@ const RemoveBgPage: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const segmenterRef = useRef<BackgroundRemovalPipeline>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [statusText, setStatusText] = useState('Loading');
 
     useEffect(() => {
         (async () => {
             try {
                 const model_id = "briaai/RMBG-1.4";
-                setStatusText("Loading model...");
-                const rmbgPipeline = await pipeline('background-removal', model_id, { device: "webgpu" });
+                toast.info("模型加载中，可能较慢...", { autoClose: 3000 });
+                const rmbgPipeline = await pipeline('background-removal', model_id, { device: "auto" });
                 segmenterRef.current = rmbgPipeline;
+                toast.success("模型加载成功", { autoClose: 3000 });
             } catch (err) {
-                setStatusText(err instanceof Error ? err.message : String(err));
+                toast.error(err instanceof Error ? err.message : String(err), { autoClose: 3000 });
+            } finally {
+                setIsLoading(false);
             }
-            setIsLoading(false);
-            setStatusText("Ready");
         })();
     }, []);
 
@@ -64,11 +66,17 @@ const RemoveBgPage: React.FC = () => {
         if (canvas && segmenter) {
             const ctx = canvas.getContext('2d');
             if (ctx) {
-                const img = RawImage.fromCanvas(canvas);
-                const output = await segmenter(img);
-                ctx.clearRect(0, 0, img.width, img.height);
-                ctx.drawImage(output[0].toCanvas(), 0, 0);
-                setStatusText("Done")
+                setIsLoading(true);
+                try {
+                    const img = RawImage.fromCanvas(canvas);
+                    const output = await segmenter(img);
+                    ctx.clearRect(0, 0, img.width, img.height);
+                    ctx.drawImage(output[0].toCanvas(), 0, 0);
+                } catch (err) {
+                    toast.error(err instanceof Error ? err.message : String(err), { autoClose: 3000 });
+                } finally {
+                    setIsLoading(false);
+                }
             }
         }
     };
@@ -92,13 +100,11 @@ const RemoveBgPage: React.FC = () => {
                 maxWidth: '100%',
                 maxHeight: '400px',
             }}></canvas>
-
-            <div>Load: {isLoading ? 'loading' : 'finished'}</div>
-            <div>Status: {statusText}</div>
+            <div>{isLoading && <Spinner animation="border" />}</div>
             <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={handleOpenImage}>打开图片</Button>
-                    <Button variant="light" className="border" onClick={handleRemoveBackground} disabled={!Boolean(segmenterRef.current)}>去除底色</Button>
+                    <Button variant="light" className="border" onClick={handleRemoveBackground} disabled={isLoading || !Boolean(segmenterRef.current)}>去除背景</Button>
                     <Button variant="light" className="border" onClick={handleSaveImage}>保存图片</Button>
                 </ButtonGroup>
             </ButtonToolbar>
