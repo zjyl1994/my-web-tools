@@ -16,6 +16,7 @@ import {
     sort_asc, sort_desc, sort_len_asc, sort_len_desc,
     regex_filter_lines, regex_extract_lines, predefined_regex_list, text_replace,
     to_upper_case, to_lower_case, to_camel_case, to_snake_case, to_kebab_case, to_const_case,
+    space_to_tab
 } from './utils';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -45,12 +46,33 @@ const TextProcPage: React.FC = () => {
         toast.info('已保存到存储区', { autoClose: 3000 });
     }
 
+    const copy_as_table = () => {
+        const rows = value.split('\n').map(row => row.split('\t'));
+        const htmlTable = `
+        <table border="1" style="border-collapse:collapse;">
+        ${rows.map(row => `
+            <tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>
+        `).join('')}
+        </table>
+        `.trim();
+        const clipboardItem = new ClipboardItem({
+            'text/plain': new Blob([value], { type: 'text/plain' }),
+            'text/html': new Blob([htmlTable], { type: 'text/html' })
+        });
+
+        navigator.clipboard.write([clipboardItem]).then(() => {
+            toast.info('已复制表格内容到剪贴板！', { autoClose: 10000 });
+        }).catch((err) => {
+            toast.error(String(err), { autoClose: 10000 });
+        });
+    };
+
     return (
         <>
             <Form.Control
                 as="textarea"
                 ref={textareaRef}
-                rows={rows} 
+                rows={rows}
                 spellCheck={false}
                 value={value}
                 onChange={e => setValue(e.target.value)}
@@ -102,6 +124,10 @@ const TextProcPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(join_by_blank)} title="用空格合并所有行">空白合行</Button>
                     <Button variant="light" className="border" onClick={action(trim_line_space)} title="删除行两边的空白">去除两边空白</Button>
                     <Button variant="light" className="border" onClick={action(sperate_with_blank_row)} title="两行中间增加空行">空白隔行</Button>
+                </ButtonGroup>
+                <ButtonGroup className="me-2 mt-2">
+                    <Button variant="light" className="border" onClick={action(space_to_tab)} title="连续空白转为制表符">空白拆表</Button>
+                    <Button variant="light" className="border" onClick={copy_as_table} title="复制Tab分割为表格">复制表格</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(remove_empty_line)} title="删除只有空白没有内容的行">去除空行</Button>

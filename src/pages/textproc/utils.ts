@@ -37,6 +37,8 @@ export const to_snake_case = proc_lines(list => list.map(x => toSnakeCase(x)));
 export const to_kebab_case = proc_lines(list => list.map(x => toKebabCase(x)));
 export const to_const_case = proc_lines(list => list.map(x => toUpperCase(toSnakeCase(x))));
 
+export const space_to_tab = proc_lines(list => list.map(x => x.replace(/\s+/g, '\t')));
+
 export const regex_filter_lines = (regex: string, exclude: boolean) => (data: string) => {
     const re = new_regex_from_str(regex);
     return proc_lines(list => list.filter(x => re.test(x) !== exclude))(data);
