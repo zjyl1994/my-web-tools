@@ -109,6 +109,8 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
     const lineHeight = useRef(0);
     const currentRows = useRef(defaultRows);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+    const lastHeight = useRef(0);
+    const stableHeightCount = useRef(0);
 
     // 防抖函数
     const debounce = useCallback((func: () => void, delay: number) => {
@@ -133,10 +135,18 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
         const savedRows = localStorage.getItem(storageKey);
         if (savedRows) {
             const parsedRows = parseInt(savedRows, 10);
-            setRows(parsedRows);
-            currentRows.current = parsedRows;
+            // 应用最大行数限制
+            const maxRows = getMaxRows();
+            const finalRows = Math.min(parsedRows, maxRows);
+            setRows(finalRows);
+            currentRows.current = finalRows;
+            
+            // 如果应用了限制，更新localStorage中的值
+            if (finalRows !== parsedRows) {
+                localStorage.setItem(storageKey, finalRows.toString());
+            }
         }
-    }, [storageKey]);
+    }, [storageKey, getMaxRows]);
 
     // 设置ResizeObserver，只在组件挂载时执行一次
     useEffect(() => {
@@ -144,6 +154,28 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
             debounce(() => {
                 for (const entry of entries) {
                     const newHeight = entry.contentRect.height;
+                    
+                    // 防止触摸板等微小变化触发resize
+                    const heightDiff = Math.abs(newHeight - lastHeight.current);
+                    const minHeightChange = lineHeight.current * 0.5; // 至少半行高度的变化才认为是有效的
+                    
+                    if (heightDiff < minHeightChange) {
+                        return; // 忽略微小的高度变化
+                    }
+                    
+                    // 检查高度是否稳定（连续几次测量都是相同值）
+                    if (Math.abs(newHeight - lastHeight.current) < 2) {
+                        stableHeightCount.current++;
+                    } else {
+                        stableHeightCount.current = 0;
+                        lastHeight.current = newHeight;
+                    }
+                    
+                    // 只有高度稳定了至少2次测量才进行更新
+                    if (stableHeightCount.current < 2) {
+                        return;
+                    }
+                    
                     const calculatedRows = Math.round(newHeight / lineHeight.current);
                     
                     if (calculatedRows > 0 && calculatedRows !== currentRows.current) {
@@ -155,16 +187,21 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
                             currentRows.current = finalRows;
                             setRows(finalRows);
                             localStorage.setItem(storageKey, finalRows.toString());
+                            lastHeight.current = newHeight;
+                            stableHeightCount.current = 0; // 重置稳定计数
                         }
                     }
                 }
-            }, 100); // 100ms防抖延迟
+            }, 200); // 增加到200ms防抖延迟，减少触摸板误触
         });
 
         if (textareaRef.current) {
             // 获取实际行高
             const style = window.getComputedStyle(textareaRef.current);
             lineHeight.current = parseFloat(style.lineHeight) || 19;
+            
+            // 初始化当前高度
+            lastHeight.current = textareaRef.current.getBoundingClientRect().height;
 
             observer.observe(textareaRef.current);
         }
