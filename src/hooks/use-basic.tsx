@@ -108,6 +108,25 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const lineHeight = useRef(0);
     const currentRows = useRef(defaultRows);
+    const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+    // 防抖函数
+    const debounce = useCallback((func: () => void, delay: number) => {
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+        debounceTimer.current = setTimeout(func, delay);
+    }, []);
+
+    // 计算最大允许的行数（基于可视区高度）
+    const getMaxRows = useCallback(() => {
+        const viewportHeight = window.innerHeight;
+        // 预留一些空间给其他UI元素（如按钮、导航等），假设预留200px
+        const availableHeight = viewportHeight - 200;
+        const maxRows = Math.floor(availableHeight / lineHeight.current);
+        // 确保最大行数不少于默认行数
+        return Math.max(maxRows, defaultRows);
+    }, [defaultRows]);
 
     // 初始化时从localStorage加载保存的行数
     useEffect(() => {
@@ -122,15 +141,24 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
     // 设置ResizeObserver，只在组件挂载时执行一次
     useEffect(() => {
         const observer = new ResizeObserver(entries => {
-            for (const entry of entries) {
-                const newHeight = entry.contentRect.height;
-                const calculatedRows = Math.round(newHeight / lineHeight.current);
-                if (calculatedRows > 0 && calculatedRows !== currentRows.current) {
-                    currentRows.current = calculatedRows;
-                    setRows(calculatedRows);
-                    localStorage.setItem(storageKey, calculatedRows.toString());
+            debounce(() => {
+                for (const entry of entries) {
+                    const newHeight = entry.contentRect.height;
+                    const calculatedRows = Math.round(newHeight / lineHeight.current);
+                    
+                    if (calculatedRows > 0 && calculatedRows !== currentRows.current) {
+                        // 应用最大高度限制
+                        const maxRows = getMaxRows();
+                        const finalRows = Math.min(calculatedRows, maxRows);
+                        
+                        if (finalRows !== currentRows.current) {
+                            currentRows.current = finalRows;
+                            setRows(finalRows);
+                            localStorage.setItem(storageKey, finalRows.toString());
+                        }
+                    }
                 }
-            }
+            }, 100); // 100ms防抖延迟
         });
 
         if (textareaRef.current) {
@@ -141,8 +169,28 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
             observer.observe(textareaRef.current);
         }
 
-        return () => observer.disconnect();
-    }, [storageKey]); // 移除rows依赖，避免无限循环
+        // 监听窗口大小变化，重新计算最大行数
+        const handleResize = () => {
+            debounce(() => {
+                const maxRows = getMaxRows();
+                if (currentRows.current > maxRows) {
+                    currentRows.current = maxRows;
+                    setRows(maxRows);
+                    localStorage.setItem(storageKey, maxRows.toString());
+                }
+            }, 100);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('resize', handleResize);
+            if (debounceTimer.current) {
+                clearTimeout(debounceTimer.current);
+            }
+        };
+    }, [storageKey, debounce, getMaxRows]); // 移除rows依赖，避免无限循环
 
     // 同步currentRows.current与rows状态
     useEffect(() => {
