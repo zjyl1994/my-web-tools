@@ -107,18 +107,26 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
     const [rows, setRows] = useState(defaultRows);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const lineHeight = useRef(0);
+    const currentRows = useRef(defaultRows);
 
+    // 初始化时从localStorage加载保存的行数
     useEffect(() => {
         const savedRows = localStorage.getItem(storageKey);
         if (savedRows) {
-            setRows(parseInt(savedRows, 10));
+            const parsedRows = parseInt(savedRows, 10);
+            setRows(parsedRows);
+            currentRows.current = parsedRows;
         }
+    }, [storageKey]);
 
+    // 设置ResizeObserver，只在组件挂载时执行一次
+    useEffect(() => {
         const observer = new ResizeObserver(entries => {
             for (const entry of entries) {
                 const newHeight = entry.contentRect.height;
                 const calculatedRows = Math.round(newHeight / lineHeight.current);
-                if (calculatedRows > 0 && calculatedRows !== rows) {
+                if (calculatedRows > 0 && calculatedRows !== currentRows.current) {
+                    currentRows.current = calculatedRows;
                     setRows(calculatedRows);
                     localStorage.setItem(storageKey, calculatedRows.toString());
                 }
@@ -134,10 +142,16 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
         }
 
         return () => observer.disconnect();
-    }, [storageKey, rows]);
+    }, [storageKey]); // 移除rows依赖，避免无限循环
+
+    // 同步currentRows.current与rows状态
+    useEffect(() => {
+        currentRows.current = rows;
+    }, [rows]);
 
     const resetRows = () => {
         setRows(defaultRows);
+        currentRows.current = defaultRows;
         localStorage.removeItem(storageKey);
     };
 
