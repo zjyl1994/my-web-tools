@@ -19,15 +19,25 @@ import {
     space_to_tab,toggle_prefix,toggle_suffix,trim_different,
 } from './utils';
 import { useMemo, useState } from 'react';
+import { useInputHistory } from '@/hooks/use-input-history';
 import { toast } from 'react-toastify';
 
 const TextProcPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('', 'textproc');
 
     const [regexValue, setRegexValue] = useState('');
+    const { history: regexHistory, remember: rememberRegex, clear: clearRegexHistory } = useInputHistory('textproc.regex');
     const [replaceSourceValue, setReplaceSourceValue] = useState('');
     const [replaceDestinationValue, setReplaceDestinationValue] = useState('');
+    const { history: replaceFromHistory, remember: rememberReplaceFrom, clear: clearReplaceFrom } = useInputHistory('textproc.replace.from');
+    const { history: replaceToHistory, remember: rememberReplaceTo, clear: clearReplaceTo } = useInputHistory('textproc.replace.to');
     const [prefixSuffixValue, setPrefixSuffixValue] = useState('');
+    const { history: prefixSuffixHistory, remember: rememberPrefixSuffix, clear: clearPrefixSuffix } = useInputHistory('textproc.prefixSuffix');
+
+    const exec = (effect: (data: string) => (string | Promise<string>), remember?: () => void) => () => {
+        if (remember) remember();
+        action(effect)();
+    };
 
     const [statisticsShow, setStatisticsShow] = useState(false);
     const handleStatisticsDialogClose = () => setStatisticsShow(false);
@@ -91,24 +101,61 @@ const TextProcPage: React.FC = () => {
                         {predefined_regex_list.map(item => <Dropdown.Item onClick={() => setRegexValue(item.value)} key={item.key}>{item.key}</Dropdown.Item>)}
                     </Dropdown.Menu>
                 </Dropdown>
-
-                <Form.Control onChange={e => setRegexValue(e.target.value)} value={regexValue} spellCheck={false} />
-                <Button variant="light" className="border" onClick={action(regex_filter_lines(regexValue, false))} title="保留符合正则的行">包含</Button>
-                <Button variant="light" className="border" onClick={action(regex_filter_lines(regexValue, true))} title="删除符合正则的行">排除</Button>
-                <Button variant="light" className="border" onClick={action(regex_extract_lines(regexValue))} title="提取正则匹配到的组为 Excel 文本">提取</Button>
+                <Form.Control
+                    list="regex-history"
+                    onChange={e => setRegexValue(e.target.value)}
+                    value={regexValue}
+                    spellCheck={false}
+                />
+                <datalist id="regex-history">
+                    {[...new Set([...regexHistory, ...predefined_regex_list.map(i => i.value)])].map(v => (
+                        <option value={v} key={v} />
+                    ))}
+                </datalist>
+                <Button variant="light" className="border" onClick={exec(regex_filter_lines(regexValue, false), () => rememberRegex(regexValue))} title="保留符合正则的行">包含</Button>
+                <Button variant="light" className="border" onClick={exec(regex_filter_lines(regexValue, true), () => rememberRegex(regexValue))} title="删除符合正则的行">排除</Button>
+                <Button variant="light" className="border" onClick={exec(regex_extract_lines(regexValue), () => rememberRegex(regexValue))} title="提取正则匹配到的组为 Excel 文本">提取</Button>
 
             </InputGroup>
             <InputGroup className="mt-2">
-                <Form.Control onChange={e => setReplaceSourceValue(e.target.value)} spellCheck={false} />
+                <Form.Control
+                    list="replace-from-history"
+                    onChange={e => setReplaceSourceValue(e.target.value)}
+                    spellCheck={false}
+                />
+                <datalist id="replace-from-history">
+                    {replaceFromHistory.map(v => (<option value={v} key={v} />))}
+                </datalist>
                 <InputGroup.Text>替换为</InputGroup.Text>
-                <Form.Control onChange={e => setReplaceDestinationValue(e.target.value)} spellCheck={false} />
-                <Button variant="light" className="border" onClick={action(text_replace(replaceSourceValue, replaceDestinationValue))}>替换</Button>
+                <Form.Control
+                    list="replace-to-history"
+                    onChange={e => setReplaceDestinationValue(e.target.value)}
+                    spellCheck={false}
+                />
+                <datalist id="replace-to-history">
+                    {replaceToHistory.map(v => (<option value={v} key={v} />))}
+                </datalist>
+                <Button
+                    variant="light"
+                    className="border"
+                    onClick={exec(
+                        text_replace(replaceSourceValue, replaceDestinationValue),
+                        () => { rememberReplaceFrom(replaceSourceValue); rememberReplaceTo(replaceDestinationValue); }
+                    )}
+                >替换</Button>
             </InputGroup>
             <InputGroup className="mt-2">
                 <Button variant="light" className="border" title="移除公共前后缀" onClick={action(trim_different)}>智能剥离</Button>
-                <Form.Control onChange={e => setPrefixSuffixValue(e.target.value)} spellCheck={false} />
-                <Button variant="light" className="border" onClick={action(toggle_prefix(prefixSuffixValue))}>前缀</Button>
-                <Button variant="light" className="border" onClick={action(toggle_suffix(prefixSuffixValue))}>后缀</Button>
+                <Form.Control
+                    list="prefix-suffix-history"
+                    onChange={e => setPrefixSuffixValue(e.target.value)}
+                    spellCheck={false}
+                />
+                <datalist id="prefix-suffix-history">
+                    {prefixSuffixHistory.map(v => (<option value={v} key={v} />))}
+                </datalist>
+                <Button variant="light" className="border" onClick={exec(toggle_prefix(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>前缀</Button>
+                <Button variant="light" className="border" onClick={exec(toggle_suffix(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>后缀</Button>
             </InputGroup>
 
             <ButtonToolbar>
