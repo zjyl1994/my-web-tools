@@ -79,6 +79,9 @@ export const predefined_regex_list = [
 export const toggle_prefix = (prefix: string) => proc_lines(list => list.map(x => x.startsWith(prefix) ? x.slice(prefix.length) : prefix + x));
 export const toggle_suffix = (suffix: string) => proc_lines(list => list.map(x => x.endsWith(suffix) ? x.slice(0, x.length - suffix.length) : x + suffix));
 
+export const split_line_by = (delimiter: string) => (data: string) => data.replaceAll(delimiter, '\n');
+export const join_line_by = (delimiter: string) => (data: string) => data.replaceAll('\n', delimiter);
+
 // 计算多行的公共前缀
 export const common_prefix = (lines: string[]): string => {
     if (lines.length === 0) return '';

@@ -16,7 +16,7 @@ import {
     sort_asc, sort_desc, sort_len_asc, sort_len_desc,
     regex_filter_lines, regex_extract_lines, predefined_regex_list, text_replace,
     to_upper_case, to_lower_case, to_camel_case, to_snake_case, to_kebab_case, to_const_case,
-    space_to_tab,toggle_prefix,toggle_suffix,trim_different,
+    space_to_tab,toggle_prefix,toggle_suffix,trim_different,split_line_by,join_line_by,
 } from './utils';
 import { useMemo, useState } from 'react';
 import { useInputHistory } from '@/hooks/use-input-history';
@@ -156,6 +156,8 @@ const TextProcPage: React.FC = () => {
                 </datalist>
                 <Button variant="light" className="border" onClick={exec(toggle_prefix(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>前缀</Button>
                 <Button variant="light" className="border" onClick={exec(toggle_suffix(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>后缀</Button>
+                <Button variant="light" className="border" onClick={exec(split_line_by(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>切行</Button>
+                <Button variant="light" className="border" onClick={exec(join_line_by(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>合行</Button>
             </InputGroup>
 
             <ButtonToolbar>
