@@ -26,13 +26,13 @@ const TextProcPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('', 'textproc');
 
     const [regexValue, setRegexValue] = useState('');
-    const { history: regexHistory, remember: rememberRegex, clear: clearRegexHistory } = useInputHistory('textproc.regex');
+    const { history: regexHistory, remember: rememberRegex } = useInputHistory('textproc.regex');
     const [replaceSourceValue, setReplaceSourceValue] = useState('');
     const [replaceDestinationValue, setReplaceDestinationValue] = useState('');
-    const { history: replaceFromHistory, remember: rememberReplaceFrom, clear: clearReplaceFrom } = useInputHistory('textproc.replace.from');
-    const { history: replaceToHistory, remember: rememberReplaceTo, clear: clearReplaceTo } = useInputHistory('textproc.replace.to');
+    const { history: replaceFromHistory, remember: rememberReplaceFrom } = useInputHistory('textproc.replace.from');
+    const { history: replaceToHistory, remember: rememberReplaceTo } = useInputHistory('textproc.replace.to');
     const [prefixSuffixValue, setPrefixSuffixValue] = useState('');
-    const { history: prefixSuffixHistory, remember: rememberPrefixSuffix, clear: clearPrefixSuffix } = useInputHistory('textproc.prefixSuffix');
+    const { history: prefixSuffixHistory, remember: rememberPrefixSuffix } = useInputHistory('textproc.prefixSuffix');
 
     const exec = (effect: (data: string) => (string | Promise<string>), remember?: () => void) => () => {
         if (remember) remember();
