@@ -75,3 +75,63 @@ export const predefined_regex_list = [
     { key: "纯字母", value: "[a-zA-Z]+" },
     { key: "字母数字下划线", value: "\\w+" },
 ];
+
+export const toggle_prefix = (prefix: string) => proc_lines(list => list.map(x => x.startsWith(prefix) ? x.slice(prefix.length) : prefix + x));
+export const toggle_suffix = (suffix: string) => proc_lines(list => list.map(x => x.endsWith(suffix) ? x.slice(0, x.length - suffix.length) : x + suffix));
+
+// 计算多行的公共前缀
+export const common_prefix = (lines: string[]): string => {
+    if (lines.length === 0) return '';
+    let prefix = lines[0];
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        let j = 0;
+        while (j < prefix.length && j < line.length && prefix[j] === line[j]) {
+            j++;
+        }
+        prefix = prefix.slice(0, j);
+        if (prefix === '') break;
+    }
+    return prefix;
+};
+
+// 计算多行的公共后缀
+export const common_suffix = (lines: string[]): string => {
+    if (lines.length === 0) return '';
+    let suffix = lines[0];
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        let j = 0;
+        while (
+            j < suffix.length &&
+            j < line.length &&
+            suffix[suffix.length - 1 - j] === line[line.length - 1 - j]
+        ) {
+            j++;
+        }
+        suffix = j === 0 ? '' : suffix.slice(-j);
+        if (suffix === '') break;
+    }
+    return suffix;
+};
+
+export const trim_different = (data: string) => {
+    const lines = data.trim().split('\n');
+    if (lines.length === 0) return '';
+    const prefix = common_prefix(lines);
+    const suffix = common_suffix(lines);
+
+    // 移除公共前缀和后缀
+    const result = lines.map(line => {
+        let trimmed = line;
+        if (prefix.length > 0) {
+            trimmed = trimmed.slice(prefix.length);
+        }
+        if (suffix.length > 0) {
+            trimmed = trimmed.slice(0, -suffix.length);
+        }
+        return trimmed;
+    });
+
+    return result.join('\n');
+}
