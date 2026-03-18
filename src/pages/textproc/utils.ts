@@ -38,6 +38,70 @@ export const to_kebab_case = proc_lines(list => list.map(x => toKebabCase(x)));
 export const to_const_case = proc_lines(list => list.map(x => toUpperCase(toSnakeCase(x))));
 
 export const space_to_tab = proc_lines(list => list.map(x => x.replace(/\s+/g, '\t')));
+const csv_quote_state = (line: string, initialState = false) => {
+    let inQuotes = initialState;
+    for (let i = 0; i < line.length; i++) {
+        if (line[i] !== '"') {
+            continue;
+        }
+        if (inQuotes && line[i + 1] === '"') {
+            i += 1;
+            continue;
+        }
+        inQuotes = !inQuotes;
+    }
+    return inQuotes;
+};
+
+const csv_line_to_tab = (line: string) => {
+    const cells: string[] = [];
+    let cell = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+                cell += '"';
+                i += 1;
+            } else {
+                inQuotes = !inQuotes;
+            }
+            continue;
+        }
+        if (!inQuotes && ch === ',') {
+            cells.push(cell);
+            cell = '';
+            continue;
+        }
+        cell += ch;
+    }
+    cells.push(cell);
+    return cells.join('\t');
+};
+
+export const csv_comma_to_tab = proc_lines(lines => {
+    let merged = '';
+    let inQuotes = false;
+
+    const rows = lines.map(rawLine => {
+        const line = rawLine.replace(/\r$/, '');
+        merged = merged.length > 0 ? `${merged}\n${line}` : line;
+        inQuotes = csv_quote_state(line, inQuotes);
+        if (!inQuotes) {
+            const result = csv_line_to_tab(merged);
+            merged = '';
+            return result;
+        }
+        return null;
+    }).filter((x): x is string => x !== null);
+
+    if (merged.length > 0) {
+        rows.push(csv_line_to_tab(merged));
+    }
+
+    return rows;
+});
 
 export const regex_filter_lines = (regex: string, exclude: boolean) => (data: string) => {
     const re = new_regex_from_str(regex);

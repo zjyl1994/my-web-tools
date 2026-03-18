@@ -16,7 +16,7 @@ import {
     sort_asc, sort_desc, sort_len_asc, sort_len_desc,
     regex_filter_lines, regex_extract_lines, predefined_regex_list, text_replace,
     to_upper_case, to_lower_case, to_camel_case, to_snake_case, to_kebab_case, to_const_case,
-    space_to_tab,toggle_prefix,toggle_suffix,trim_different,split_line_by,join_line_by,
+    space_to_tab, csv_comma_to_tab,toggle_prefix,toggle_suffix,trim_different,split_line_by,join_line_by,
 } from './utils';
 import { useMemo, useState } from 'react';
 import { useInputHistory } from '@/hooks/use-input-history';
@@ -183,6 +183,7 @@ const TextProcPage: React.FC = () => {
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
                     <Button variant="light" className="border" onClick={action(space_to_tab)} title="连续空白转为制表符">空白拆表</Button>
+                    <Button variant="light" className="border" onClick={action(csv_comma_to_tab)} title="CSV逗号拆表">CSV逗号拆表</Button>
                     <Button variant="light" className="border" onClick={copy_as_table} title="复制Tab分割为表格">复制表格</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
