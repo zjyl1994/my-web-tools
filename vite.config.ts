@@ -6,6 +6,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    base: '/',
     resolve: {
         alias: {
             '@': '/src',
@@ -108,7 +109,8 @@ export default defineConfig({
                 ]
             },
             workbox: {
-                globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+                globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+                navigateFallbackDenylist: [/^\/assets\//, /\/[^/?]+\.(js|css|wasm)$/],
             },
         }),
     ],
