@@ -61,7 +61,7 @@ export const smart_process = (data: string) => {
             try { // 尝试gzip解压，如果能解开就解压，否则就直接使用文本
                 const decompressed = pako.ungzip(decodedB64, { to: 'string' });
                 x = decompressed;
-            } catch (e) {
+            } catch {
                 x = new TextDecoder().decode(decodedB64);
             }
         }
@@ -78,12 +78,12 @@ export const smart_process = (data: string) => {
         try { // 优先按照单行处理
             const parsed = proc_one_line(data);
             return LosslessJSON.stringify(parsed, null, 4)!;
-        } catch (e) { // 不行再尝试按照多行解析
+        } catch { // 不行再尝试按照多行解析
             const line_list = data.split('\n').map(x => x.trim()).filter(x => x.length > 0);
             const parsed_lines = line_list.map(x => proc_one_line(x));
             return LosslessJSON.stringify(parsed_lines, null, 4)!;
         }
-    } catch (e) {
+    } catch {
         throw new Error('智能处理失败，请手工处理');
     }
 };
@@ -103,7 +103,7 @@ function auto_single_quote(input: string): string {
 function extractJsonString(input: string): string | null {
     let jsonStart = -1;
     let jsonEnd = -1;
-    let stack: string[] = [];
+    const stack: string[] = [];
     const length = input.length;
 
     for (let i = 0; i < length; i++) {
@@ -182,7 +182,7 @@ export function is_json(str: string): boolean {
     try {
         const result = LosslessJSON.parse(str);
         return typeof result === "object"
-    } catch (e) {
+    } catch {
         return false;
     }
 }

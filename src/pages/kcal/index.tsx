@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import Form from 'react-bootstrap/Form';
+import { Form } from '@/components/ui';
 
 const KcalPage: React.FC = () => {
     const [totalWeight, setTotalWeight] = useState(100);

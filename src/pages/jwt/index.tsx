@@ -1,8 +1,5 @@
 import { useState, useMemo } from 'react';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import InputGroup from 'react-bootstrap/InputGroup';
-import { Eye, EyeSlash, Plus, Trash, Copy } from 'react-bootstrap-icons';
+import { Form, Button, InputGroup } from '@/components/ui';
 import { useCopy } from '@/hooks/use-basic';
 import { Base64 } from 'js-base64';
 import DateTime from 'react-datetime';
@@ -87,7 +84,7 @@ const JwtPage: React.FC = () => {
                         autoComplete='off'
                     />
                     <Button variant="light" className="border" onClick={toggleShowSecret}>
-                        {showSecret ? <EyeSlash /> : <Eye />}
+                        {showSecret ? '隐藏' : '显示'}
                     </Button>
                 </InputGroup>
             </Form.Group>
@@ -116,7 +113,7 @@ const JwtPage: React.FC = () => {
                         setExpiresAt(newDate);
                     }}
                     inputProps={{
-                        className: 'form-control',
+                        className: 'ui-control',
                         placeholder: '选择过期时间'
                     }}
                     timeFormat="HH:mm"
@@ -141,13 +138,13 @@ const JwtPage: React.FC = () => {
                                 onChange={e => updateField(index, field.key, e.target.value)}
                             />
                             <Button variant="danger" onClick={() => removeField(index)}>
-                                <Trash />
+                                删除
                             </Button>
                         </InputGroup>
                     ))}
                 </div>
                 <Button variant="light" className="border" onClick={addField}>
-                    <Plus /> 添加字段
+                    添加字段
                 </Button>
             </Form.Group>
 
@@ -162,7 +159,7 @@ const JwtPage: React.FC = () => {
                 />
             </Form.Group>
             <Button variant="light" className="border" onClick={copy}>
-                <Copy /> 复制
+                复制
             </Button>
         </>
     )

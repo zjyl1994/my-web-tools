@@ -1,6 +1,4 @@
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import { Button, ButtonGroup, ButtonToolbar } from '@/components/ui';
 import React, { useRef, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { pipeline, env, BackgroundRemovalPipeline, RawImage } from "@huggingface/transformers";

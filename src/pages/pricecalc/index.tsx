@@ -1,8 +1,4 @@
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
-import Table from 'react-bootstrap/Table';
+import { Button, ButtonGroup, Card, Form, Table } from '@/components/ui';
 import { useState, useMemo } from 'react';
 import { uniq } from 'lodash';
 

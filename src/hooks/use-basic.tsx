@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { useHistoryState } from "@uidotdev/usehooks";
 import { useHotkeys } from 'react-hotkeys-hook';
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import { Button, ButtonGroup } from '@/components/ui';
 
 const STORAGE_KEY_PREFIX = 'textarea_history_';
 const TEXTAREA_ROWS_KEY_PREFIX = 'textarea_rows_';
@@ -90,7 +89,7 @@ export const useBasic = (defaultValue: string, historyType: string) => {
     const functionButtonGroup = <ButtonGroup className="me-2 mt-2">
         <Button variant="light" className="border" onClick={copy}>复制</Button>
         <Button variant="light" className="border" onClick={paste}>粘贴</Button>
-        <Button variant="light" className="border" onClick={() => { setValue(''); clearHistory; }}>清空</Button>
+        <Button variant="light" className="border" onClick={() => { setValue(''); clearHistory(); }}>清空</Button>
         <Button variant="light" className="border" onClick={undo} disabled={!canUndo}>撤销</Button>
         <Button variant="light" className="border" onClick={redo} disabled={!canRedo}>重做</Button>
     </ButtonGroup>

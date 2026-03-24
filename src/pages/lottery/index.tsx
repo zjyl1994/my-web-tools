@@ -1,7 +1,4 @@
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
+import { Button, ButtonGroup, Card, ListGroup } from '@/components/ui';
 
 import { useBasic } from '@/hooks/use-basic';
 import { superLottoGen, markSixGen } from './utils.ts';
@@ -57,7 +54,7 @@ const LotteryGen: React.FC = () => {
                 <Card.Header>心仪号码列表</Card.Header>
                 <ListGroup variant="flush">
                     {codeList.map((item: string, index: number) =>
-                        <ListGroup.Item className="d-flex justify-content-between">
+                        <ListGroup.Item key={item} className="d-flex justify-content-between">
                             <div>{item} </div>
                             <button type="button" className="btn-close" onClick={deleteCode(index)}></button>
                         </ListGroup.Item>

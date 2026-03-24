@@ -4,16 +4,321 @@
     overflow-x: scroll;
 }
 
-body {
-    background-color: #fefefe;
-    background-image: url("/images/circuit.png");
-    background-repeat: repeat-x, repeat-x;
+html,
+body,
+#root {
+    min-height: 100%;
 }
 
-a.nav-link.active {
-    font-weight: bold;
+body {
+    margin: 0;
+    background-color: #fefefe;
+    background-image: url("/images/circuit.png");
+    background-repeat: repeat-x;
+    color: var(--ui-text);
 }
 
 .textarea-font {
     font-family: "Lucida Console", "Courier New", "Monaco", "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", monospace;
+}
+
+a {
+    color: inherit;
+}
+
+.app-shell-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 2px solid var(--ui-border);
+}
+
+.app-shell-header-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    min-height: 4rem;
+    padding: 0.75rem 0;
+}
+
+.app-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    color: var(--ui-text);
+    text-decoration: none;
+}
+
+.app-brand-label {
+    font-weight: 700;
+}
+
+.app-brand-label.is-active {
+    font-weight: 800;
+}
+
+.app-nav-toggle {
+    display: none;
+    margin-left: auto;
+    appearance: none;
+    min-height: 2.75rem;
+    padding: 0.625rem 0.95rem;
+    border: 1px solid var(--ui-border);
+    border-radius: 12px;
+    background: var(--ui-surface-strong);
+    color: var(--ui-text);
+    cursor: pointer;
+    font: inherit;
+}
+
+.app-nav-panel {
+    margin-left: auto;
+    flex: 1;
+}
+
+.app-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.app-nav-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.app-nav-section--end {
+    justify-content: flex-end;
+}
+
+.app-nav-link,
+.app-nav-trigger {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ui-text-muted);
+    cursor: pointer;
+    font: inherit;
+    text-decoration: none;
+    transition:
+        background-color 0.16s ease,
+        border-color 0.16s ease,
+        color 0.16s ease,
+        box-shadow 0.16s ease;
+}
+
+.app-nav-link:hover,
+.app-nav-link:focus-visible,
+.app-nav-trigger:hover,
+.app-nav-trigger:focus-visible {
+    background: var(--ui-surface-soft);
+    color: var(--ui-text);
+    outline: none;
+}
+
+.app-nav-link.is-active,
+.app-nav-trigger.is-active {
+    border-color: var(--ui-border);
+    background: var(--ui-surface-strong);
+    color: var(--ui-text);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.app-nav-caret {
+    font-size: 0.9em;
+}
+
+.app-nav-dropdown {
+    min-width: 13rem;
+}
+
+.app-nav-dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 0.8rem;
+    border-radius: 10px;
+    color: var(--ui-text);
+    cursor: pointer;
+    outline: none;
+}
+
+.app-nav-dropdown-item:hover,
+.app-nav-dropdown-item[data-highlighted] {
+    background: var(--ui-surface-soft);
+}
+
+.app-nav-dropdown-item.is-active {
+    background: rgba(29, 78, 216, 0.08);
+    color: #1e3a8a;
+    font-weight: 700;
+}
+
+.rdt {
+    width: 100%;
+}
+
+.rdt .ui-control {
+    width: 100%;
+}
+
+.mt-2 {
+    margin-top: 0.75rem;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+.mb-2 {
+    margin-bottom: 0.75rem;
+}
+
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+.me-2 {
+    margin-inline-end: 0.75rem;
+}
+
+.my-2 {
+    margin-block: 0.75rem;
+}
+
+.my-3 {
+    margin-block: 1rem;
+}
+
+.font-monospace {
+    font-family: "Lucida Console", "Courier New", "Monaco", "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", monospace;
+}
+
+.fs-1 {
+    font-size: clamp(2rem, 5vw, 2.6rem);
+    line-height: 1.1;
+}
+
+.fs-2 {
+    font-size: clamp(1.6rem, 4vw, 2rem);
+    line-height: 1.15;
+}
+
+.fs-5 {
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+.align-top {
+    vertical-align: top;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.border {
+    border: 1px solid var(--ui-border);
+}
+
+.border-bottom {
+    border-bottom: 1px solid var(--ui-border);
+}
+
+.border-2 {
+    border-bottom-width: 2px;
+}
+
+.link-dark {
+    color: var(--ui-text);
+}
+
+.btn-close {
+    appearance: none;
+    width: 1.9rem;
+    height: 1.9rem;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ui-text-muted);
+    cursor: pointer;
+    position: relative;
+    flex: none;
+}
+
+.btn-close::before,
+.btn-close::after {
+    content: "";
+    position: absolute;
+    inset: 0.45rem;
+    border-top: 1.8px solid currentColor;
+}
+
+.btn-close::before {
+    transform: rotate(45deg);
+}
+
+.btn-close::after {
+    transform: rotate(-45deg);
+}
+
+.btn-close:hover,
+.btn-close:focus-visible {
+    background: var(--ui-surface-soft);
+    color: var(--ui-text);
+    outline: none;
+}
+
+@media (max-width: 960px) {
+    .app-nav-toggle {
+        display: inline-flex;
+    }
+
+    .app-nav-panel {
+        display: none;
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .app-nav-panel.is-open {
+        display: block;
+    }
+
+    .app-nav {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .app-nav-section,
+    .app-nav-section--end {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .app-nav-link,
+    .app-nav-trigger {
+        width: 100%;
+        justify-content: space-between;
+    }
 }

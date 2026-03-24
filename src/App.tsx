@@ -1,9 +1,6 @@
-import { Suspense, lazy } from 'react';
-import { Routes, Route, Link, useMatch } from "react-router-dom";
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import { Menu } from '@base-ui/react/menu';
+import { Routes, Route, Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import FrontPage from '@/pages/frontpage';
 import JsonPage from '@/pages/json';
@@ -11,6 +8,7 @@ import EncoderPage from '@/pages/encoder';
 import KcalCalcPage from '@/pages/kcal';
 import TextProcPage from '@/pages/textproc';
 import AboutPage from '@/pages/about';
+import { Container } from '@/components/ui';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -22,37 +20,101 @@ const PriceCalcPage = lazy(() => import('./pages/pricecalc'));
 const JwtPage = lazy(() => import('./pages/jwt'));
 const RemoveBgPage = lazy(() => import('./pages/removebg'));
 
+const primaryLinks = [
+  { to: '/json', label: 'JSON' },
+  { to: '/encoder', label: '编解码' },
+  { to: '/textproc', label: '文本处理' },
+  { to: '/kcal', label: '大卡计算' },
+];
+
+const otherLinks = [
+  { to: '/code', label: '密码机' },
+  { to: '/lazygo', label: 'Go 生成器' },
+  { to: '/sqlfmt', label: 'SQL 格式化' },
+  { to: '/lottery', label: '彩票选号机' },
+  { to: '/pricecalc', label: '比价计算机' },
+  { to: '/jwt', label: 'JWT 生成器' },
+  { to: '/removebg', label: '去底速刷' },
+];
+
+const cn = (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(' ');
 
 function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [navOpen, setNavOpen] = useState(false);
+
+  useEffect(() => {
+    setNavOpen(false);
+  }, [location.pathname]);
+
+  const otherActive = useMemo(
+    () => otherLinks.some((item) => item.to === location.pathname),
+    [location.pathname],
+  );
+
   return (
     <>
-      <Navbar expand="lg" sticky="top" bg="light" collapseOnSelect className="border-bottom border-2">
+      <header className="app-shell-header">
         <Container>
-          <Navbar.Brand as={Link} to="/">
-            <img src="/images/android-chrome-192x192.png" width="30" height="30" className="d-inline-block align-top me-2" />
-            <span style={{ fontWeight: Boolean(useMatch('/')) ? "bold" : "normal" }}>鱼 sifu 工具包</span>
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link as={Link} to="/json" active={Boolean(useMatch('/json'))} eventKey="json">JSON</Nav.Link>
-              <Nav.Link as={Link} to="/encoder" active={Boolean(useMatch('/encoder'))} eventKey="encoder">编解码</Nav.Link>
-              <Nav.Link as={Link} to="/textproc" active={Boolean(useMatch('/textproc'))} eventKey="textproc">文本处理</Nav.Link>
-              <Nav.Link as={Link} to="/kcal" active={Boolean(useMatch('/kcal'))} eventKey="kcal">大卡计算</Nav.Link>
-              <NavDropdown title="其他" id="basic-nav-dropdown">
-                <NavDropdown.Item as={Link} to="/code" active={Boolean(useMatch('/code'))} eventKey="code">密码机</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/lazygo" active={Boolean(useMatch('/lazygo'))} eventKey="lazygo">Go 生成器</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/sqlfmt" active={Boolean(useMatch('/sqlfmt'))} eventKey="sqlfmt">SQL 格式化</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/lottery" active={Boolean(useMatch('/lottery'))} eventKey="lottery">彩票选号机</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/pricecalc" active={Boolean(useMatch('/pricecalc'))} eventKey="pricecalc">比价计算机</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/jwt" active={Boolean(useMatch('/jwt'))} eventKey="jwt">JWT 生成器</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/removebg" active={Boolean(useMatch('/removebg'))} eventKey="removebg">去底速刷</NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-            <Nav.Link as={Link} to="/about" active={Boolean(useMatch('/about'))} eventKey="about">关于</Nav.Link>
-          </Navbar.Collapse>
+          <div className="app-shell-header-row">
+            <Link className="app-brand" to="/">
+              <img src="/images/android-chrome-192x192.png" width="30" height="30" className="d-inline-block align-top me-2" />
+              <span className={cn('app-brand-label', location.pathname === '/' && 'is-active')}>鱼 sifu 工具包</span>
+            </Link>
+            <button
+              type="button"
+              className="app-nav-toggle"
+              aria-controls="app-nav-panel"
+              aria-expanded={navOpen}
+              onClick={() => setNavOpen((open) => !open)}
+            >
+              菜单
+            </button>
+            <div id="app-nav-panel" className={cn('app-nav-panel', navOpen && 'is-open')}>
+              <nav className="app-nav" aria-label="主导航">
+                <div className="app-nav-section">
+                  {primaryLinks.map((item) => (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      className={({ isActive }) => cn('app-nav-link', isActive && 'is-active')}
+                    >
+                      {item.label}
+                    </NavLink>
+                  ))}
+                  <Menu.Root modal={false}>
+                    <Menu.Trigger className={cn('app-nav-trigger', otherActive && 'is-active')}>
+                      其他
+                      <span className="app-nav-caret" aria-hidden="true">▾</span>
+                    </Menu.Trigger>
+                    <Menu.Portal>
+                      <Menu.Positioner align="start" sideOffset={8}>
+                        <Menu.Popup className="ui-dropdown-menu app-nav-dropdown">
+                          {otherLinks.map((item) => (
+                            <Menu.Item
+                              key={item.to}
+                              className={cn('app-nav-dropdown-item', location.pathname === item.to && 'is-active')}
+                              onClick={() => navigate(item.to)}
+                            >
+                              {item.label}
+                            </Menu.Item>
+                          ))}
+                        </Menu.Popup>
+                      </Menu.Positioner>
+                    </Menu.Portal>
+                  </Menu.Root>
+                </div>
+                <div className="app-nav-section app-nav-section--end">
+                  <NavLink to="/about" className={({ isActive }) => cn('app-nav-link', isActive && 'is-active')}>
+                    关于
+                  </NavLink>
+                </div>
+              </nav>
+            </div>
+          </div>
         </Container>
-      </Navbar>
+      </header>
       <Container className="my-3">
         <Routes>
           <Route path="/" element={<FrontPage />} />

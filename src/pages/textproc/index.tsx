@@ -1,10 +1,4 @@
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import InputGroup from 'react-bootstrap/InputGroup';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import Dropdown from 'react-bootstrap/Dropdown';
-import Modal from 'react-bootstrap/Modal';
+import { Form, Button, InputGroup, ButtonGroup, ButtonToolbar, Dropdown, Modal } from '@/components/ui';
 
 import { useBasic, useTextareaResize } from '@/hooks/use-basic';
 import {

@@ -1,5 +1,4 @@
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
+import { Modal, Form } from '@/components/ui';
 import JsonView from 'react18-json-view';
 import 'react18-json-view/src/style.css';
 import { useDebounce } from "@uidotdev/usehooks";

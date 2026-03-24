@@ -1,7 +1,4 @@
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
+import { Button, ButtonGroup, Card, Form } from '@/components/ui';
 
 import { useBasic } from '@/hooks/use-basic';
 import dayjs from 'dayjs';

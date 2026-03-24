@@ -1,5 +1,4 @@
-import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
+import { Card, Form } from '@/components/ui';
 import { useState } from 'react';
 
 const T9Gen: React.FC = () => {

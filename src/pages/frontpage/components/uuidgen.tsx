@@ -1,6 +1,4 @@
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Card from 'react-bootstrap/Card';
+import { Button, ButtonGroup, Card } from '@/components/ui';
 
 import { v4 as uuid } from 'uuid';
 

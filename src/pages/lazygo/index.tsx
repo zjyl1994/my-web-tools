@@ -1,7 +1,4 @@
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import { Form, Button, ButtonGroup, ButtonToolbar } from '@/components/ui';
 
 import { useBasic, useTextareaResize } from '@/hooks/use-basic';
 import {
