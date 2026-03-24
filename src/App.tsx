@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import { Dialog } from '@base-ui/react/dialog';
 import { Menu } from '@base-ui/react/menu';
 import { Routes, Route, Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
@@ -65,13 +66,18 @@ function App() {
             <button
               type="button"
               className="app-nav-toggle"
-              aria-controls="app-nav-panel"
+              aria-controls="app-mobile-drawer"
               aria-expanded={navOpen}
               onClick={() => setNavOpen((open) => !open)}
             >
-              菜单
+              <span className="app-nav-toggle-icon" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+              <span className="app-visually-hidden">菜单</span>
             </button>
-            <div id="app-nav-panel" className={cn('app-nav-panel', navOpen && 'is-open')}>
+            <div className="app-nav-panel">
               <nav className="app-nav" aria-label="主导航">
                 <div className="app-nav-section">
                   {primaryLinks.map((item) => (
@@ -115,6 +121,56 @@ function App() {
           </div>
         </Container>
       </header>
+      <Dialog.Root
+        open={navOpen}
+        onOpenChange={(open) => setNavOpen(open)}
+      >
+        <Dialog.Portal>
+          <div className="app-mobile-drawer-layer">
+            <Dialog.Backdrop className="app-mobile-drawer-backdrop" />
+            <Dialog.Popup id="app-mobile-drawer" className="app-mobile-drawer" aria-label="移动端导航">
+              <div className="app-mobile-drawer__header">
+                <div className="app-mobile-drawer__title">菜单</div>
+                <Dialog.Close className="ui-close-button" aria-label="关闭菜单">
+                  <span aria-hidden="true">×</span>
+                </Dialog.Close>
+              </div>
+              <div className="app-mobile-drawer__body">
+                <div className="app-mobile-drawer__section">
+                  <div className="app-mobile-drawer__section-title">常用</div>
+                  {primaryLinks.map((item) => (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      className={({ isActive }) => cn('app-mobile-drawer__link', isActive && 'is-active')}
+                    >
+                      {item.label}
+                    </NavLink>
+                  ))}
+                </div>
+                <div className="app-mobile-drawer__section">
+                  <div className="app-mobile-drawer__section-title">其他</div>
+                  {otherLinks.map((item) => (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      className={({ isActive }) => cn('app-mobile-drawer__link', isActive && 'is-active')}
+                    >
+                      {item.label}
+                    </NavLink>
+                  ))}
+                </div>
+                <div className="app-mobile-drawer__section">
+                  <div className="app-mobile-drawer__section-title">说明</div>
+                  <NavLink to="/about" className={({ isActive }) => cn('app-mobile-drawer__link', isActive && 'is-active')}>
+                    关于
+                  </NavLink>
+                </div>
+              </div>
+            </Dialog.Popup>
+          </div>
+        </Dialog.Portal>
+      </Dialog.Root>
       <Container className="app-shell-content">
         <Routes>
           <Route path="/" element={<FrontPage />} />
