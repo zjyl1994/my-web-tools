@@ -110,6 +110,7 @@ export default defineConfig({
             },
             workbox: {
                 globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+                globIgnores: ['**/assets/vendor-transformers-*.js', '**/assets/vendor-onnxruntime-*.js'],
                 navigateFallbackDenylist: [/^\/assets\//, /\/[^/?]+\.(js|css|wasm)$/],
             },
         }),

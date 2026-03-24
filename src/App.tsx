@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import { Routes, Route, Link, useMatch } from "react-router-dom";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -8,18 +9,18 @@ import FrontPage from '@/pages/frontpage';
 import JsonPage from '@/pages/json';
 import EncoderPage from '@/pages/encoder';
 import KcalCalcPage from '@/pages/kcal';
-import CodeCalcPage from '@/pages/code';
-import SQLFmtPage from '@/pages/sqlfmt';
 import TextProcPage from '@/pages/textproc';
-import LotteryPage from '@/pages/lottery';
 import AboutPage from '@/pages/about';
-import LazyGoPage from '@/pages/lazygo';
-import PriceCalcPage from "./pages/pricecalc";
-import JwtPage from "./pages/jwt";
-import RemoveBgPage from "./pages/removebg";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const CodeCalcPage = lazy(() => import('./pages/code'));
+const SQLFmtPage = lazy(() => import('./pages/sqlfmt'));
+const LotteryPage = lazy(() => import('./pages/lottery'));
+const LazyGoPage = lazy(() => import('./pages/lazygo'));
+const PriceCalcPage = lazy(() => import('./pages/pricecalc'));
+const JwtPage = lazy(() => import('./pages/jwt'));
+const RemoveBgPage = lazy(() => import('./pages/removebg'));
 
 
 function App() {
@@ -58,15 +59,15 @@ function App() {
           <Route path="/json" element={<JsonPage />} />
           <Route path="/encoder" element={<EncoderPage />} />
           <Route path="/kcal" element={<KcalCalcPage />} />
-          <Route path="/code" element={<CodeCalcPage />} />
-          <Route path="/sqlfmt" element={<SQLFmtPage />} />
+          <Route path="/code" element={<Suspense><CodeCalcPage /></Suspense>} />
+          <Route path="/sqlfmt" element={<Suspense><SQLFmtPage /></Suspense>} />
           <Route path="/textproc" element={<TextProcPage />} />
-          <Route path="/lottery" element={<LotteryPage />} />
+          <Route path="/lottery" element={<Suspense><LotteryPage /></Suspense>} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/lazygo" element={<LazyGoPage />} />
-          <Route path="/pricecalc" element={<PriceCalcPage />} />
-          <Route path="/jwt" element={<JwtPage />} />
-          <Route path="/removebg" element={<RemoveBgPage />} />
+          <Route path="/lazygo" element={<Suspense><LazyGoPage /></Suspense>} />
+          <Route path="/pricecalc" element={<Suspense><PriceCalcPage /></Suspense>} />
+          <Route path="/jwt" element={<Suspense><JwtPage /></Suspense>} />
+          <Route path="/removebg" element={<Suspense><RemoveBgPage /></Suspense>} />
         </Routes>
       </Container>
       <ToastContainer />
