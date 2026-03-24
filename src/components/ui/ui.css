@@ -12,6 +12,7 @@
   --ui-danger-soft: #fff1f2;
   --ui-radius: 14px;
   --ui-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+  --ui-button-row-gap: 0.34rem;
 }
 
 *,
@@ -41,14 +42,14 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
-  min-height: 2.75rem;
-  padding: 0.625rem 0.95rem;
+  min-height: 2.2rem;
+  padding: 0.42rem 0.78rem;
   border: 1px solid var(--ui-border);
-  border-radius: 12px;
+  border-radius: 10px;
   background: var(--ui-surface-strong);
   color: var(--ui-text);
   cursor: pointer;
-  line-height: 1.2;
+  line-height: 1.15;
   text-decoration: none;
   transition:
     background-color 0.16s ease,
@@ -83,8 +84,50 @@ textarea {
 .ui-button-group,
 .ui-button-toolbar {
   display: flex;
+  align-items: flex-start;
+}
+
+.ui-button-group {
+  flex-wrap: nowrap;
+  gap: 0;
+  max-width: 100%;
+}
+
+.ui-button-group > .ui-button {
+  border-radius: 0;
+  margin-left: -1px;
+}
+
+.ui-button-group > .ui-button:first-child {
+  margin-left: 0;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.ui-button-group > .ui-button:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.ui-button-group > .ui-button:focus-visible,
+.ui-button-group > .ui-button:hover:not(:disabled) {
+  position: relative;
+  z-index: 1;
+}
+
+.ui-button-toolbar {
   flex-wrap: wrap;
-  gap: 0.5rem;
+  column-gap: 0.5rem;
+  row-gap: var(--ui-button-row-gap);
+}
+
+.ui-button-toolbar + .ui-button-toolbar {
+  margin-top: var(--ui-button-row-gap);
+}
+
+.ui-button-toolbar > * {
+  margin-top: 0 !important;
+  margin-inline-end: 0 !important;
 }
 
 .ui-card {
@@ -96,13 +139,13 @@ textarea {
 }
 
 .ui-card__header {
-  padding: 0.95rem 1.1rem;
+  padding: 0.8rem 1rem;
   border-bottom: 1px solid var(--ui-border);
   font-weight: 700;
 }
 
 .ui-card__body {
-  padding: 1.1rem;
+  padding: 0.95rem 1rem;
 }
 
 .ui-card__title {
@@ -128,10 +171,10 @@ textarea {
 
 .ui-control {
   width: 100%;
-  min-height: 2.85rem;
-  padding: 0.7rem 0.85rem;
+  min-height: 2.35rem;
+  padding: 0.48rem 0.75rem;
   border: 1px solid var(--ui-border);
-  border-radius: 12px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.97);
   color: var(--ui-text);
   transition:
@@ -174,10 +217,10 @@ textarea.ui-control {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.85rem;
-  padding: 0.7rem 0.85rem;
+  min-height: 2.35rem;
+  padding: 0.48rem 0.75rem;
   border: 1px solid var(--ui-border);
-  border-radius: 12px;
+  border-radius: 10px;
   background: var(--ui-surface-soft);
   color: var(--ui-text-muted);
   white-space: nowrap;
@@ -239,7 +282,7 @@ textarea.ui-control {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 0.65rem 0.8rem;
+  padding: 0.5rem 0.72rem;
   border-radius: 10px;
   color: var(--ui-text);
   cursor: pointer;
@@ -356,5 +399,16 @@ textarea.ui-control {
 
   .ui-table {
     min-width: 420px;
+  }
+
+  .ui-button-group {
+    flex-wrap: wrap;
+    column-gap: 0.35rem;
+    row-gap: var(--ui-button-row-gap);
+  }
+
+  .ui-button-group > .ui-button {
+    margin-left: 0;
+    border-radius: 10px;
   }
 }

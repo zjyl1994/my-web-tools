@@ -115,7 +115,7 @@ function App() {
           </div>
         </Container>
       </header>
-      <Container className="my-3">
+      <Container className="app-shell-content">
         <Routes>
           <Route path="/" element={<FrontPage />} />
           <Route path="/json" element={<JsonPage />} />

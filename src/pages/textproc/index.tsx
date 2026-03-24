@@ -1,6 +1,9 @@
-import { Form, Button, InputGroup, ButtonGroup, ButtonToolbar, Dropdown, Modal } from '@/components/ui';
+import { useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 
+import { Form, Button, InputGroup, ButtonGroup, ButtonToolbar, Dropdown, Modal } from '@/components/ui';
 import { useBasic, useTextareaResize } from '@/hooks/use-basic';
+import { useInputHistory } from '@/hooks/use-input-history';
 import {
     split_by_comma, join_with_comma,
     trim_line_space, remove_empty_line, split_by_blank, join_by_blank, sperate_with_blank_row,
@@ -10,14 +13,16 @@ import {
     sort_asc, sort_desc, sort_len_asc, sort_len_desc,
     regex_filter_lines, regex_extract_lines, predefined_regex_list, text_replace,
     to_upper_case, to_lower_case, to_camel_case, to_snake_case, to_kebab_case, to_const_case,
-    space_to_tab, csv_comma_to_tab,toggle_prefix,toggle_suffix,trim_different,split_line_by,join_line_by,
+    space_to_tab, csv_comma_to_tab, toggle_prefix, toggle_suffix, trim_different, split_line_by, join_line_by,
 } from './utils';
-import { useMemo, useState } from 'react';
-import { useInputHistory } from '@/hooks/use-input-history';
-import { toast } from 'react-toastify';
 
 const TextProcPage: React.FC = () => {
-    const { value, setValue, action, functionButtonGroup } = useBasic('', 'textproc');
+    const {
+        value,
+        setValue,
+        action,
+        functionButtonGroup,
+    } = useBasic('', 'textproc');
 
     const [regexValue, setRegexValue] = useState('');
     const { history: regexHistory, remember: rememberRegex } = useInputHistory('textproc.regex');
@@ -28,28 +33,36 @@ const TextProcPage: React.FC = () => {
     const [prefixSuffixValue, setPrefixSuffixValue] = useState('');
     const { history: prefixSuffixHistory, remember: rememberPrefixSuffix } = useInputHistory('textproc.prefixSuffix');
 
+    const [statisticsShow, setStatisticsShow] = useState(false);
+    const [regexDialogShow, setRegexDialogShow] = useState(false);
+    const [replaceDialogShow, setReplaceDialogShow] = useState(false);
+    const [prefixSuffixDialogShow, setPrefixSuffixDialogShow] = useState(false);
+
     const exec = (effect: (data: string) => (string | Promise<string>), remember?: () => void) => () => {
-        if (remember) remember();
+        if (remember) {
+            remember();
+        }
         action(effect)();
     };
 
-    const [statisticsShow, setStatisticsShow] = useState(false);
-    const handleStatisticsDialogClose = () => setStatisticsShow(false);
-
-    const valueLines = useMemo(() => value.split('\n').map((x: string) => x.trim()).filter((x: string) => x.length > 0), [value]);
+    const valueLines = useMemo(
+        () => value.split('\n').map((x: string) => x.trim()).filter((x: string) => x.length > 0),
+        [value],
+    );
     const valueLinesLength = useMemo(() => valueLines.map((x: string) => x.length), [valueLines]);
 
     const { rows, textareaRef } = useTextareaResize('textproc', 15);
 
     const memory_load = () => {
         if (confirm('是否使用存储区的内容替换当前内容?')) {
-            setValue(localStorage.getItem("textproc_memory") ?? '');
+            setValue(localStorage.getItem('textproc_memory') ?? '');
         }
-    }
+    };
+
     const memory_save = () => {
-        localStorage.setItem("textproc_memory", value);
+        localStorage.setItem('textproc_memory', value);
         toast.info('已保存到存储区', { autoClose: 3000 });
-    }
+    };
 
     const copy_as_table = () => {
         const rows = value.split('\n').map(row => row.split('\t'));
@@ -62,7 +75,7 @@ const TextProcPage: React.FC = () => {
         `.trim();
         const clipboardItem = new ClipboardItem({
             'text/plain': new Blob([value], { type: 'text/plain' }),
-            'text/html': new Blob([htmlTable], { type: 'text/html' })
+            'text/html': new Blob([htmlTable], { type: 'text/html' }),
         });
 
         navigator.clipboard.write([clipboardItem]).then(() => {
@@ -81,78 +94,17 @@ const TextProcPage: React.FC = () => {
                 spellCheck={false}
                 value={value}
                 onChange={e => setValue(e.target.value)}
-                className='scrollable-textarea textarea-font'
+                className="scrollable-textarea textarea-font"
             />
 
             <ButtonToolbar>
                 {functionButtonGroup}
+                <ButtonGroup>
+                    <Button variant="light" className="border" onClick={() => setRegexDialogShow(true)}>正则</Button>
+                    <Button variant="light" className="border" onClick={() => setReplaceDialogShow(true)}>替换</Button>
+                    <Button variant="light" className="border" onClick={() => setPrefixSuffixDialogShow(true)}>前后缀</Button>
+                </ButtonGroup>
             </ButtonToolbar>
-
-            <InputGroup className="mt-2">
-                <Dropdown>
-                    <Dropdown.Toggle variant="light" className="border">正则表达式</Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        {predefined_regex_list.map(item => <Dropdown.Item onClick={() => setRegexValue(item.value)} key={item.key}>{item.key}</Dropdown.Item>)}
-                    </Dropdown.Menu>
-                </Dropdown>
-                <Form.Control
-                    list="regex-history"
-                    onChange={e => setRegexValue(e.target.value)}
-                    value={regexValue}
-                    spellCheck={false}
-                />
-                <datalist id="regex-history">
-                    {[...new Set([...regexHistory, ...predefined_regex_list.map(i => i.value)])].map(v => (
-                        <option value={v} key={v} />
-                    ))}
-                </datalist>
-                <Button variant="light" className="border" onClick={exec(regex_filter_lines(regexValue, false), () => rememberRegex(regexValue))} title="保留符合正则的行">包含</Button>
-                <Button variant="light" className="border" onClick={exec(regex_filter_lines(regexValue, true), () => rememberRegex(regexValue))} title="删除符合正则的行">排除</Button>
-                <Button variant="light" className="border" onClick={exec(regex_extract_lines(regexValue), () => rememberRegex(regexValue))} title="提取正则匹配到的组为 Excel 文本">提取</Button>
-
-            </InputGroup>
-            <InputGroup className="mt-2">
-                <Form.Control
-                    list="replace-from-history"
-                    onChange={e => setReplaceSourceValue(e.target.value)}
-                    spellCheck={false}
-                />
-                <datalist id="replace-from-history">
-                    {replaceFromHistory.map(v => (<option value={v} key={v} />))}
-                </datalist>
-                <InputGroup.Text>替换为</InputGroup.Text>
-                <Form.Control
-                    list="replace-to-history"
-                    onChange={e => setReplaceDestinationValue(e.target.value)}
-                    spellCheck={false}
-                />
-                <datalist id="replace-to-history">
-                    {replaceToHistory.map(v => (<option value={v} key={v} />))}
-                </datalist>
-                <Button
-                    variant="light"
-                    className="border"
-                    onClick={exec(
-                        text_replace(replaceSourceValue, replaceDestinationValue),
-                        () => { rememberReplaceFrom(replaceSourceValue); rememberReplaceTo(replaceDestinationValue); }
-                    )}
-                >替换</Button>
-            </InputGroup>
-            <InputGroup className="mt-2">
-                <Button variant="light" className="border" title="移除公共前后缀" onClick={action(trim_different)}>智能剥离</Button>
-                <Form.Control
-                    list="prefix-suffix-history"
-                    onChange={e => setPrefixSuffixValue(e.target.value)}
-                    spellCheck={false}
-                />
-                <datalist id="prefix-suffix-history">
-                    {prefixSuffixHistory.map(v => (<option value={v} key={v} />))}
-                </datalist>
-                <Button variant="light" className="border" onClick={exec(toggle_prefix(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>前缀</Button>
-                <Button variant="light" className="border" onClick={exec(toggle_suffix(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>后缀</Button>
-                <Button variant="light" className="border" onClick={exec(split_line_by(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>切行</Button>
-                <Button variant="light" className="border" onClick={exec(join_line_by(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>合行</Button>
-            </InputGroup>
 
             <ButtonToolbar>
                 <ButtonGroup className="me-2 mt-2">
@@ -210,7 +162,7 @@ const TextProcPage: React.FC = () => {
                 </ButtonGroup>
             </ButtonToolbar>
 
-            <Modal show={statisticsShow} onHide={handleStatisticsDialogClose} centered>
+            <Modal show={statisticsShow} onHide={() => setStatisticsShow(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>统计</Modal.Title>
                 </Modal.Header>
@@ -222,8 +174,132 @@ const TextProcPage: React.FC = () => {
                     <div>平均行长度 {nums_average(valueLinesLength).toFixed(2)}</div>
                 </Modal.Body>
             </Modal>
+
+            <Modal show={regexDialogShow} onHide={() => setRegexDialogShow(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>正则表达式</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group>
+                        <InputGroup>
+                            <Dropdown>
+                                <Dropdown.Toggle variant="light" className="border">预设</Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    {predefined_regex_list.map(item => (
+                                        <Dropdown.Item onClick={() => setRegexValue(item.value)} key={item.key}>
+                                            {item.key}
+                                        </Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <Form.Control
+                                list="regex-history"
+                                onChange={e => setRegexValue(e.target.value)}
+                                value={regexValue}
+                                spellCheck={false}
+                                placeholder="输入正则表达式"
+                            />
+                        </InputGroup>
+                        <datalist id="regex-history">
+                            {[...new Set([...regexHistory, ...predefined_regex_list.map(i => i.value)])].map(v => (
+                                <option value={v} key={v} />
+                            ))}
+                        </datalist>
+                    </Form.Group>
+                    <ButtonToolbar>
+                        <ButtonGroup>
+                            <Button variant="light" className="border" onClick={exec(regex_filter_lines(regexValue, false), () => rememberRegex(regexValue))} title="保留符合正则的行">包含</Button>
+                            <Button variant="light" className="border" onClick={exec(regex_filter_lines(regexValue, true), () => rememberRegex(regexValue))} title="删除符合正则的行">排除</Button>
+                            <Button variant="light" className="border" onClick={exec(regex_extract_lines(regexValue), () => rememberRegex(regexValue))} title="提取正则匹配到的组为 Excel 文本">提取</Button>
+                        </ButtonGroup>
+                    </ButtonToolbar>
+                </Modal.Body>
+            </Modal>
+
+            <Modal show={replaceDialogShow} onHide={() => setReplaceDialogShow(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>文本替换</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group>
+                        <Form.Label>查找内容</Form.Label>
+                        <Form.Control
+                            list="replace-from-history"
+                            value={replaceSourceValue}
+                            onChange={e => setReplaceSourceValue(e.target.value)}
+                            spellCheck={false}
+                            placeholder="输入待替换文本"
+                        />
+                        <datalist id="replace-from-history">
+                            {replaceFromHistory.map(v => (<option value={v} key={v} />))}
+                        </datalist>
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>替换为</Form.Label>
+                        <Form.Control
+                            list="replace-to-history"
+                            value={replaceDestinationValue}
+                            onChange={e => setReplaceDestinationValue(e.target.value)}
+                            spellCheck={false}
+                            placeholder="输入替换结果"
+                        />
+                        <datalist id="replace-to-history">
+                            {replaceToHistory.map(v => (<option value={v} key={v} />))}
+                        </datalist>
+                    </Form.Group>
+                    <ButtonToolbar>
+                        <ButtonGroup>
+                            <Button
+                                variant="light"
+                                className="border"
+                                onClick={exec(
+                                    text_replace(replaceSourceValue, replaceDestinationValue),
+                                    () => {
+                                        rememberReplaceFrom(replaceSourceValue);
+                                        rememberReplaceTo(replaceDestinationValue);
+                                    },
+                                )}
+                            >
+                                执行替换
+                            </Button>
+                        </ButtonGroup>
+                    </ButtonToolbar>
+                </Modal.Body>
+            </Modal>
+
+            <Modal show={prefixSuffixDialogShow} onHide={() => setPrefixSuffixDialogShow(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>前后缀与切合行</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group>
+                        <Form.Label>前后缀或分隔符</Form.Label>
+                        <Form.Control
+                            list="prefix-suffix-history"
+                            value={prefixSuffixValue}
+                            onChange={e => setPrefixSuffixValue(e.target.value)}
+                            spellCheck={false}
+                            placeholder="输入前后缀或分隔符"
+                        />
+                        <datalist id="prefix-suffix-history">
+                            {prefixSuffixHistory.map(v => (<option value={v} key={v} />))}
+                        </datalist>
+                    </Form.Group>
+                    <ButtonToolbar>
+                        <ButtonGroup>
+                            <Button variant="light" className="border" title="移除公共前后缀" onClick={action(trim_different)}>智能剥离</Button>
+                            <Button variant="light" className="border" onClick={exec(toggle_prefix(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>前缀</Button>
+                            <Button variant="light" className="border" onClick={exec(toggle_suffix(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>后缀</Button>
+                        </ButtonGroup>
+                        <ButtonGroup>
+                            <Button variant="light" className="border" onClick={exec(split_line_by(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>切行</Button>
+                            <Button variant="light" className="border" onClick={exec(join_line_by(prefixSuffixValue), () => rememberPrefixSuffix(prefixSuffixValue))}>合行</Button>
+                        </ButtonGroup>
+                    </ButtonToolbar>
+                </Modal.Body>
+            </Modal>
         </>
-    )
-}
+    );
+};
 
 export default TextProcPage;
