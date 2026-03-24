@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { Form, Button, InputGroup, ButtonGroup, ButtonToolbar, Modal } from '@/components/ui';
+import { Form, Button, InputGroup, ButtonGroup, ButtonToolbar, Modal, Dropdown } from '@/components/ui';
 import { useBasic, useTextareaResize } from '@/hooks/use-basic';
 import { useInputHistory } from '@/hooks/use-input-history';
 import {
@@ -120,65 +120,82 @@ const TextProcPage: React.FC = () => {
 
             <ButtonToolbar>
                 {functionButtonGroup}
-                <ButtonGroup>
-                    <Button variant="light" className="border" onClick={() => setRegexDialogShow(true)}>正则</Button>
-                    <Button variant="light" className="border" onClick={() => setReplaceDialogShow(true)}>替换</Button>
-                    <Button variant="light" className="border" onClick={() => setAffixDialogShow(true)}>前后缀</Button>
-                    <Button variant="light" className="border" onClick={() => setSplitJoinDialogShow(true)}>切行/合行</Button>
-                </ButtonGroup>
             </ButtonToolbar>
 
             <ButtonToolbar>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(split_by_comma)} title="根据逗号切割成好多行">逗号切行</Button>
-                    <Button variant="light" className="border" onClick={action(join_with_comma)} title="逗号分隔合并所有行">逗号合行</Button>
+                <ButtonGroup>
+                    <Dropdown>
+                        <Dropdown.Toggle className="border">切分 / 合并 ▾</Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => setSplitJoinDialogShow(true)} title="自定义分隔符切行或合行">自定义切合行</Dropdown.Item>
+                            <Dropdown.Item onClick={action(split_by_comma)} title="根据逗号切割成好多行">逗号切行</Dropdown.Item>
+                            <Dropdown.Item onClick={action(join_with_comma)} title="逗号分隔合并所有行">逗号合行</Dropdown.Item>
+                            <Dropdown.Item onClick={action(split_by_blank)} title="根据空白切割成好多行">空白切行</Dropdown.Item>
+                            <Dropdown.Item onClick={action(join_by_blank)} title="用空格合并所有行">空白合行</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Dropdown>
+                        <Dropdown.Toggle className="border">符号 / 前后缀 ▾</Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => setAffixDialogShow(true)} title="智能检测、自定义前后缀">自定义前后缀</Dropdown.Item>
+                            <Dropdown.Item onClick={action(remove_quote)} title="行两边删除双引号">去双引号</Dropdown.Item>
+                            <Dropdown.Item onClick={action(add_quote)} title="行两边添加双引号">加双引号</Dropdown.Item>
+                            <Dropdown.Item onClick={action(remove_single_quote)} title="行两边删除单引号">去单引号</Dropdown.Item>
+                            <Dropdown.Item onClick={action(add_single_quote)} title="行两边添加单引号">加单引号</Dropdown.Item>
+                            <Dropdown.Item onClick={action(add_comma_suffix)} title="行尾追加逗号">行尾加逗号</Dropdown.Item>
+                            <Dropdown.Item onClick={action(remove_comma_suffix)} title="行尾删除逗号">行尾去逗号</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Dropdown>
+                        <Dropdown.Toggle className="border">空白处理 ▾</Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={action(trim_line_space)} title="删除行两边的空白">去除两边空白</Dropdown.Item>
+                            <Dropdown.Item onClick={action(sperate_with_blank_row)} title="两行中间增加空行">空白隔行</Dropdown.Item>
+                            <Dropdown.Item onClick={action(remove_empty_line)} title="删除只有空白没有内容的行">去除空行</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Dropdown>
+                        <Dropdown.Toggle className="border">表格处理 ▾</Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={action(space_to_tab)} title="连续空白转为制表符">空白拆表</Dropdown.Item>
+                            <Dropdown.Item onClick={action(csv_comma_to_tab)} title="CSV逗号拆表">CSV逗号拆表</Dropdown.Item>
+                            <Dropdown.Item onClick={copy_as_table} title="复制Tab分割为表格">复制表格</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Dropdown>
+                        <Dropdown.Toggle className="border">排序操作 ▾</Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={action(sort_asc)} title="a在前z在后">字典升序排序</Dropdown.Item>
+                            <Dropdown.Item onClick={action(sort_desc)} title="z在前a在后">字典降序排序</Dropdown.Item>
+                            <Dropdown.Item onClick={action(sort_len_asc)} title="短在前长在后">长度升序排序</Dropdown.Item>
+                            <Dropdown.Item onClick={action(sort_len_desc)} title="长在前短在后">长度降序排序</Dropdown.Item>
+                            <Dropdown.Item onClick={action(shuffle_line)} title="随机洗牌打乱所有行的顺序">随机排序</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Dropdown>
+                        <Dropdown.Toggle className="border">大小写转换 ▾</Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={action(to_upper_case)} title="UPPER CASE">大写</Dropdown.Item>
+                            <Dropdown.Item onClick={action(to_lower_case)} title="lower case">小写</Dropdown.Item>
+                            <Dropdown.Item onClick={action(to_camel_case)} title="camelCase">驼峰</Dropdown.Item>
+                            <Dropdown.Item onClick={action(to_snake_case)} title="snake_case">蛇形</Dropdown.Item>
+                            <Dropdown.Item onClick={action(to_kebab_case)} title="kebab-case">烤串</Dropdown.Item>
+                            <Dropdown.Item onClick={action(to_const_case)} title="CONST_CASE">大蛇</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(remove_quote)} title="行两边删除双引号">去双引号</Button>
-                    <Button variant="light" className="border" onClick={action(add_quote)} title="行两边添加双引号">加双引号</Button>
-                    <Button variant="light" className="border" onClick={action(remove_single_quote)} title="行两边删除单引号">去单引号</Button>
-                    <Button variant="light" className="border" onClick={action(add_single_quote)} title="行两边添加单引号">加单引号</Button>
+            </ButtonToolbar>
+
+            <ButtonToolbar className="mt-2">
+                <ButtonGroup className="me-2">
+                    <Button variant="light" className="border" onClick={() => setRegexDialogShow(true)}>正则</Button>
+                    <Button variant="light" className="border" onClick={() => setReplaceDialogShow(true)}>替换</Button>
                 </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(add_comma_suffix)} title="行尾追加逗号">行尾加逗号</Button>
-                    <Button variant="light" className="border" onClick={action(remove_comma_suffix)} title="行尾删除逗号">行尾去逗号</Button>
-                </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(split_by_blank)} title="根据空白切割成好多行">空白切行</Button>
-                    <Button variant="light" className="border" onClick={action(join_by_blank)} title="用空格合并所有行">空白合行</Button>
-                    <Button variant="light" className="border" onClick={action(trim_line_space)} title="删除行两边的空白">去除两边空白</Button>
-                    <Button variant="light" className="border" onClick={action(sperate_with_blank_row)} title="两行中间增加空行">空白隔行</Button>
-                </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(space_to_tab)} title="连续空白转为制表符">空白拆表</Button>
-                    <Button variant="light" className="border" onClick={action(csv_comma_to_tab)} title="CSV逗号拆表">CSV逗号拆表</Button>
-                    <Button variant="light" className="border" onClick={copy_as_table} title="复制Tab分割为表格">复制表格</Button>
-                </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(remove_empty_line)} title="删除只有空白没有内容的行">去除空行</Button>
+                <ButtonGroup className="me-2">
                     <Button variant="light" className="border" onClick={action(uniq_line)} title="删除重复的行">去除重复行</Button>
-                </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(sort_asc)} title="a在前z在后">字典升序排序</Button>
-                    <Button variant="light" className="border" onClick={action(sort_desc)} title="z在前a在后">字典降序排序</Button>
-                </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(to_upper_case)} title="UPPER CASE">大写</Button>
-                    <Button variant="light" className="border" onClick={action(to_lower_case)} title="lower case">小写</Button>
-                    <Button variant="light" className="border" onClick={action(to_camel_case)} title="camelCase">驼峰</Button>
-                    <Button variant="light" className="border" onClick={action(to_snake_case)} title="snake_case">蛇形</Button>
-                    <Button variant="light" className="border" onClick={action(to_kebab_case)} title="kebab-case">烤串</Button>
-                    <Button variant="light" className="border" onClick={action(to_const_case)} title="CONST_CASE">大蛇</Button>
-                </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(sort_len_asc)} title="短在前长在后">长度升序排序</Button>
-                    <Button variant="light" className="border" onClick={action(sort_len_desc)} title="长在前短在后">长度降序排序</Button>
-                </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(shuffle_line)} title="随机洗牌打乱所有行的顺序">随机排序</Button>
                     <Button variant="light" className="border" onClick={() => setStatisticsShow(true)} title="行平均长度等信息">行统计</Button>
                 </ButtonGroup>
-                <ButtonGroup className="me-2 mt-2">
+                <ButtonGroup className="me-2">
                     <Button variant="light" className="border" onClick={memory_save} title="暂存当前结果">记忆存</Button>
                     <Button variant="light" className="border" onClick={memory_load} title="拿出存的结果">记忆取</Button>
                 </ButtonGroup>
