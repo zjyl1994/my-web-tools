@@ -20,6 +20,7 @@ const LazyGoPage = lazy(() => import('./pages/lazygo'));
 const PriceCalcPage = lazy(() => import('./pages/pricecalc'));
 const JwtPage = lazy(() => import('./pages/jwt'));
 const RemoveBgPage = lazy(() => import('./pages/removebg'));
+const BarcodePage = lazy(() => import('./pages/barcode'));
 
 const primaryLinks = [
   { to: '/json', label: 'JSON' },
@@ -36,6 +37,7 @@ const otherLinks = [
   { to: '/pricecalc', label: '比价计算机' },
   { to: '/jwt', label: 'JWT 生成器' },
   { to: '/removebg', label: '去底速刷' },
+  { to: '/qrcode', label: '二维码生成' },
 ];
 
 const cn = (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(' ');
@@ -186,6 +188,7 @@ function App() {
           <Route path="/pricecalc" element={<Suspense><PriceCalcPage /></Suspense>} />
           <Route path="/jwt" element={<Suspense><JwtPage /></Suspense>} />
           <Route path="/removebg" element={<Suspense><RemoveBgPage /></Suspense>} />
+          <Route path="/qrcode" element={<Suspense><BarcodePage /></Suspense>} />
         </Routes>
       </Container>
       <ToastContainer />

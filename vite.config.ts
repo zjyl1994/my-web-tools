@@ -122,6 +122,8 @@ export default defineConfig({
                     if (id.includes('node_modules')) {
                         if (id.includes('sql-formatter')) {
                             return 'vendor-sqlfmt';
+                        } else if (id.includes('/qrcode/') || id.includes('node_modules/qrcode')) {
+                            return 'vendor-qrcode';
                         } else if (id.includes('react')) {
                             return 'vendor-react';
                         } else if (id.includes('onnxruntime')) {
