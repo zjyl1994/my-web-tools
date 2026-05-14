@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
+import QRCode from 'qrcode';
 import { Button, ButtonGroup, ButtonToolbar, Card, Form, InputGroup } from '@/components/ui';
 import { useCopy } from '@/hooks/use-basic';
 
 type QRTemplate = 'text' | 'url' | 'wifi' | 'vcard' | 'phone' | 'sms' | 'email';
 type QRErrorLevel = 'L' | 'M' | 'Q' | 'H';
-type QRCodeModule = typeof import('qrcode');
 
 type QRTemplateState = {
     text: { content: string };
@@ -57,8 +57,6 @@ const defaultTemplateState: QRTemplateState = {
     email: { to: 'demo@example.com', subject: 'Hello', body: 'Hi there' },
 };
 
-const loadQRCodeModule = () => import('qrcode');
-
 const BarcodePage: React.FC = () => {
     const [template, setTemplate] = useState<QRTemplate>('text');
     const [templateState, setTemplateState] = useState<QRTemplateState>(defaultTemplateState);
@@ -95,14 +93,9 @@ const BarcodePage: React.FC = () => {
             const safeWidth = getSafeWidth(width);
 
             try {
-                const qrCode = await loadQRCodeModule();
-                if (cancelled) {
-                    return;
-                }
-
                 const [pngDataUrl, svgText] = await Promise.all([
-                    renderQRCodePng(qrCode, text, safeWidth, errorLevel),
-                    renderQRCodeSvg(qrCode, text, safeWidth, errorLevel),
+                    renderQRCodePng(text, safeWidth, errorLevel),
+                    renderQRCodeSvg(text, safeWidth, errorLevel),
                 ]);
 
                 if (cancelled) {
@@ -509,12 +502,11 @@ const BarcodePage: React.FC = () => {
 };
 
 const renderQRCodePng = async (
-    qrCode: QRCodeModule,
     text: string,
     width: number,
     errorCorrectionLevel: QRErrorLevel,
 ) => {
-    return qrCode.toDataURL(text, {
+    return QRCode.toDataURL(text, {
         width,
         margin: 1,
         errorCorrectionLevel,
@@ -526,12 +518,11 @@ const renderQRCodePng = async (
 };
 
 const renderQRCodeSvg = async (
-    qrCode: QRCodeModule,
     text: string,
     width: number,
     errorCorrectionLevel: QRErrorLevel,
 ) => {
-    return qrCode.toString(text, {
+    return QRCode.toString(text, {
         type: 'svg',
         width,
         margin: 1,

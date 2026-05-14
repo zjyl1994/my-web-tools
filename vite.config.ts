@@ -4,6 +4,57 @@ import { VitePWA } from 'vite-plugin-pwa';
 import fs from 'fs';
 import path from 'path';
 
+const foldedLazyPages = new Set([
+    'lazygo',
+    'sqlfmt',
+    'lottery',
+    'pricecalc',
+    'jwt',
+    'removebg',
+    'barcode',
+]);
+
+const shortcutPages = new Set([
+    'json',
+    'encoder',
+    'textproc',
+    'kcal',
+    'code',
+]);
+
+const foldedLazyChunkFiles = new Set<string>();
+const shortcutChunkFiles = new Set<string>();
+
+const trackFoldedLazyChunks = () => ({
+    name: 'track-folded-lazy-chunks',
+    generateBundle(_: unknown, bundle: Record<string, { type: string; isDynamicEntry?: boolean; facadeModuleId?: string | null; fileName: string }>) {
+        foldedLazyChunkFiles.clear();
+        shortcutChunkFiles.clear();
+
+        for (const output of Object.values(bundle)) {
+            if (output.type !== 'chunk' || !output.facadeModuleId) {
+                continue;
+            }
+
+            const normalizedId = output.facadeModuleId.split(path.sep).join('/');
+            const match = normalizedId.match(/\/src\/pages\/([^/]+)\/index\.tsx$/);
+            if (!match) {
+                continue;
+            }
+
+            const pageName = match[1];
+
+            if (output.isDynamicEntry && foldedLazyPages.has(pageName)) {
+                foldedLazyChunkFiles.add(output.fileName);
+            }
+
+            if (shortcutPages.has(pageName)) {
+                shortcutChunkFiles.add(output.fileName);
+            }
+        }
+    },
+});
+
 // https://vitejs.dev/config/
 export default defineConfig({
     base: '/',
@@ -17,6 +68,7 @@ export default defineConfig({
         __README_CONTENT__: JSON.stringify(fs.readFileSync(path.resolve(__dirname, 'README.md'), 'utf-8')),
     },
     plugins: [
+        trackFoldedLazyChunks(),
         react(),
         VitePWA({
             registerType: 'autoUpdate',
@@ -110,7 +162,24 @@ export default defineConfig({
             },
             workbox: {
                 globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-                globIgnores: ['**/assets/vendor-transformers-*.js', '**/assets/vendor-onnxruntime-*.js'],
+                globIgnores: [
+                    '**/assets/vendor-qrcode-*.js',
+                    '**/assets/vendor-sqlfmt-*.js',
+                    '**/assets/vendor-transformers-*.js',
+                    '**/assets/vendor-onnxruntime-*.js',
+                ],
+                manifestTransforms: [
+                    async (entries) => ({
+                        manifest: entries.filter((entry) => {
+                            if (shortcutChunkFiles.has(entry.url)) {
+                                return true;
+                            }
+
+                            return !foldedLazyChunkFiles.has(entry.url);
+                        }),
+                        warnings: [],
+                    }),
+                ],
                 navigateFallbackDenylist: [/^\/assets\//, /\/[^/?]+\.(js|css|wasm)$/],
             },
         }),
