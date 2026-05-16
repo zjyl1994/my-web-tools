@@ -1,28 +1,32 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
+
+const readHistory = (key: string) => {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) as string[] : [];
+  } catch {
+    return [];
+  }
+};
 
 export function useInputHistory(key: string, max = 10) {
-  const [history, setHistory] = useState<string[]>([]);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(key);
-      if (raw) setHistory(JSON.parse(raw));
-    } catch {
-      // ignore
-    }
-  }, [key]);
+  const [historyState, setHistoryState] = useState<{ key: string; history: string[] }>(() => {
+    return { key, history: readHistory(key) };
+  });
+  const history = historyState.key === key ? historyState.history : readHistory(key);
 
   const remember = useCallback((value: string) => {
     const v = value.trim();
     if (!v) return;
-    setHistory(prev => {
-      const next = [v, ...prev.filter(i => i !== v)].slice(0, max);
+    setHistoryState(prev => {
+      const current = prev.key === key ? prev.history : readHistory(key);
+      const next = [v, ...current.filter(i => i !== v)].slice(0, max);
       try {
         localStorage.setItem(key, JSON.stringify(next));
       } catch {
         // ignore
       }
-      return next;
+      return { key, history: next };
     });
   }, [key, max]);
 
@@ -32,9 +36,8 @@ export function useInputHistory(key: string, max = 10) {
     } catch {
       // ignore
     }
-    setHistory([]);
+    setHistoryState({ key, history: [] });
   }, [key]);
 
   return { history, remember, clear };
 }
-

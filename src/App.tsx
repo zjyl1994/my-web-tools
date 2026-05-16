@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useMemo, useState } from 'react';
 import { Dialog } from '@base-ui/react/dialog';
 import { Menu } from '@base-ui/react/menu';
 import { Routes, Route, Link, NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -19,7 +19,6 @@ const LotteryPage = lazy(() => import('./pages/lottery'));
 const LazyGoPage = lazy(() => import('./pages/lazygo'));
 const PriceCalcPage = lazy(() => import('./pages/pricecalc'));
 const JwtPage = lazy(() => import('./pages/jwt'));
-const RemoveBgPage = lazy(() => import('./pages/removebg'));
 const BarcodePage = lazy(() => import('./pages/barcode'));
 
 const primaryLinks = [
@@ -36,7 +35,6 @@ const otherLinks = [
   { to: '/lottery', label: '彩票选号机' },
   { to: '/pricecalc', label: '比价计算机' },
   { to: '/jwt', label: 'JWT 生成器' },
-  { to: '/removebg', label: '去底速刷' },
   { to: '/qrcode', label: '二维码生成' },
 ];
 
@@ -45,11 +43,8 @@ const cn = (...values: Array<string | false | null | undefined>) => values.filte
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [navOpen, setNavOpen] = useState(false);
-
-  useEffect(() => {
-    setNavOpen(false);
-  }, [location.pathname]);
+  const [navOpenPath, setNavOpenPath] = useState<string | null>(null);
+  const navOpen = navOpenPath === location.pathname;
 
   const otherActive = useMemo(
     () => otherLinks.some((item) => item.to === location.pathname),
@@ -70,7 +65,7 @@ function App() {
               className="app-nav-toggle"
               aria-controls="app-mobile-drawer"
               aria-expanded={navOpen}
-              onClick={() => setNavOpen((open) => !open)}
+              onClick={() => setNavOpenPath((openPath) => (openPath === location.pathname ? null : location.pathname))}
             >
               <span className="app-nav-toggle-icon" aria-hidden="true">
                 <span></span>
@@ -125,7 +120,7 @@ function App() {
       </header>
       <Dialog.Root
         open={navOpen}
-        onOpenChange={(open) => setNavOpen(open)}
+        onOpenChange={(open) => setNavOpenPath(open ? location.pathname : null)}
       >
         <Dialog.Portal>
           <div className="app-mobile-drawer-layer">
@@ -187,7 +182,6 @@ function App() {
           <Route path="/lazygo" element={<Suspense><LazyGoPage /></Suspense>} />
           <Route path="/pricecalc" element={<Suspense><PriceCalcPage /></Suspense>} />
           <Route path="/jwt" element={<Suspense><JwtPage /></Suspense>} />
-          <Route path="/removebg" element={<Suspense><RemoveBgPage /></Suspense>} />
           <Route path="/qrcode" element={<Suspense><BarcodePage /></Suspense>} />
         </Routes>
       </Container>

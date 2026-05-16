@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, Button, InputGroup } from '@/components/ui';
 import { useCopy } from '@/hooks/use-basic';
 import { Base64 } from 'js-base64';
@@ -12,7 +12,7 @@ interface JwtField {
 
 const JwtPage: React.FC = () => {
     const [secret, setSecret] = useState('');
-    const [expiresAt, setExpiresAt] = useState<Date>(new Date(Date.now() + 3600 * 1000)); // 默认1小时后
+    const [expiresAt, setExpiresAt] = useState<Date>(() => new Date(Date.now() + 3600 * 1000)); // 默认1小时后
     const [fields, setFields] = useState<JwtField[]>([]);
     const [token, setToken] = useState('');
     const [showSecret, setShowSecret] = useState(false);
@@ -58,8 +58,17 @@ const JwtPage: React.FC = () => {
         return `${encodedHeader}.${encodedPayload}.${signatureBase64}`;
     }
 
-    useMemo(() => {
-        generateToken(secret, expiresAt, fields).then(setToken);
+    useEffect(() => {
+        let cancelled = false;
+        generateToken(secret, expiresAt, fields).then((nextToken) => {
+            if (!cancelled) {
+                setToken(nextToken);
+            }
+        });
+
+        return () => {
+            cancelled = true;
+        };
     }, [secret, expiresAt, fields]);
 
     const copy = useCopy(token);

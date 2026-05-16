@@ -103,7 +103,13 @@ export const useBasic = (defaultValue: string, historyType: string) => {
 
 export const useTextareaResize = (textareaType: string, defaultRows: number) => {
     const storageKey = `${TEXTAREA_ROWS_KEY_PREFIX}${textareaType}`;
-    const [rows, setRows] = useState(defaultRows);
+    const [rows, setRows] = useState(() => {
+        const savedRows = localStorage.getItem(storageKey);
+        if (!savedRows) return defaultRows;
+
+        const parsedRows = parseInt(savedRows, 10);
+        return Number.isFinite(parsedRows) && parsedRows > 0 ? parsedRows : defaultRows;
+    });
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const lineHeight = useRef(0);
     const currentRows = useRef(defaultRows);
@@ -128,24 +134,6 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
         // 确保最大行数不少于默认行数
         return Math.max(maxRows, defaultRows);
     }, [defaultRows]);
-
-    // 初始化时从localStorage加载保存的行数
-    useEffect(() => {
-        const savedRows = localStorage.getItem(storageKey);
-        if (savedRows) {
-            const parsedRows = parseInt(savedRows, 10);
-            // 应用最大行数限制
-            const maxRows = getMaxRows();
-            const finalRows = Math.min(parsedRows, maxRows);
-            setRows(finalRows);
-            currentRows.current = finalRows;
-            
-            // 如果应用了限制，更新localStorage中的值
-            if (finalRows !== parsedRows) {
-                localStorage.setItem(storageKey, finalRows.toString());
-            }
-        }
-    }, [storageKey, getMaxRows]);
 
     // 设置ResizeObserver，只在组件挂载时执行一次
     useEffect(() => {
@@ -198,6 +186,13 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
             // 获取实际行高
             const style = window.getComputedStyle(textareaRef.current);
             lineHeight.current = parseFloat(style.lineHeight) || 19;
+
+            const maxRows = getMaxRows();
+            if (currentRows.current > maxRows) {
+                currentRows.current = maxRows;
+                setRows(maxRows);
+                localStorage.setItem(storageKey, maxRows.toString());
+            }
             
             // 初始化当前高度
             lastHeight.current = textareaRef.current.getBoundingClientRect().height;

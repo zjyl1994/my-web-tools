@@ -42,7 +42,7 @@ const EncoderPage: React.FC = () => {
                     <Button variant="light" className="border" onClick={action(decode_gzip)} title="解码Base64后的Gzip">Gzip 解码</Button>
                 </ButtonGroup>
                 <ButtonGroup className="me-2 mt-2">
-                    <Button variant="light" className="border" onClick={action(decode_oct_utf8)} title="解码'\123\456'这种字符串">八进制 UTF8 解码</Button>
+                    <Button variant="light" className="border" onClick={action(decode_oct_utf8)} title="解码'\\123\\456'这种字符串">八进制 UTF8 解码</Button>
                 </ButtonGroup>
             </ButtonToolbar>
         </>

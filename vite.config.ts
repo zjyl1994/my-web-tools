@@ -10,7 +10,6 @@ const foldedLazyPages = new Set([
     'lottery',
     'pricecalc',
     'jwt',
-    'removebg',
     'barcode',
 ]);
 
@@ -165,8 +164,6 @@ export default defineConfig({
                 globIgnores: [
                     '**/assets/vendor-qrcode-*.js',
                     '**/assets/vendor-sqlfmt-*.js',
-                    '**/assets/vendor-transformers-*.js',
-                    '**/assets/vendor-onnxruntime-*.js',
                 ],
                 manifestTransforms: [
                     async (entries) => ({
@@ -195,10 +192,6 @@ export default defineConfig({
                             return 'vendor-qrcode';
                         } else if (id.includes('react')) {
                             return 'vendor-react';
-                        } else if (id.includes('onnxruntime')) {
-                            return 'vendor-onnxruntime';
-                        } else if (id.includes('transformers')) {
-                            return 'vendor-transformers';
                         } else {
                             return 'vendor-others';
                         }
@@ -207,7 +200,4 @@ export default defineConfig({
             }
         }
     },
-    optimizeDeps: {
-      exclude: ['@huggingface/transformers'] // Prevent optimization of transformers.js
-    }
 })
