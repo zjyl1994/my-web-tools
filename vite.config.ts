@@ -186,7 +186,9 @@ export default defineConfig({
             output: {
                 manualChunks(id: string) {
                     if (id.includes('node_modules')) {
-                        if (id.includes('sql-formatter')) {
+                        if (id.includes('@codemirror') || id.includes('@lezer')) {
+                            return 'vendor-codemirror';
+                        } else if (id.includes('sql-formatter')) {
                             return 'vendor-sqlfmt';
                         } else if (id.includes('/qrcode/') || id.includes('node_modules/qrcode')) {
                             return 'vendor-qrcode';

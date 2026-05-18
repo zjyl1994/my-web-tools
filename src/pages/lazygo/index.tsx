@@ -1,4 +1,5 @@
-import { Form, Button, ButtonGroup, ButtonToolbar } from '@/components/ui';
+import { Button, ButtonGroup, ButtonToolbar } from '@/components/ui';
+import CodeEditor from '@/components/ui/code-editor';
 
 import { useBasic, useTextareaResize } from '@/hooks/use-basic';
 import {
@@ -9,18 +10,15 @@ import {
 const LazyGoPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('', 'lazygo');
 
-    const { rows, textareaRef } = useTextareaResize('lazygo', 15);
+    const { rows, textareaRef } = useTextareaResize<HTMLDivElement>('lazygo', 15);
 
     return (
         <>
-            <Form.Control
-                as="textarea"
-                ref={textareaRef}
-                rows={rows}
-                spellCheck={false}
+            <CodeEditor
                 value={value}
-                onChange={e => setValue(e.target.value)}
-                className='scrollable-textarea textarea-font'
+                onChange={setValue}
+                rows={rows}
+                resizeRef={textareaRef}
             />
 
             <ButtonToolbar>

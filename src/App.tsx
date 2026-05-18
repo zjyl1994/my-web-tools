@@ -4,15 +4,15 @@ import { Menu } from '@base-ui/react/menu';
 import { Routes, Route, Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import FrontPage from '@/pages/frontpage';
-import JsonPage from '@/pages/json';
-import EncoderPage from '@/pages/encoder';
 import KcalCalcPage from '@/pages/kcal';
-import TextProcPage from '@/pages/textproc';
 import AboutPage from '@/pages/about';
 import { Container } from '@/components/ui';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const JsonPage = lazy(() => import('./pages/json'));
+const EncoderPage = lazy(() => import('./pages/encoder'));
+const TextProcPage = lazy(() => import('./pages/textproc'));
 const CodeCalcPage = lazy(() => import('./pages/code'));
 const SQLFmtPage = lazy(() => import('./pages/sqlfmt'));
 const LotteryPage = lazy(() => import('./pages/lottery'));
@@ -171,12 +171,12 @@ function App() {
       <Container className="app-shell-content">
         <Routes>
           <Route path="/" element={<FrontPage />} />
-          <Route path="/json" element={<JsonPage />} />
-          <Route path="/encoder" element={<EncoderPage />} />
+          <Route path="/json" element={<Suspense><JsonPage /></Suspense>} />
+          <Route path="/encoder" element={<Suspense><EncoderPage /></Suspense>} />
           <Route path="/kcal" element={<KcalCalcPage />} />
           <Route path="/code" element={<Suspense><CodeCalcPage /></Suspense>} />
           <Route path="/sqlfmt" element={<Suspense><SQLFmtPage /></Suspense>} />
-          <Route path="/textproc" element={<TextProcPage />} />
+          <Route path="/textproc" element={<Suspense><TextProcPage /></Suspense>} />
           <Route path="/lottery" element={<Suspense><LotteryPage /></Suspense>} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/lazygo" element={<Suspense><LazyGoPage /></Suspense>} />

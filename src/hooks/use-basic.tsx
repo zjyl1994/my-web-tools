@@ -101,7 +101,7 @@ export const useBasic = (defaultValue: string, historyType: string) => {
 }
 
 
-export const useTextareaResize = (textareaType: string, defaultRows: number) => {
+export const useTextareaResize = <T extends HTMLElement = HTMLTextAreaElement>(textareaType: string, defaultRows: number) => {
     const storageKey = `${TEXTAREA_ROWS_KEY_PREFIX}${textareaType}`;
     const [rows, setRows] = useState(() => {
         const savedRows = localStorage.getItem(storageKey);
@@ -110,7 +110,7 @@ export const useTextareaResize = (textareaType: string, defaultRows: number) => 
         const parsedRows = parseInt(savedRows, 10);
         return Number.isFinite(parsedRows) && parsedRows > 0 ? parsedRows : defaultRows;
     });
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const textareaRef = useRef<T | null>(null);
     const lineHeight = useRef(0);
     const currentRows = useRef(defaultRows);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);

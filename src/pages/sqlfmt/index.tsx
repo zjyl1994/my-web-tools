@@ -1,4 +1,5 @@
-import { Form, Button, ButtonGroup, ButtonToolbar } from '@/components/ui';
+import { Button, ButtonGroup, ButtonToolbar } from '@/components/ui';
+import CodeEditor from '@/components/ui/code-editor';
 
 import { useBasic, useTextareaResize } from '@/hooks/use-basic';
 import { format } from 'sql-formatter';
@@ -7,19 +8,16 @@ import { format } from 'sql-formatter';
 const SQLPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('', 'sql');
 
-    const { rows, textareaRef } = useTextareaResize('sql', 20);
+    const { rows, textareaRef } = useTextareaResize<HTMLDivElement>('sql', 20);
 
 
     return (
         <>
-            <Form.Control
-                as="textarea"
-                ref={textareaRef}
-                rows={rows}
-                spellCheck={false}
+            <CodeEditor
                 value={value}
-                onChange={e => setValue(e.target.value)}
-                className='scrollable-textarea textarea-font'
+                onChange={setValue}
+                rows={rows}
+                resizeRef={textareaRef}
             />
 
             <ButtonToolbar>

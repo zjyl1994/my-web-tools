@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { Form, Button, InputGroup, ButtonGroup, ButtonToolbar, Modal, Dropdown } from '@/components/ui';
+import CodeEditor from '@/components/ui/code-editor';
 import { useBasic, useTextareaResize } from '@/hooks/use-basic';
 import { useInputHistory } from '@/hooks/use-input-history';
 import {
@@ -56,7 +57,7 @@ const TextProcPage: React.FC = () => {
     );
     const valueLinesLength = useMemo(() => valueLines.map((x: string) => x.length), [valueLines]);
 
-    const { rows, textareaRef } = useTextareaResize('textproc', 15);
+    const { rows, textareaRef } = useTextareaResize<HTMLDivElement>('textproc', 15);
 
     const memory_load = () => {
         if (confirm('是否使用存储区的内容替换当前内容?')) {
@@ -108,14 +109,11 @@ const TextProcPage: React.FC = () => {
 
     return (
         <>
-            <Form.Control
-                as="textarea"
-                ref={textareaRef}
-                rows={rows}
-                spellCheck={false}
+            <CodeEditor
                 value={value}
-                onChange={e => setValue(e.target.value)}
-                className="scrollable-textarea textarea-font"
+                onChange={setValue}
+                rows={rows}
+                resizeRef={textareaRef}
             />
 
             <ButtonToolbar>

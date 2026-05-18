@@ -1,4 +1,5 @@
-import { Form, Button, ButtonGroup, ButtonToolbar } from '@/components/ui';
+import { Button, ButtonGroup, ButtonToolbar } from '@/components/ui';
+import CodeEditor from '@/components/ui/code-editor';
 
 import { Base64 } from 'js-base64';
 
@@ -9,18 +10,15 @@ import { decode_oct_utf8, encode_gzip, decode_gzip } from './utils';
 const EncoderPage: React.FC = () => {
     const { value, setValue, action, functionButtonGroup } = useBasic('','encoder');
 
-    const { rows, textareaRef } = useTextareaResize('encoder', 20);
+    const { rows, textareaRef } = useTextareaResize<HTMLDivElement>('encoder', 20);
 
     return (
         <>
-            <Form.Control 
-                as="textarea" 
-                ref={textareaRef}
-                rows={rows} 
-                spellCheck={false} 
-                value={value} 
-                onChange={e => setValue(e.target.value)} 
-                className='scrollable-textarea textarea-font'
+            <CodeEditor
+                value={value}
+                onChange={setValue}
+                rows={rows}
+                resizeRef={textareaRef}
             />
 
             <ButtonToolbar>

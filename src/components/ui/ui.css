@@ -201,6 +201,91 @@ textarea.ui-control {
   color: #94a3b8;
 }
 
+.ui-code-editor-shell {
+  min-height: 8rem;
+  margin-bottom: 0.6rem;
+  resize: vertical;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+.ui-code-editor-shell.is-readonly {
+  resize: none;
+}
+
+.ui-code-editor {
+  height: 100%;
+}
+
+.ui-code-editor .cm-editor {
+  height: 100%;
+  border: 1px solid var(--ui-border);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.97);
+  color: var(--ui-text);
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.ui-code-editor .cm-editor:hover {
+  border-color: var(--ui-border-strong);
+}
+
+.ui-code-editor .cm-editor.cm-focused {
+  outline: none;
+  border-color: var(--ui-border-strong);
+  box-shadow: 0 0 0 3px var(--ui-accent-soft);
+}
+
+.ui-code-editor-shell.is-readonly .cm-editor {
+  background: var(--ui-surface-soft);
+  color: #334155;
+}
+
+.ui-code-editor .cm-scroller {
+  overflow: auto;
+  font-family: inherit;
+}
+
+.ui-code-editor .cm-content,
+.ui-code-editor .cm-gutter,
+.ui-code-editor .cm-foldGutter {
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.ui-code-editor .cm-content {
+  padding: 0.48rem 0;
+}
+
+.ui-code-editor .cm-line {
+  padding: 0 0.75rem;
+}
+
+.ui-code-editor .cm-gutters {
+  border-right: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(248, 250, 252, 0.9);
+  color: var(--ui-text-muted);
+}
+
+.ui-code-editor .cm-gutterElement {
+  padding: 0 0.55rem 0 0.75rem;
+}
+
+.ui-code-editor .cm-activeLine,
+.ui-code-editor .cm-activeLineGutter {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.ui-code-editor .cm-selectionBackground,
+.ui-code-editor .cm-focused .cm-selectionBackground,
+.ui-code-editor .cm-content ::selection {
+  background: rgba(37, 99, 235, 0.18);
+}
+
 .ui-input-group {
   display: flex;
   flex-wrap: wrap;
