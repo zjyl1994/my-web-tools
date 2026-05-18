@@ -10,6 +10,7 @@ import { Container } from '@/components/ui';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const ComparePage = lazy(() => import('./pages/compare'));
 const JsonPage = lazy(() => import('./pages/json'));
 const EncoderPage = lazy(() => import('./pages/encoder'));
 const TextProcPage = lazy(() => import('./pages/textproc'));
@@ -25,10 +26,11 @@ const primaryLinks = [
   { to: '/json', label: 'JSON' },
   { to: '/encoder', label: '编解码' },
   { to: '/textproc', label: '文本处理' },
-  { to: '/kcal', label: '大卡计算' },
+  { to: '/compare', label: '对比工具' },
 ];
 
 const otherLinks = [
+  { to: '/kcal', label: '大卡计算' },
   { to: '/code', label: '密码机' },
   { to: '/lazygo', label: 'Go 生成器' },
   { to: '/sqlfmt', label: 'SQL 格式化' },
@@ -171,6 +173,7 @@ function App() {
       <Container className="app-shell-content">
         <Routes>
           <Route path="/" element={<FrontPage />} />
+          <Route path="/compare" element={<Suspense><ComparePage /></Suspense>} />
           <Route path="/json" element={<Suspense><JsonPage /></Suspense>} />
           <Route path="/encoder" element={<Suspense><EncoderPage /></Suspense>} />
           <Route path="/kcal" element={<KcalCalcPage />} />

@@ -14,10 +14,10 @@ const foldedLazyPages = new Set([
 ]);
 
 const shortcutPages = new Set([
+    'compare',
     'json',
     'encoder',
     'textproc',
-    'kcal',
     'code',
 ]);
 
@@ -103,6 +103,17 @@ export default defineConfig({
                 ],
                 shortcuts: [
                     {
+                        name: '对比工具',
+                        url: '/compare',
+                        icons: [
+                            {
+                                src: 'images/shortcuts-icon.png',
+                                sizes: '96x96',
+                                type: 'image/png'
+                            }
+                        ],
+                    },
+                    {
                         name: 'JSON',
                         url: '/json',
                         icons: [
@@ -127,17 +138,6 @@ export default defineConfig({
                     {
                         name: '文本处理',
                         url: '/textproc',
-                        icons: [
-                            {
-                                src: 'images/shortcuts-icon.png',
-                                sizes: '96x96',
-                                type: 'image/png'
-                            }
-                        ],
-                    },
-                    {
-                        name: '大卡计算',
-                        url: '/kcal',
                         icons: [
                             {
                                 src: 'images/shortcuts-icon.png',
