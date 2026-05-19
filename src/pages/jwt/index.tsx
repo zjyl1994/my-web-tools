@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { Form, Button, InputGroup } from '@/components/ui';
 import { useCopy } from '@/hooks/use-basic';
 import { Base64 } from 'js-base64';
-import DateTime from 'react-datetime';
-import 'react-datetime/css/react-datetime.css';
+
+const JwtDatePicker = lazy(() => import('./date-picker'));
 
 interface JwtField {
     key: string;
     value: string;
 }
 
-const JwtPage: React.FC = () => {
+const JwtPage = () => {
     const [secret, setSecret] = useState('');
     const [expiresAt, setExpiresAt] = useState<Date>(() => new Date(Date.now() + 3600 * 1000)); // 默认1小时后
     const [fields, setFields] = useState<JwtField[]>([]);
@@ -73,6 +73,17 @@ const JwtPage: React.FC = () => {
 
     const copy = useCopy(token);
     const toggleShowSecret = () => setShowSecret(!showSecret);
+    const handleExpiresAtChange = (nextDate: Date | null) => {
+        if (!nextDate) {
+            return;
+        }
+
+        if (Number.isNaN(nextDate.getTime()) || nextDate.getTime() <= Date.now()) {
+            return;
+        }
+
+        setExpiresAt(nextDate);
+    };
 
     const addField = () => setFields([...fields, { key: '', value: '' }]);
     const removeField = (index: number) => setFields(fields.filter((_, i) => i !== index));
@@ -100,35 +111,9 @@ const JwtPage: React.FC = () => {
 
             <Form.Group className="mb-3">
                 <Form.Label>过期时间</Form.Label>
-                <DateTime
-                    value={expiresAt}
-                    onChange={(date) => {
-                        if (!date) return;
-
-                        let newDate: Date;
-                        if (date instanceof Date) {
-                            newDate = date;
-                        } else if (typeof date === 'string') {
-                            newDate = new Date(date);
-                        } else if (typeof date.toDate === 'function') {
-                            // 处理moment对象
-                            newDate = date.toDate();
-                        } else {
-                            // 其他未知类型，尝试转换
-                            newDate = new Date(date.toString());
-                        }
-
-                        if (isNaN(newDate.getTime())) return; // 确保日期有效
-                        setExpiresAt(newDate);
-                    }}
-                    inputProps={{
-                        className: 'ui-control',
-                        placeholder: '选择过期时间'
-                    }}
-                    timeFormat="HH:mm"
-                    dateFormat="YYYY-MM-DD"
-                    isValidDate={(current) => current.isAfter(new Date())}
-                />
+                <Suspense fallback={<Form.Control value="" placeholder="加载日期组件中..." readOnly />}>
+                    <JwtDatePicker value={expiresAt} onChange={handleExpiresAtChange} />
+                </Suspense>
             </Form.Group>
 
             <Form.Group className="mb-3">

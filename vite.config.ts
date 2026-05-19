@@ -24,6 +24,25 @@ const shortcutPages = new Set([
 const foldedLazyChunkFiles = new Set<string>();
 const shortcutChunkFiles = new Set<string>();
 
+const getNodeModulePackageName = (id: string) => {
+    const normalizedId = id.split(path.sep).join('/');
+    const nodeModulesMarker = '/node_modules/';
+    const nodeModulesIndex = normalizedId.lastIndexOf(nodeModulesMarker);
+
+    if (nodeModulesIndex === -1) {
+        return null;
+    }
+
+    const packagePath = normalizedId.slice(nodeModulesIndex + nodeModulesMarker.length);
+    const parts = packagePath.split('/');
+
+    if (parts[0]?.startsWith('@') && parts.length >= 2) {
+        return `${parts[0]}/${parts[1]}`;
+    }
+
+    return parts[0] ?? null;
+};
+
 const trackFoldedLazyChunks = () => ({
     name: 'track-folded-lazy-chunks',
     generateBundle(_: unknown, bundle: Record<string, { type: string; isDynamicEntry?: boolean; facadeModuleId?: string | null; fileName: string }>) {
@@ -186,14 +205,31 @@ export default defineConfig({
             output: {
                 manualChunks(id: string) {
                     if (id.includes('node_modules')) {
-                        if (id.includes('@codemirror') || id.includes('@lezer')) {
+                        const packageName = getNodeModulePackageName(id);
+
+                        if (!packageName) {
+                            return 'vendor-others';
+                        }
+
+                        if (packageName.startsWith('@codemirror/') || packageName.startsWith('@lezer/')) {
                             return 'vendor-codemirror';
-                        } else if (id.includes('sql-formatter')) {
+                        } else if (packageName === 'sql-formatter') {
                             return 'vendor-sqlfmt';
-                        } else if (id.includes('/qrcode/') || id.includes('node_modules/qrcode')) {
-                            return 'vendor-qrcode';
-                        } else if (id.includes('react')) {
+                        } else if (packageName === 'react-datepicker' || packageName === 'date-fns' || packageName === 'clsx') {
+                            return;
+                        } else if (
+                            packageName === 'react' ||
+                            packageName === 'react-dom' ||
+                            packageName === 'react-router' ||
+                            packageName === 'react-router-dom' ||
+                            packageName === 'scheduler' ||
+                            packageName === 'react-toastify' ||
+                            packageName.startsWith('@base-ui/') ||
+                            packageName.startsWith('@floating-ui/')
+                        ) {
                             return 'vendor-react';
+                        } else if (packageName === 'qrcode') {
+                            return 'vendor-qrcode';
                         } else {
                             return 'vendor-others';
                         }
