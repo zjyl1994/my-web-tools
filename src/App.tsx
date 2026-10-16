@@ -21,6 +21,7 @@ const LazyGoPage = lazy(() => import('./pages/lazygo'));
 const PriceCalcPage = lazy(() => import('./pages/pricecalc'));
 const JwtPage = lazy(() => import('./pages/jwt'));
 const BarcodePage = lazy(() => import('./pages/barcode'));
+const ImageCompressPage = lazy(() => import('./pages/imagecompress'));
 
 const primaryLinks = [
   { to: '/json', label: 'JSON' },
@@ -37,6 +38,7 @@ const otherLinks = [
   { to: '/lottery', label: '彩票选号机' },
   { to: '/pricecalc', label: '比价计算机' },
   { to: '/jwt', label: 'JWT 生成器' },
+  { to: '/imagecompress', label: '图片压缩' },
   { to: '/qrcode', label: '二维码生成' },
 ];
 
@@ -185,6 +187,7 @@ function App() {
           <Route path="/lazygo" element={<Suspense><LazyGoPage /></Suspense>} />
           <Route path="/pricecalc" element={<Suspense><PriceCalcPage /></Suspense>} />
           <Route path="/jwt" element={<Suspense><JwtPage /></Suspense>} />
+          <Route path="/imagecompress" element={<Suspense><ImageCompressPage /></Suspense>} />
           <Route path="/qrcode" element={<Suspense><BarcodePage /></Suspense>} />
         </Routes>
       </Container>
