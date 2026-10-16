@@ -48,7 +48,6 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 }
 .app-brand { display: inline-flex; align-items: center; gap: 12px; font-size: 1.1rem; font-weight: 700; letter-spacing: -.03em; text-decoration: none; }
 .app-brand img { border-radius: 9px; }
-.app-brand-subtitle { font-size: .9rem; font-weight: 400; color: var(--ui-text-muted); margin-left: 6px; letter-spacing: 0; }
 .app-header-note { color: var(--ui-text-muted); font-size: .8125rem; }
 .app-layout { display: grid; grid-template-columns: 64px minmax(0, 1fr); width: 100%; }
 .app-layout.is-sidebar-expanded { grid-template-columns: 208px minmax(0, 1fr); }
@@ -548,12 +547,11 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
   .tool-search-trigger { width: 44px; height: 44px; padding: 0; justify-content: center; flex-shrink: 0; }
   .tool-search-trigger > span, .tool-search-trigger kbd, .tool-nav-tooltip { display: none; }
   .app-brand { min-width: 0; }
-  .app-brand > span { white-space: nowrap; }
+  .app-brand > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .app-brand img { flex-shrink: 0; }
   .app-nav-toggle { flex-shrink: 0; }
 }
 @media (max-width: 540px) {
-  .app-brand-subtitle { display: none; }
   .app-shell-header { height: auto; min-height: 64px; }
   .app-shell-header-row { min-height: 64px; padding-top: 8px; padding-bottom: 8px; }
 }

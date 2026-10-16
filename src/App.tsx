@@ -42,7 +42,7 @@ function App() {
   const isHome = location.pathname === '/';
 
   useEffect(() => {
-    document.title = `${currentTool?.title ?? (isHome ? '工具总览' : '关于')} · 鱼 sifu 工具包`;
+    document.title = `${currentTool?.title ?? (isHome ? '工具总览' : '关于')} · ${__SITE__.name}`;
   }, [currentTool, isHome]);
 
   const navigation = (
@@ -68,8 +68,8 @@ function App() {
       <header className="app-shell-header">
         <div className="app-shell-header-row">
           <Link className="app-brand" to="/">
-            <img src="/images/android-chrome-192x192.png" width="32" height="32" alt="" />
-            <span>鱼 sifu <span className="app-brand-subtitle">工具包</span></span>
+            <img src={__SITE__.icon} width="32" height="32" alt="" />
+            <span title={__SITE__.name}>{__SITE__.name}</span>
           </Link>
           <ToolSearch />
           <button type="button" className="app-nav-toggle" aria-label="打开工具导航" aria-controls="app-mobile-drawer" aria-expanded={navOpen} onClick={() => setNavOpenPath(navOpen ? null : location.pathname)}>
@@ -140,7 +140,7 @@ function App() {
               </Routes>
             </Suspense>
           </div>
-          <footer className="app-footer"><span>鱼 sifu 工具包</span></footer>
+          <footer className="app-footer"><span>{__SITE__.name}</span></footer>
         </main>
       </div>
       <ToastContainer />

@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
+import site from './site.config';
+import { siteBranding, siteIconPaths } from './build/site-branding';
 
 const foldedLazyPages = new Set([
     'lazygo',
@@ -68,23 +70,18 @@ export default defineConfig({
     },
     define: {
         __BUILD_TIMESTAMP__: new Date().getTime(),
+        __SITE__: JSON.stringify({ name: site.name, shortName: site.shortName, description: site.description, icon: siteIconPaths.app192 }),
     },
     plugins: [
+        siteBranding(site),
         trackFoldedLazyChunks(),
         react(),
         VitePWA({
             registerType: 'autoUpdate',
-            includeAssets: [
-                'favicon.ico',
-                'images/apple-touch-icon.png',
-                'images/favicon-16x16.png',
-                'images/favicon-32x32.png',
-                'images/circuit.png',
-            ],
             manifest: {
-                name: '鱼 sifu 工具包',
-                short_name: '工具包',
-                description: '鱼 sifu 的在线小工具合集包',
+                name: site.name,
+                short_name: site.shortName,
+                description: site.description,
                 theme_color: 'rgb(248, 249, 250)',
                 background_color: 'white',
                 lang: 'zh-CN',
@@ -93,12 +90,12 @@ export default defineConfig({
                 display: 'standalone',
                 icons: [
                     {
-                        src: 'images/android-chrome-192x192.png',
+                        src: siteIconPaths.app192,
                         sizes: '192x192',
                         type: 'image/png'
                     },
                     {
-                        src: 'images/android-chrome-512x512.png',
+                        src: siteIconPaths.app512,
                         sizes: '512x512',
                         type: 'image/png'
                     }

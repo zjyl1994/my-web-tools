@@ -13,9 +13,9 @@ export default function AboutPage() {
     const buildTime = dayjs(__BUILD_TIMESTAMP__);
     return <div className="about-page">
         <section className="about-overview" aria-labelledby="about-project-title">
-            <img src="/images/android-chrome-192x192.png" width="56" height="56" alt="" />
+            <img src={__SITE__.icon} width="56" height="56" alt="" />
             <div>
-                <h2 id="about-project-title">MyWebTools</h2>
+                <h2 id="about-project-title">{__SITE__.name}</h2>
                 <p>基于 React 与 Vite 开发的在线工具集合，提供文本处理、数据转换、图片处理与日常计算功能。</p>
             </div>
         </section>
