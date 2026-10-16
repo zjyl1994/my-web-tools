@@ -8,9 +8,10 @@ const cn = (...values: Array<string | false | null | undefined>) => values.filte
 
 const externalChangeAnnotation = Annotation.define<boolean>();
 
-const createEditorExtensions = (onChange?: (value: string) => void) => {
+const createEditorExtensions = (label: string, onChange?: (value: string) => void) => {
   const extensions: Extension[] = [
     lineNumbers(),
+    EditorView.contentAttributes.of({ 'aria-label': label }),
     EditorView.lineWrapping,
     EditorView.updateListener.of((update) => {
       if (update.docChanged && !update.transactions.some((transaction) => transaction.annotation(externalChangeAnnotation))) {
@@ -56,8 +57,10 @@ export const CodeMergeView = ({
     }
   }, [resizeRef]);
 
-  const leftExtensions = React.useMemo(() => createEditorExtensions(onLeftChange), [onLeftChange]);
-  const rightExtensions = React.useMemo(() => createEditorExtensions(onRightChange), [onRightChange]);
+  const leftExtensions = React.useMemo(() => createEditorExtensions(leftTitle, onLeftChange), [leftTitle, onLeftChange]);
+  const rightExtensions = React.useMemo(() => createEditorExtensions(rightTitle, onRightChange), [rightTitle, onRightChange]);
+
+  const initialContent = React.useRef({ leftValue, rightValue });
 
   React.useEffect(() => {
     if (!mergeHostRef.current) {
@@ -69,11 +72,11 @@ export const CodeMergeView = ({
     const mergeView = new MergeView({
       parent: mergeHostRef.current,
       a: {
-        doc: leftValue,
+        doc: initialContent.current.leftValue,
         extensions: leftExtensions,
       },
       b: {
-        doc: rightValue,
+        doc: initialContent.current.rightValue,
         extensions: rightExtensions,
       },
       gutter: true,
@@ -100,7 +103,7 @@ export const CodeMergeView = ({
       gutter: true,
       highlightChanges: true,
     });
-  }, [leftValue, rightValue]);
+  }, [leftValue, rightValue, leftExtensions, rightExtensions]);
 
   return (
     <div

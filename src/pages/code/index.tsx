@@ -17,19 +17,19 @@ const CodePage: React.FC = () => {
   return (
     <>
       <Form.Group className="mb-3">
-        <Form.Label>主密码</Form.Label>
-        <Form.Control type="password" onChange={e => setMainPassword(e.target.value.trim())} autoComplete='off'/>
+        <Form.Label htmlFor="code-field-1">主密码</Form.Label>
+        <Form.Control id="code-field-1" type="password" onChange={e => setMainPassword(e.target.value.trim())} autoComplete='off'/>
       </Form.Group>
       <Form.Group className="mb-3">
-        <Form.Label>助记符</Form.Label>
-        <Form.Control type="text" onChange={e => setRememberName(e.target.value.trim())} autoComplete='off'/>
+        <Form.Label htmlFor="code-field-2">助记符</Form.Label>
+        <Form.Control id="code-field-2" type="text" onChange={e => setRememberName(e.target.value.trim())} autoComplete='off'/>
       </Form.Group>
       <Form.Group className="mb-3">
-        <Form.Label>最终密码</Form.Label>
-        <Form.Control type="text" value={calcCode} readOnly />
+        <Form.Label htmlFor="code-field-3">最终密码</Form.Label>
+        <Form.Control id="code-field-3" type="text" value={calcCode} readOnly />
       </Form.Group>
-      <p className="font-monospace fs-2">{displayCalcCode}</p>
-      <Button variant="light" className="border" onClick={copy}>复制</Button>
+      <p className="password-result font-monospace fs-2">{displayCalcCode}</p>
+      <Button variant="primary" onClick={copy}>复制密码</Button>
     </>
   )
 }

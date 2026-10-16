@@ -14,6 +14,7 @@ const JwtDatePicker = ({ value, onChange }: JwtDatePickerProps) => {
 
     return (
         <DatePicker
+            id="jwt-expires-at"
             selected={value}
             onChange={onChange}
             minDate={now}

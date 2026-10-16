@@ -96,9 +96,9 @@ const JwtPage = () => {
     return (
         <>
             <Form.Group className="mb-3">
-                <Form.Label>密钥</Form.Label>
+                <Form.Label htmlFor="jwt-field-1">密钥</Form.Label>
                 <InputGroup>
-                    <Form.Control
+                    <Form.Control id="jwt-field-1"
                         type={showSecret ? 'text' : 'password'}
                         onChange={e => setSecret(e.target.value.trim())}
                         autoComplete='off'
@@ -110,28 +110,30 @@ const JwtPage = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-                <Form.Label>过期时间</Form.Label>
-                <Suspense fallback={<Form.Control value="" placeholder="加载日期组件中..." readOnly />}>
+                <Form.Label htmlFor="jwt-expires-at">过期时间</Form.Label>
+                <Suspense fallback={<Form.Control id="jwt-expires-at" value="" placeholder="加载日期组件中..." readOnly />}>
                     <JwtDatePicker value={expiresAt} onChange={handleExpiresAtChange} />
                 </Suspense>
             </Form.Group>
 
             <Form.Group className="mb-3">
-                <Form.Label>自定义字段</Form.Label>
+                <div className="ui-label">自定义字段</div>
                 <div className="mb-2">
                     {fields.map((field, index) => (
                         <InputGroup key={index} className="mb-2">
                             <Form.Control
+                                aria-label={`自定义字段 ${index + 1} 的名称`}
                                 placeholder="字段名"
                                 value={field.key}
                                 onChange={e => updateField(index, e.target.value, field.value)}
                             />
                             <Form.Control
+                                aria-label={`自定义字段 ${index + 1} 的值`}
                                 placeholder="字段值"
                                 value={field.value}
                                 onChange={e => updateField(index, field.key, e.target.value)}
                             />
-                            <Button variant="danger" onClick={() => removeField(index)}>
+                            <Button variant="danger" aria-label={`删除自定义字段 ${index + 1}`} onClick={() => removeField(index)}>
                                 删除
                             </Button>
                         </InputGroup>
@@ -143,8 +145,8 @@ const JwtPage = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-                <Form.Label>JWT Token</Form.Label>
-                <Form.Control
+                <Form.Label htmlFor="jwt-field-2">JWT Token</Form.Label>
+                <Form.Control id="jwt-field-2"
                     as="textarea"
                     rows={5}
                     value={token}
@@ -152,7 +154,7 @@ const JwtPage = () => {
                     className='textarea-font'
                 />
             </Form.Group>
-            <Button variant="light" className="border" onClick={copy}>
+            <Button variant="primary" onClick={copy}>
                 复制
             </Button>
         </>

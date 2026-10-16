@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { Form, Button, InputGroup, ButtonGroup, ButtonToolbar, Modal, Dropdown } from '@/components/ui';
+import { Form, Button, InputGroup, ButtonToolbar, Modal, Dropdown } from '@/components/ui';
 import CodeEditor from '@/components/ui/code-editor';
+import EditorActions from '@/components/ui/editor-actions';
+import './style.css';
 import { useBasic, useTextareaResize } from '@/hooks/use-basic';
 import { useInputHistory } from '@/hooks/use-input-history';
 import {
@@ -110,94 +112,83 @@ const TextProcPage: React.FC = () => {
     return (
         <>
             <CodeEditor
+                ariaLabel="待处理的文本"
                 value={value}
                 onChange={setValue}
                 rows={rows}
                 resizeRef={textareaRef}
             />
 
-            <ButtonToolbar>
-                {functionButtonGroup}
-            </ButtonToolbar>
-
-            <ButtonToolbar>
-                <ButtonGroup>
-                    <Dropdown>
-                        <Dropdown.Toggle className="border">切分 / 合并 ▾</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => setSplitJoinDialogShow(true)} title="自定义分隔符切行或合行">自定义切合行</Dropdown.Item>
-                            <Dropdown.Item onClick={action(split_by_comma)} title="根据逗号切割成好多行">逗号切行</Dropdown.Item>
-                            <Dropdown.Item onClick={action(join_with_comma)} title="逗号分隔合并所有行">逗号合行</Dropdown.Item>
-                            <Dropdown.Item onClick={action(split_by_blank)} title="根据空白切割成好多行">空白切行</Dropdown.Item>
-                            <Dropdown.Item onClick={action(join_by_blank)} title="用空格合并所有行">空白合行</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <Dropdown>
-                        <Dropdown.Toggle className="border">符号 / 前后缀 ▾</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => setAffixDialogShow(true)} title="智能检测、自定义前后缀">自定义前后缀</Dropdown.Item>
-                            <Dropdown.Item onClick={action(remove_quote)} title="行两边删除双引号">去双引号</Dropdown.Item>
-                            <Dropdown.Item onClick={action(add_quote)} title="行两边添加双引号">加双引号</Dropdown.Item>
-                            <Dropdown.Item onClick={action(remove_single_quote)} title="行两边删除单引号">去单引号</Dropdown.Item>
-                            <Dropdown.Item onClick={action(add_single_quote)} title="行两边添加单引号">加单引号</Dropdown.Item>
-                            <Dropdown.Item onClick={action(add_comma_suffix)} title="行尾追加逗号">行尾加逗号</Dropdown.Item>
-                            <Dropdown.Item onClick={action(remove_comma_suffix)} title="行尾删除逗号">行尾去逗号</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <Dropdown>
-                        <Dropdown.Toggle className="border">空白处理 ▾</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={action(trim_line_space)} title="删除行两边的空白">去除两边空白</Dropdown.Item>
-                            <Dropdown.Item onClick={action(sperate_with_blank_row)} title="两行中间增加空行">空白隔行</Dropdown.Item>
-                            <Dropdown.Item onClick={action(remove_empty_line)} title="删除只有空白没有内容的行">去除空行</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <Dropdown>
-                        <Dropdown.Toggle className="border">表格处理 ▾</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={action(space_to_tab)} title="连续空白转为制表符">空白拆表</Dropdown.Item>
-                            <Dropdown.Item onClick={action(csv_comma_to_tab)} title="CSV逗号拆表">CSV逗号拆表</Dropdown.Item>
-                            <Dropdown.Item onClick={copy_as_table} title="复制Tab分割为表格">复制表格</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <Dropdown>
-                        <Dropdown.Toggle className="border">排序操作 ▾</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={action(sort_asc)} title="a在前z在后">字典升序排序</Dropdown.Item>
-                            <Dropdown.Item onClick={action(sort_desc)} title="z在前a在后">字典降序排序</Dropdown.Item>
-                            <Dropdown.Item onClick={action(sort_len_asc)} title="短在前长在后">长度升序排序</Dropdown.Item>
-                            <Dropdown.Item onClick={action(sort_len_desc)} title="长在前短在后">长度降序排序</Dropdown.Item>
-                            <Dropdown.Item onClick={action(shuffle_line)} title="随机洗牌打乱所有行的顺序">随机排序</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <Dropdown>
-                        <Dropdown.Toggle className="border">大小写转换 ▾</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={action(to_upper_case)} title="UPPER CASE">大写</Dropdown.Item>
-                            <Dropdown.Item onClick={action(to_lower_case)} title="lower case">小写</Dropdown.Item>
-                            <Dropdown.Item onClick={action(to_camel_case)} title="camelCase">驼峰</Dropdown.Item>
-                            <Dropdown.Item onClick={action(to_snake_case)} title="snake_case">蛇形</Dropdown.Item>
-                            <Dropdown.Item onClick={action(to_kebab_case)} title="kebab-case">烤串</Dropdown.Item>
-                            <Dropdown.Item onClick={action(to_const_case)} title="CONST_CASE">大蛇</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </ButtonGroup>
-            </ButtonToolbar>
-
-            <ButtonToolbar className="mt-2">
-                <ButtonGroup className="me-2">
-                    <Button variant="light" className="border" onClick={() => setRegexDialogShow(true)}>正则</Button>
-                    <Button variant="light" className="border" onClick={() => setReplaceDialogShow(true)}>替换</Button>
-                </ButtonGroup>
-                <ButtonGroup className="me-2">
-                    <Button variant="light" className="border" onClick={action(uniq_line)} title="删除重复的行">去除重复行</Button>
-                    <Button variant="light" className="border" onClick={() => setStatisticsShow(true)} title="行平均长度等信息">行统计</Button>
-                </ButtonGroup>
-                <ButtonGroup className="me-2">
-                    <Button variant="light" className="border" onClick={memory_save} title="暂存当前结果">记忆存</Button>
-                    <Button variant="light" className="border" onClick={memory_load} title="拿出存的结果">记忆取</Button>
-                </ButtonGroup>
-            </ButtonToolbar>
+            <div className="textproc-actions">
+                <EditorActions editing={<>
+                    {functionButtonGroup}
+                    <Button variant="light" className="border" onClick={memory_save} title="暂存当前结果">暂存内容</Button>
+                    <Button variant="light" className="border" onClick={memory_load} title="用暂存内容替换当前文本">恢复暂存</Button>
+                </>}>
+                    <div className="textproc-primary-actions" role="group" aria-label="常用文本处理">
+                        <Button variant="light" className="border" onClick={action(uniq_line)}>去除重复行</Button>
+                        <Button variant="light" className="border" onClick={action(remove_empty_line)}>去除空行</Button>
+                        <Button variant="light" className="border" onClick={() => setReplaceDialogShow(true)}>文本替换</Button>
+                        <Dropdown>
+                            <Dropdown.Toggle className="border">排序 ▾</Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={action(sort_asc)} title="a在前z在后">字典升序排序</Dropdown.Item>
+                                <Dropdown.Item onClick={action(sort_desc)} title="z在前a在后">字典降序排序</Dropdown.Item>
+                                <Dropdown.Item onClick={action(sort_len_asc)} title="短在前长在后">长度升序排序</Dropdown.Item>
+                                <Dropdown.Item onClick={action(sort_len_desc)} title="长在前短在后">长度降序排序</Dropdown.Item>
+                                <Dropdown.Item onClick={action(shuffle_line)} title="随机洗牌打乱所有行的顺序">随机排序</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                    <div className="textproc-category-actions" role="group" aria-label="更多文本处理">
+                        <Dropdown>
+                            <Dropdown.Toggle className="border">拆分合并 ▾</Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => setSplitJoinDialogShow(true)} title="自定义分隔符切行或合行">自定义切合行</Dropdown.Item>
+                                <Dropdown.Item onClick={action(split_by_comma)} title="根据逗号切割成好多行">逗号切行</Dropdown.Item>
+                                <Dropdown.Item onClick={action(join_with_comma)} title="逗号分隔合并所有行">逗号合行</Dropdown.Item>
+                                <Dropdown.Item onClick={action(split_by_blank)} title="根据空白切割成好多行">空白切行</Dropdown.Item>
+                                <Dropdown.Item onClick={action(join_by_blank)} title="用空格合并所有行">空白合行</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <Dropdown>
+                            <Dropdown.Toggle className="border">符号与前后缀 ▾</Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => setAffixDialogShow(true)} title="智能检测、自定义前后缀">自定义前后缀</Dropdown.Item>
+                                <Dropdown.Item onClick={action(remove_quote)} title="行两边删除双引号">去双引号</Dropdown.Item>
+                                <Dropdown.Item onClick={action(add_quote)} title="行两边添加双引号">加双引号</Dropdown.Item>
+                                <Dropdown.Item onClick={action(remove_single_quote)} title="行两边删除单引号">去单引号</Dropdown.Item>
+                                <Dropdown.Item onClick={action(add_single_quote)} title="行两边添加单引号">加单引号</Dropdown.Item>
+                                <Dropdown.Item onClick={action(add_comma_suffix)} title="行尾追加逗号">行尾加逗号</Dropdown.Item>
+                                <Dropdown.Item onClick={action(remove_comma_suffix)} title="行尾删除逗号">行尾去逗号</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <Dropdown>
+                            <Dropdown.Toggle className="border">命名转换 ▾</Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={action(to_upper_case)} title="转为大写">UPPERCASE</Dropdown.Item>
+                                <Dropdown.Item onClick={action(to_lower_case)} title="转为小写">lowercase</Dropdown.Item>
+                                <Dropdown.Item onClick={action(to_camel_case)} title="转为驼峰命名">camelCase</Dropdown.Item>
+                                <Dropdown.Item onClick={action(to_snake_case)} title="转为下划线命名">snake_case</Dropdown.Item>
+                                <Dropdown.Item onClick={action(to_kebab_case)} title="转为短横线命名">kebab-case</Dropdown.Item>
+                                <Dropdown.Item onClick={action(to_const_case)} title="转为大写下划线命名">SNAKE_CASE</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <Dropdown>
+                            <Dropdown.Toggle className="border">更多 ▾</Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={action(trim_line_space)} title="删除行两边的空白">去除两边空白</Dropdown.Item>
+                                <Dropdown.Item onClick={action(sperate_with_blank_row)} title="两行中间增加空行">空白隔行</Dropdown.Item>
+                                <Dropdown.Item onClick={action(space_to_tab)} title="连续空白转为制表符">空白拆表</Dropdown.Item>
+                                <Dropdown.Item onClick={action(csv_comma_to_tab)} title="CSV逗号拆表">CSV逗号拆表</Dropdown.Item>
+                                <Dropdown.Item onClick={copy_as_table} title="复制Tab分割为表格">复制表格</Dropdown.Item>
+                                <Dropdown.Item onClick={() => setRegexDialogShow(true)}>正则筛选与提取</Dropdown.Item>
+                                <Dropdown.Item onClick={() => setStatisticsShow(true)}>行统计</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                </EditorActions>
+            </div>
 
             <Modal show={statisticsShow} onHide={() => setStatisticsShow(false)} centered>
                 <Modal.Header closeButton>
@@ -218,8 +209,8 @@ const TextProcPage: React.FC = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form.Group>
-                        <Form.Label>预设</Form.Label>
-                        <select
+                        <Form.Label htmlFor="textproc-field-1">预设</Form.Label>
+                        <select id="textproc-field-1"
                             className="ui-control"
                             defaultValue=""
                             onChange={e => {
@@ -237,9 +228,9 @@ const TextProcPage: React.FC = () => {
                         </select>
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>正则表达式</Form.Label>
+                        <Form.Label htmlFor="textproc-field-2">正则表达式</Form.Label>
                         <InputGroup>
-                            <Form.Control
+                            <Form.Control id="textproc-field-2"
                                 list="regex-history"
                                 onChange={e => setRegexValue(e.target.value)}
                                 value={regexValue}
@@ -267,8 +258,8 @@ const TextProcPage: React.FC = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form.Group>
-                        <Form.Label>查找内容</Form.Label>
-                        <Form.Control
+                        <Form.Label htmlFor="textproc-field-3">查找内容</Form.Label>
+                        <Form.Control id="textproc-field-3"
                             list="replace-from-history"
                             value={replaceSourceValue}
                             onChange={e => setReplaceSourceValue(e.target.value)}
@@ -280,8 +271,8 @@ const TextProcPage: React.FC = () => {
                         </datalist>
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>替换为</Form.Label>
-                        <Form.Control
+                        <Form.Label htmlFor="textproc-field-4">替换为</Form.Label>
+                        <Form.Control id="textproc-field-4"
                             list="replace-to-history"
                             value={replaceDestinationValue}
                             onChange={e => setReplaceDestinationValue(e.target.value)}
@@ -316,8 +307,8 @@ const TextProcPage: React.FC = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form.Group>
-                        <Form.Label>前缀</Form.Label>
-                        <Form.Control
+                        <Form.Label htmlFor="textproc-field-5">前缀</Form.Label>
+                        <Form.Control id="textproc-field-5"
                             list="prefix-history"
                             value={prefixValue}
                             onChange={e => setPrefixValue(e.target.value)}
@@ -329,8 +320,8 @@ const TextProcPage: React.FC = () => {
                         </datalist>
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>后缀</Form.Label>
-                        <Form.Control
+                        <Form.Label htmlFor="textproc-field-6">后缀</Form.Label>
+                        <Form.Control id="textproc-field-6"
                             list="suffix-history"
                             value={suffixValue}
                             onChange={e => setSuffixValue(e.target.value)}
@@ -355,8 +346,8 @@ const TextProcPage: React.FC = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form.Group>
-                        <Form.Label>分隔符</Form.Label>
-                        <Form.Control
+                        <Form.Label htmlFor="textproc-field-7">分隔符</Form.Label>
+                        <Form.Control id="textproc-field-7"
                             list="split-join-history"
                             value={splitJoinValue}
                             onChange={e => setSplitJoinValue(e.target.value)}

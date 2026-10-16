@@ -1,15 +1,23 @@
-import { Suspense, lazy, useMemo, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { Dialog } from '@base-ui/react/dialog';
-import { Menu } from '@base-ui/react/menu';
-import { Routes, Route, Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Tooltip } from '@base-ui/react/tooltip';
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 
 import FrontPage from '@/pages/frontpage';
 import KcalCalcPage from '@/pages/kcal';
 import AboutPage from '@/pages/about';
-import { Container } from '@/components/ui';
+import ToolIcon from '@/components/layout/tool-icon';
+import ToolNavItem from '@/components/layout/tool-nav-item';
+import ToolSearch from '@/components/layout/tool-search';
+import ToolDescription from '@/components/layout/tool-description';
+import { useStoredState } from '@/hooks/use-stored-state';
+import { tools, toolGroups } from '@/components/layout/tools';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const TimestampPage = lazy(() => import('./pages/timestamp'));
+const RandomPage = lazy(() => import('./pages/random'));
+const UuidPage = lazy(() => import('./pages/uuid'));
 const ComparePage = lazy(() => import('./pages/compare'));
 const JsonPage = lazy(() => import('./pages/json'));
 const EncoderPage = lazy(() => import('./pages/encoder'));
@@ -23,104 +31,51 @@ const JwtPage = lazy(() => import('./pages/jwt'));
 const BarcodePage = lazy(() => import('./pages/barcode'));
 const ImageCompressPage = lazy(() => import('./pages/imagecompress'));
 
-const primaryLinks = [
-  { to: '/json', label: 'JSON' },
-  { to: '/encoder', label: '编解码' },
-  { to: '/textproc', label: '文本处理' },
-  { to: '/compare', label: '对比工具' },
-];
-
-const otherLinks = [
-  { to: '/kcal', label: '大卡计算' },
-  { to: '/code', label: '密码机' },
-  { to: '/lazygo', label: 'Go 生成器' },
-  { to: '/sqlfmt', label: 'SQL 格式化' },
-  { to: '/lottery', label: '彩票选号机' },
-  { to: '/pricecalc', label: '比价计算机' },
-  { to: '/jwt', label: 'JWT 生成器' },
-  { to: '/imagecompress', label: '图片压缩' },
-  { to: '/qrcode', label: '二维码生成' },
-];
-
 const cn = (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(' ');
 
 function App() {
   const location = useLocation();
-  const navigate = useNavigate();
+  const [sidebarExpanded, setSidebarExpanded] = useStoredState('layout.sidebarExpanded', false);
   const [navOpenPath, setNavOpenPath] = useState<string | null>(null);
   const navOpen = navOpenPath === location.pathname;
+  const currentTool = tools.find((tool) => tool.path === location.pathname);
+  const isHome = location.pathname === '/';
 
-  const otherActive = useMemo(
-    () => otherLinks.some((item) => item.to === location.pathname),
-    [location.pathname],
+  useEffect(() => {
+    document.title = `${currentTool?.title ?? (isHome ? '工具总览' : '关于')} · 鱼 sifu 工具包`;
+  }, [currentTool, isHome]);
+
+  const navigation = (
+    <Tooltip.Provider delay={300}><nav className="tool-navigation" aria-label="工具导航">
+      <ToolNavItem to="/" label="工具总览" icon="home" expanded={sidebarExpanded} />
+      {toolGroups.map((group) => (
+        <div className="tool-nav-group" key={group}>
+          <div className="tool-nav-group-label">{group}</div>
+          {tools.filter((tool) => tool.group === group).map((tool) => (
+            <ToolNavItem key={tool.path} to={tool.path} label={tool.title} icon={tool.icon} expanded={sidebarExpanded} />
+          ))}
+        </div>
+      ))}
+      <div className="tool-nav-group">
+        <ToolNavItem to="/about" label="关于工具包" icon="info" expanded={sidebarExpanded} />
+      </div>
+    </nav></Tooltip.Provider>
   );
 
   return (
     <>
+      <a className="app-skip-link" href="#main-content">跳转到内容</a>
       <header className="app-shell-header">
-        <Container>
-          <div className="app-shell-header-row">
-            <Link className="app-brand" to="/">
-              <img src="/images/android-chrome-192x192.png" width="30" height="30" className="d-inline-block align-top me-2" />
-              <span className={cn('app-brand-label', location.pathname === '/' && 'is-active')}>鱼 sifu 工具包</span>
-            </Link>
-            <button
-              type="button"
-              className="app-nav-toggle"
-              aria-controls="app-mobile-drawer"
-              aria-expanded={navOpen}
-              onClick={() => setNavOpenPath((openPath) => (openPath === location.pathname ? null : location.pathname))}
-            >
-              <span className="app-nav-toggle-icon" aria-hidden="true">
-                <span></span>
-                <span></span>
-                <span></span>
-              </span>
-              <span className="app-visually-hidden">菜单</span>
-            </button>
-            <div className="app-nav-panel">
-              <nav className="app-nav" aria-label="主导航">
-                <div className="app-nav-section">
-                  {primaryLinks.map((item) => (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      className={({ isActive }) => cn('app-nav-link', isActive && 'is-active')}
-                    >
-                      {item.label}
-                    </NavLink>
-                  ))}
-                  <Menu.Root modal={false}>
-                    <Menu.Trigger className={cn('app-nav-trigger', otherActive && 'is-active')}>
-                      其他
-                      <span className="app-nav-caret" aria-hidden="true">▾</span>
-                    </Menu.Trigger>
-                    <Menu.Portal>
-                      <Menu.Positioner align="start" sideOffset={8}>
-                        <Menu.Popup className="ui-dropdown-menu app-nav-dropdown">
-                          {otherLinks.map((item) => (
-                            <Menu.Item
-                              key={item.to}
-                              className={cn('app-nav-dropdown-item', location.pathname === item.to && 'is-active')}
-                              onClick={() => navigate(item.to)}
-                            >
-                              {item.label}
-                            </Menu.Item>
-                          ))}
-                        </Menu.Popup>
-                      </Menu.Positioner>
-                    </Menu.Portal>
-                  </Menu.Root>
-                </div>
-                <div className="app-nav-section app-nav-section--end">
-                  <NavLink to="/about" className={({ isActive }) => cn('app-nav-link', isActive && 'is-active')}>
-                    关于
-                  </NavLink>
-                </div>
-              </nav>
-            </div>
-          </div>
-        </Container>
+        <div className="app-shell-header-row">
+          <Link className="app-brand" to="/">
+            <img src="/images/android-chrome-192x192.png" width="32" height="32" alt="" />
+            <span>鱼 sifu <span className="app-brand-subtitle">工具包</span></span>
+          </Link>
+          <ToolSearch />
+          <button type="button" className="app-nav-toggle" aria-label="打开工具导航" aria-controls="app-mobile-drawer" aria-expanded={navOpen} onClick={() => setNavOpenPath(navOpen ? null : location.pathname)}>
+            <span className="app-nav-toggle-icon" aria-hidden="true"><span /><span /><span /></span>
+          </button>
+        </div>
       </header>
       <Dialog.Root
         open={navOpen}
@@ -136,61 +91,58 @@ function App() {
                   <span aria-hidden="true">×</span>
                 </Dialog.Close>
               </div>
-              <div className="app-mobile-drawer__body">
-                <div className="app-mobile-drawer__section">
-                  <div className="app-mobile-drawer__section-title">常用</div>
-                  {primaryLinks.map((item) => (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      className={({ isActive }) => cn('app-mobile-drawer__link', isActive && 'is-active')}
-                    >
-                      {item.label}
-                    </NavLink>
-                  ))}
-                </div>
-                <div className="app-mobile-drawer__section">
-                  <div className="app-mobile-drawer__section-title">其他</div>
-                  {otherLinks.map((item) => (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      className={({ isActive }) => cn('app-mobile-drawer__link', isActive && 'is-active')}
-                    >
-                      {item.label}
-                    </NavLink>
-                  ))}
-                </div>
-                <div className="app-mobile-drawer__section">
-                  <div className="app-mobile-drawer__section-title">说明</div>
-                  <NavLink to="/about" className={({ isActive }) => cn('app-mobile-drawer__link', isActive && 'is-active')}>
-                    关于
-                  </NavLink>
-                </div>
-              </div>
+              <div className="app-mobile-drawer__body">{navigation}</div>
             </Dialog.Popup>
           </div>
         </Dialog.Portal>
       </Dialog.Root>
-      <Container className="app-shell-content">
-        <Routes>
-          <Route path="/" element={<FrontPage />} />
-          <Route path="/compare" element={<Suspense><ComparePage /></Suspense>} />
-          <Route path="/json" element={<Suspense><JsonPage /></Suspense>} />
-          <Route path="/encoder" element={<Suspense><EncoderPage /></Suspense>} />
-          <Route path="/kcal" element={<KcalCalcPage />} />
-          <Route path="/code" element={<Suspense><CodeCalcPage /></Suspense>} />
-          <Route path="/sqlfmt" element={<Suspense><SQLFmtPage /></Suspense>} />
-          <Route path="/textproc" element={<Suspense><TextProcPage /></Suspense>} />
-          <Route path="/lottery" element={<Suspense><LotteryPage /></Suspense>} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/lazygo" element={<Suspense><LazyGoPage /></Suspense>} />
-          <Route path="/pricecalc" element={<Suspense><PriceCalcPage /></Suspense>} />
-          <Route path="/jwt" element={<Suspense><JwtPage /></Suspense>} />
-          <Route path="/imagecompress" element={<Suspense><ImageCompressPage /></Suspense>} />
-          <Route path="/qrcode" element={<Suspense><BarcodePage /></Suspense>} />
-        </Routes>
-      </Container>
+      <div className={cn('app-layout', sidebarExpanded && 'is-sidebar-expanded')}>
+        <aside id="app-desktop-sidebar" className="app-sidebar">
+          <button
+            type="button"
+            className="app-sidebar-toggle"
+            aria-label={sidebarExpanded ? '收起导航' : '展开导航'}
+            title={sidebarExpanded ? '收起导航' : '展开导航'}
+            aria-expanded={sidebarExpanded}
+            aria-controls="app-desktop-sidebar"
+            onClick={() => setSidebarExpanded((expanded) => !expanded)}
+          >
+            <ToolIcon name="sidebar" /><span>收起导航</span>
+          </button>
+          {navigation}
+        </aside>
+        <main id="main-content" className="app-shell-content" tabIndex={-1}>
+          {!isHome && <div className="page-heading">
+            <h1>{currentTool?.title ?? '关于工具包'}</h1>
+            {currentTool?.description && <ToolDescription key={currentTool.path} title={currentTool.title} description={currentTool.description} />}
+          </div>}
+          <div className={cn('page-workspace', currentTool && `page-workspace--${currentTool.layout}`, location.pathname === '/about' && 'page-workspace--about')}>
+            <Suspense fallback={<div className="page-loading" role="status">正在加载工具…</div>}>
+              <Routes>
+                <Route path="/" element={<FrontPage />} />
+                <Route path="/timestamp" element={<TimestampPage />} />
+                <Route path="/random" element={<RandomPage />} />
+                <Route path="/uuid" element={<UuidPage />} />
+                <Route path="/compare" element={<ComparePage />} />
+                <Route path="/json" element={<JsonPage />} />
+                <Route path="/encoder" element={<EncoderPage />} />
+                <Route path="/kcal" element={<KcalCalcPage />} />
+                <Route path="/code" element={<CodeCalcPage />} />
+                <Route path="/sqlfmt" element={<SQLFmtPage />} />
+                <Route path="/textproc" element={<TextProcPage />} />
+                <Route path="/lottery" element={<LotteryPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/lazygo" element={<LazyGoPage />} />
+                <Route path="/pricecalc" element={<PriceCalcPage />} />
+                <Route path="/jwt" element={<JwtPage />} />
+                <Route path="/imagecompress" element={<ImageCompressPage />} />
+                <Route path="/qrcode" element={<BarcodePage />} />
+              </Routes>
+            </Suspense>
+          </div>
+          <footer className="app-footer"><span>鱼 sifu 工具包</span></footer>
+        </main>
+      </div>
       <ToastContainer />
     </>
   )

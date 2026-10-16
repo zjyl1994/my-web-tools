@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
-import fs from 'fs';
 import path from 'path';
 
 const foldedLazyPages = new Set([
@@ -13,16 +12,7 @@ const foldedLazyPages = new Set([
     'barcode',
 ]);
 
-const shortcutPages = new Set([
-    'compare',
-    'json',
-    'encoder',
-    'textproc',
-    'code',
-]);
-
 const foldedLazyChunkFiles = new Set<string>();
-const shortcutChunkFiles = new Set<string>();
 
 const getNodeModulePackageName = (id: string) => {
     const normalizedId = id.split(path.sep).join('/');
@@ -47,7 +37,6 @@ const trackFoldedLazyChunks = () => ({
     name: 'track-folded-lazy-chunks',
     generateBundle(_: unknown, bundle: Record<string, { type: string; isDynamicEntry?: boolean; facadeModuleId?: string | null; fileName: string }>) {
         foldedLazyChunkFiles.clear();
-        shortcutChunkFiles.clear();
 
         for (const output of Object.values(bundle)) {
             if (output.type !== 'chunk' || !output.facadeModuleId) {
@@ -65,10 +54,6 @@ const trackFoldedLazyChunks = () => ({
             if (output.isDynamicEntry && foldedLazyPages.has(pageName)) {
                 foldedLazyChunkFiles.add(output.fileName);
             }
-
-            if (shortcutPages.has(pageName)) {
-                shortcutChunkFiles.add(output.fileName);
-            }
         }
     },
 });
@@ -83,7 +68,6 @@ export default defineConfig({
     },
     define: {
         __BUILD_TIMESTAMP__: new Date().getTime(),
-        __README_CONTENT__: JSON.stringify(fs.readFileSync(path.resolve(__dirname, 'README.md'), 'utf-8')),
     },
     plugins: [
         trackFoldedLazyChunks(),
@@ -95,7 +79,6 @@ export default defineConfig({
                 'images/apple-touch-icon.png',
                 'images/favicon-16x16.png',
                 'images/favicon-32x32.png',
-                'images/shortcuts-icon.png',
                 'images/circuit.png',
             ],
             manifest: {
@@ -120,63 +103,6 @@ export default defineConfig({
                         type: 'image/png'
                     }
                 ],
-                shortcuts: [
-                    {
-                        name: '对比工具',
-                        url: '/compare',
-                        icons: [
-                            {
-                                src: 'images/shortcuts-icon.png',
-                                sizes: '96x96',
-                                type: 'image/png'
-                            }
-                        ],
-                    },
-                    {
-                        name: 'JSON',
-                        url: '/json',
-                        icons: [
-                            {
-                                src: 'images/shortcuts-icon.png',
-                                sizes: '96x96',
-                                type: 'image/png'
-                            }
-                        ],
-                    },
-                    {
-                        name: '编解码',
-                        url: '/encoder',
-                        icons: [
-                            {
-                                src: 'images/shortcuts-icon.png',
-                                sizes: '96x96',
-                                type: 'image/png'
-                            }
-                        ],
-                    },
-                    {
-                        name: '文本处理',
-                        url: '/textproc',
-                        icons: [
-                            {
-                                src: 'images/shortcuts-icon.png',
-                                sizes: '96x96',
-                                type: 'image/png'
-                            }
-                        ],
-                    },
-                    {
-                        name: '密码机',
-                        url: '/code',
-                        icons: [
-                            {
-                                src: 'images/shortcuts-icon.png',
-                                sizes: '96x96',
-                                type: 'image/png'
-                            }
-                        ],
-                    }
-                ]
             },
             workbox: {
                 globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
@@ -186,13 +112,7 @@ export default defineConfig({
                 ],
                 manifestTransforms: [
                     async (entries) => ({
-                        manifest: entries.filter((entry) => {
-                            if (shortcutChunkFiles.has(entry.url)) {
-                                return true;
-                            }
-
-                            return !foldedLazyChunkFiles.has(entry.url);
-                        }),
+                        manifest: entries.filter((entry) => !foldedLazyChunkFiles.has(entry.url)),
                         warnings: [],
                     }),
                 ],

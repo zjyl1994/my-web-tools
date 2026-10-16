@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, Card } from '@/components/ui';
 import './style.css';
+import ToolIcon from '@/components/layout/tool-icon';
 
 type Format = 'png' | 'jpeg' | 'webp';
 type Source = { file: File; image: HTMLImageElement };
@@ -121,7 +122,6 @@ export default function ImageCompressPage() {
   return (
     <div className="image-compress">
       <div className="image-compress-heading">
-        <div><h1>图片压缩</h1><p>缩小尺寸，轻装分享。图片仅在本机处理。</p></div>
         <Button onClick={() => inputRef.current?.click()}>{source ? '更换图片' : '选择图片'}</Button>
         <input ref={inputRef} type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" hidden onChange={(event) => {
           const next = event.target.files?.[0];
@@ -137,10 +137,10 @@ export default function ImageCompressPage() {
       <Card>
         <div className="image-compress-preview" aria-busy={Boolean(loading || saving)}>
           <canvas ref={canvasRef} hidden={!source} aria-label="缩放后的图片预览" />
-          {!source && <button type="button" className="image-compress-empty" disabled={loading} onClick={() => inputRef.current?.click()}><span aria-hidden="true">▧</span><span>{loading ? '正在读取图片…' : '点击选择图片，或 Ctrl / Cmd + V 粘贴'}</span><small>支持 PNG / JPG / WEBP</small></button>}
+          {!source && <button type="button" className="image-compress-empty" disabled={loading} onClick={() => inputRef.current?.click()}><ToolIcon name="image" /><span>{loading ? '正在读取图片…' : '点击选择图片，或 Ctrl / Cmd + V 粘贴'}</span><small>支持 PNG / JPG / WEBP</small></button>}
         </div>
         <Card.Body>
-          <input id="image-scale" aria-label="缩放比例" className="image-compress-slider" type="range" min="0.01" max="100" step="any" value={scale} disabled={!source} onChange={(event) => setScale(Number(event.target.value))} />
+          <input id="image-scale" aria-label="缩放比例" aria-valuetext={`${Number(scale.toFixed(2))}%`} className="image-compress-slider" type="range" min="0.01" max="100" step="any" value={scale} disabled={!source} onChange={(event) => setScale(Number(event.target.value))} />
           <div className="image-compress-hint"><span>0.01%</span><output htmlFor="image-scale">{Number(scale.toFixed(2))}%</output><span>100%</span></div>
           <dl className="image-compress-stats">
             <div><dt>原始分辨率</dt><dd>{source ? `${source.image.naturalWidth} × ${source.image.naturalHeight}` : '—'}</dd></div>
@@ -150,7 +150,7 @@ export default function ImageCompressPage() {
           </dl>
           <div className="image-compress-footer">
             <fieldset><legend>保存格式</legend>{(['png', 'jpeg', 'webp'] as const).map((item) => <label key={item}><input type="radio" name="image-format" value={item} checked={format === item} onChange={() => setFormat(item)} />{item === 'jpeg' ? 'JPG' : item.toUpperCase()}</label>)}</fieldset>
-            <Button className="image-compress-download" disabled={!currentOutput || loading || Boolean(error)} onClick={download}>下载图片</Button>
+            <Button variant="primary" className="image-compress-download" disabled={!currentOutput || loading || Boolean(error)} onClick={download}>下载图片</Button>
           </div>
           <div className="image-compress-summary">
             <p className="image-compress-note" aria-live="polite">{difference !== null && (difference >= 0 ? `体积减少 ${difference.toFixed(1)}%` : `体积增加 ${Math.abs(difference).toFixed(1)}%，可尝试其他格式或继续缩小尺寸。`)}</p>

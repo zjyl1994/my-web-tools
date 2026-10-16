@@ -4,7 +4,7 @@ import { Menu } from '@base-ui/react/menu';
 
 const cn = (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(' ');
 
-type ButtonVariant = 'light' | 'danger';
+type ButtonVariant = 'light' | 'danger' | 'primary';
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
@@ -15,7 +15,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       type={type}
-      className={cn('ui-button', variant === 'danger' && 'ui-button--danger', className)}
+      className={cn('ui-button', variant === 'danger' && 'ui-button--danger', variant === 'primary' && 'ui-button--primary', className)}
       {...props}
     />
   ),
@@ -191,7 +191,7 @@ const DropdownToggle = React.forwardRef<HTMLButtonElement, ButtonProps>(
     <Menu.Trigger
       ref={ref}
       type={type}
-      className={cn('ui-button', variant === 'danger' && 'ui-button--danger', className)}
+      className={cn('ui-button', variant === 'danger' && 'ui-button--danger', variant === 'primary' && 'ui-button--primary', className)}
       {...props}
     />
   ),

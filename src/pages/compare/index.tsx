@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as LosslessJSON from 'lossless-json';
 import { toast } from 'react-toastify';
 
 import { Button, ButtonGroup, ButtonToolbar } from '@/components/ui';
 import CodeMergeView from '@/components/ui/code-merge-view';
 import { useTextareaResize } from '@/hooks/use-basic';
+import { useStoredState } from '@/hooks/use-stored-state';
 
 type CompareMode = 'text' | 'json';
 const STORAGE_KEY_PREFIX = 'textarea_history_';
@@ -17,7 +18,7 @@ const ComparePage: React.FC = () => {
   const [ignoreArrayOrder, setIgnoreArrayOrder] = useStoredState('compare.ignore_array_order', false);
   const [leftValue, setLeftValue] = useStoredTextareaState('compare.left');
   const [rightValue, setRightValue] = useStoredTextareaState('compare.right');
-  const [hasShownJsonFallbackNotice, setHasShownJsonFallbackNotice] = useState(false);
+  const hasShownJsonFallbackNotice = useRef(false);
 
   useEffect(() => {
     if (mode !== 'json') {
@@ -26,16 +27,16 @@ const ComparePage: React.FC = () => {
 
     if (!isValidJsonInput(leftValue) || !isValidJsonInput(rightValue)) {
       setMode('text');
-      if (!hasShownJsonFallbackNotice) {
+      if (!hasShownJsonFallbackNotice.current) {
         toast.info('检测到非 JSON 内容，已自动切回文本模式', { autoClose: 2500 });
-        setHasShownJsonFallbackNotice(true);
+        hasShownJsonFallbackNotice.current = true;
       }
     }
   }, [hasShownJsonFallbackNotice, leftValue, mode, rightValue, setMode]);
 
   useEffect(() => {
     if (mode === 'json' && isValidJsonInput(leftValue) && isValidJsonInput(rightValue)) {
-      setHasShownJsonFallbackNotice(false);
+      hasShownJsonFallbackNotice.current = false;
     }
   }, [leftValue, mode, rightValue]);
 
@@ -93,6 +94,7 @@ const ComparePage: React.FC = () => {
           <ButtonGroup>
             <Button
               variant="light"
+              aria-pressed={mode === 'text'}
               className={`border${mode === 'text' ? ' is-active' : ''}`}
               onClick={() => setMode('text')}
             >
@@ -100,6 +102,7 @@ const ComparePage: React.FC = () => {
             </Button>
             <Button
               variant="light"
+              aria-pressed={mode === 'json'}
               className={`border${mode === 'json' ? ' is-active' : ''}`}
               onClick={() => setMode('json')}
             >
@@ -111,6 +114,7 @@ const ComparePage: React.FC = () => {
             <ButtonGroup>
               <Button
                 variant="light"
+                aria-pressed={ignoreBlankLines}
                 className={`border${ignoreBlankLines ? ' is-active' : ''}`}
                 onClick={() => setIgnoreBlankLines((current) => !current)}
               >
@@ -118,6 +122,7 @@ const ComparePage: React.FC = () => {
               </Button>
               <Button
                 variant="light"
+                aria-pressed={compareAfterSort}
                 className={`border${compareAfterSort ? ' is-active' : ''}`}
                 onClick={() => setCompareAfterSort((current) => !current)}
               >
@@ -128,6 +133,7 @@ const ComparePage: React.FC = () => {
             <ButtonGroup>
               <Button
                 variant="light"
+                aria-pressed={ignoreArrayOrder}
                 className={`border${ignoreArrayOrder ? ' is-active' : ''}`}
                 onClick={() => setIgnoreArrayOrder((current) => !current)}
               >
@@ -225,27 +231,5 @@ const useStoredTextareaState = (historyType: string, defaultValue = '') => {
   return useStoredState(storageKey, defaultValue);
 };
 
-const useStoredState = <T,>(storageKey: string, defaultValue: T) => {
-  const [value, setValue] = useState<T>(() => readStoredValue(storageKey, defaultValue));
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(value));
-    } catch {
-      // ignore storage failures
-    }
-  }, [storageKey, value]);
-
-  return [value, setValue] as const;
-};
-
-const readStoredValue = <T,>(storageKey: string, defaultValue: T): T => {
-  try {
-    const storedValue = localStorage.getItem(storageKey);
-    return storedValue ? JSON.parse(storedValue) as T : defaultValue;
-  } catch {
-    return defaultValue;
-  }
-};
 
 export default ComparePage;

@@ -86,12 +86,12 @@ export const useBasic = (defaultValue: string, historyType: string) => {
     const copy = useCopy(value);
     const paste = usePaste(setValue);
 
-    const functionButtonGroup = <ButtonGroup className="me-2 mt-2">
-        <Button variant="light" className="border" onClick={copy}>复制</Button>
-        <Button variant="light" className="border" onClick={paste}>粘贴</Button>
-        <Button variant="light" className="border" onClick={() => { setValue(''); clearHistory(); }}>清空</Button>
-        <Button variant="light" className="border" onClick={undo} disabled={!canUndo}>撤销</Button>
-        <Button variant="light" className="border" onClick={redo} disabled={!canRedo}>重做</Button>
+    const functionButtonGroup = <ButtonGroup>
+        <Button variant="light" onClick={paste}>粘贴</Button>
+        <Button variant="light" onClick={copy}>复制</Button>
+        <Button variant="light" onClick={undo} disabled={!canUndo}>撤销</Button>
+        <Button variant="light" onClick={redo} disabled={!canRedo}>重做</Button>
+        <Button variant="light" onClick={() => setValue('')}>清空</Button>
     </ButtonGroup>
 
     useHotkeys('ctrl+z', undo);
@@ -103,12 +103,17 @@ export const useBasic = (defaultValue: string, historyType: string) => {
 
 export const useTextareaResize = <T extends HTMLElement = HTMLTextAreaElement>(textareaType: string, defaultRows: number) => {
     const storageKey = `${TEXTAREA_ROWS_KEY_PREFIX}${textareaType}`;
+    const defaultVisibleRows = useCallback(() => {
+        const lineSize = parseFloat(getComputedStyle(document.documentElement).fontSize) * 1.5;
+        const availableRows = Math.max(8, Math.floor((window.innerHeight - 360) / lineSize));
+        return Math.min(defaultRows, window.innerWidth <= 800 ? 12 : defaultRows, availableRows);
+    }, [defaultRows]);
     const [rows, setRows] = useState(() => {
         const savedRows = localStorage.getItem(storageKey);
-        if (!savedRows) return defaultRows;
+        if (!savedRows) return defaultVisibleRows();
 
         const parsedRows = parseInt(savedRows, 10);
-        return Number.isFinite(parsedRows) && parsedRows > 0 ? parsedRows : defaultRows;
+        return Number.isFinite(parsedRows) && parsedRows > 0 ? parsedRows : defaultVisibleRows();
     });
     const textareaRef = useRef<T | null>(null);
     const lineHeight = useRef(0);
@@ -229,8 +234,9 @@ export const useTextareaResize = <T extends HTMLElement = HTMLTextAreaElement>(t
     }, [rows]);
 
     const resetRows = () => {
-        setRows(defaultRows);
-        currentRows.current = defaultRows;
+        const initialRows = defaultVisibleRows();
+        setRows(initialRows);
+        currentRows.current = initialRows;
         localStorage.removeItem(storageKey);
     };
 

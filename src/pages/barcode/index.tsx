@@ -1,7 +1,8 @@
+import EditorActions from '@/components/ui/editor-actions';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import QRCode from 'qrcode';
-import { Button, ButtonGroup, ButtonToolbar, Card, Form, InputGroup } from '@/components/ui';
+import { Button, Card, Form, InputGroup } from '@/components/ui';
 import { useCopy } from '@/hooks/use-basic';
 
 type QRTemplate = 'text' | 'url' | 'wifi' | 'vcard' | 'phone' | 'sms' | 'email';
@@ -30,7 +31,7 @@ type QRTemplateState = {
 const templateOptions: Array<{ value: QRTemplate; label: string; helper: string }> = [
     { value: 'text', label: '文本', helper: '适合普通文本、口令和短消息。' },
     { value: 'url', label: '网址', helper: '扫码后直接打开网页或应用落地页。' },
-    { value: 'wifi', label: 'WiFi', helper: '扫码快速加入无线网络。' },
+    { value: 'wifi', label: 'WiFi', helper: '扫码加入无线网络。' },
     { value: 'vcard', label: '名片', helper: '生成联系人名片二维码，便于通讯录导入。' },
     { value: 'phone', label: '电话', helper: '扫码后直接拨打电话。' },
     { value: 'sms', label: '短信', helper: '扫码后预填号码和短信内容。' },
@@ -170,8 +171,8 @@ const BarcodePage: React.FC = () => {
             case 'text':
                 return (
                     <Form.Group>
-                        <Form.Label>文本内容</Form.Label>
-                        <Form.Control
+                        <Form.Label htmlFor="barcode-field-1">文本内容</Form.Label>
+                        <Form.Control id="barcode-field-1"
                             as="textarea"
                             rows={6}
                             spellCheck={false}
@@ -185,8 +186,8 @@ const BarcodePage: React.FC = () => {
             case 'url':
                 return (
                     <Form.Group>
-                        <Form.Label>网址</Form.Label>
-                        <Form.Control
+                        <Form.Label htmlFor="barcode-field-2">网址</Form.Label>
+                        <Form.Control id="barcode-field-2"
                             type="url"
                             value={current.url.value}
                             onChange={(e) => updateTemplateField('url', 'value', e.target.value)}
@@ -199,16 +200,16 @@ const BarcodePage: React.FC = () => {
                     <>
                         <div className="barcode-grid">
                             <Form.Group>
-                                <Form.Label>WiFi 名称</Form.Label>
-                                <Form.Control
+                                <Form.Label htmlFor="barcode-field-3">WiFi 名称</Form.Label>
+                                <Form.Control id="barcode-field-3"
                                     value={current.wifi.ssid}
                                     onChange={(e) => updateTemplateField('wifi', 'ssid', e.target.value)}
                                     placeholder="MyWiFi"
                                 />
                             </Form.Group>
                             <Form.Group>
-                                <Form.Label>加密方式</Form.Label>
-                                <select
+                                <Form.Label htmlFor="barcode-field-4">加密方式</Form.Label>
+                                <select id="barcode-field-4"
                                     className="ui-control"
                                     value={current.wifi.security}
                                     onChange={(e) => updateTemplateField('wifi', 'security', e.target.value as QRTemplateState['wifi']['security'])}
@@ -221,8 +222,8 @@ const BarcodePage: React.FC = () => {
                         </div>
                         <div className="barcode-grid">
                             <Form.Group>
-                                <Form.Label>密码</Form.Label>
-                                <Form.Control
+                                <Form.Label htmlFor="barcode-field-5">密码</Form.Label>
+                                <Form.Control id="barcode-field-5"
                                     type="text"
                                     value={current.wifi.password}
                                     onChange={(e) => updateTemplateField('wifi', 'password', e.target.value)}
@@ -249,16 +250,16 @@ const BarcodePage: React.FC = () => {
                     <>
                         <div className="barcode-grid">
                             <Form.Group>
-                                <Form.Label>姓</Form.Label>
-                                <Form.Control
+                                <Form.Label htmlFor="barcode-field-6">姓</Form.Label>
+                                <Form.Control id="barcode-field-6"
                                     value={current.vcard.lastName}
                                     onChange={(e) => updateTemplateField('vcard', 'lastName', e.target.value)}
                                     placeholder="张"
                                 />
                             </Form.Group>
                             <Form.Group>
-                                <Form.Label>名</Form.Label>
-                                <Form.Control
+                                <Form.Label htmlFor="barcode-field-7">名</Form.Label>
+                                <Form.Control id="barcode-field-7"
                                     value={current.vcard.firstName}
                                     onChange={(e) => updateTemplateField('vcard', 'firstName', e.target.value)}
                                     placeholder="三"
@@ -267,16 +268,16 @@ const BarcodePage: React.FC = () => {
                         </div>
                         <div className="barcode-grid">
                             <Form.Group>
-                                <Form.Label>公司</Form.Label>
-                                <Form.Control
+                                <Form.Label htmlFor="barcode-field-8">公司</Form.Label>
+                                <Form.Control id="barcode-field-8"
                                     value={current.vcard.organization}
                                     onChange={(e) => updateTemplateField('vcard', 'organization', e.target.value)}
                                     placeholder="OpenAI"
                                 />
                             </Form.Group>
                             <Form.Group>
-                                <Form.Label>职位</Form.Label>
-                                <Form.Control
+                                <Form.Label htmlFor="barcode-field-9">职位</Form.Label>
+                                <Form.Control id="barcode-field-9"
                                     value={current.vcard.title}
                                     onChange={(e) => updateTemplateField('vcard', 'title', e.target.value)}
                                     placeholder="工程师"
@@ -285,16 +286,16 @@ const BarcodePage: React.FC = () => {
                         </div>
                         <div className="barcode-grid">
                             <Form.Group>
-                                <Form.Label>电话</Form.Label>
-                                <Form.Control
+                                <Form.Label htmlFor="barcode-field-10">电话</Form.Label>
+                                <Form.Control id="barcode-field-10"
                                     value={current.vcard.phone}
                                     onChange={(e) => updateTemplateField('vcard', 'phone', e.target.value)}
                                     placeholder="13800138000"
                                 />
                             </Form.Group>
                             <Form.Group>
-                                <Form.Label>邮箱</Form.Label>
-                                <Form.Control
+                                <Form.Label htmlFor="barcode-field-11">邮箱</Form.Label>
+                                <Form.Control id="barcode-field-11"
                                     type="email"
                                     value={current.vcard.email}
                                     onChange={(e) => updateTemplateField('vcard', 'email', e.target.value)}
@@ -303,8 +304,8 @@ const BarcodePage: React.FC = () => {
                             </Form.Group>
                         </div>
                         <Form.Group>
-                            <Form.Label>网址</Form.Label>
-                            <Form.Control
+                            <Form.Label htmlFor="barcode-field-12">网址</Form.Label>
+                            <Form.Control id="barcode-field-12"
                                 type="url"
                                 value={current.vcard.website}
                                 onChange={(e) => updateTemplateField('vcard', 'website', e.target.value)}
@@ -312,16 +313,16 @@ const BarcodePage: React.FC = () => {
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>地址</Form.Label>
-                            <Form.Control
+                            <Form.Label htmlFor="barcode-field-13">地址</Form.Label>
+                            <Form.Control id="barcode-field-13"
                                 value={current.vcard.address}
                                 onChange={(e) => updateTemplateField('vcard', 'address', e.target.value)}
                                 placeholder="北京市朝阳区"
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>备注</Form.Label>
-                            <Form.Control
+                            <Form.Label htmlFor="barcode-field-14">备注</Form.Label>
+                            <Form.Control id="barcode-field-14"
                                 as="textarea"
                                 rows={4}
                                 spellCheck={false}
@@ -336,8 +337,8 @@ const BarcodePage: React.FC = () => {
             case 'phone':
                 return (
                     <Form.Group>
-                        <Form.Label>电话号码</Form.Label>
-                        <Form.Control
+                        <Form.Label htmlFor="barcode-field-15">电话号码</Form.Label>
+                        <Form.Control id="barcode-field-15"
                             value={current.phone.number}
                             onChange={(e) => updateTemplateField('phone', 'number', e.target.value)}
                             placeholder="13800138000"
@@ -348,16 +349,16 @@ const BarcodePage: React.FC = () => {
                 return (
                     <>
                         <Form.Group>
-                            <Form.Label>手机号</Form.Label>
-                            <Form.Control
+                            <Form.Label htmlFor="barcode-field-16">手机号</Form.Label>
+                            <Form.Control id="barcode-field-16"
                                 value={current.sms.number}
                                 onChange={(e) => updateTemplateField('sms', 'number', e.target.value)}
                                 placeholder="13800138000"
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>短信内容</Form.Label>
-                            <Form.Control
+                            <Form.Label htmlFor="barcode-field-17">短信内容</Form.Label>
+                            <Form.Control id="barcode-field-17"
                                 as="textarea"
                                 rows={4}
                                 spellCheck={false}
@@ -373,8 +374,8 @@ const BarcodePage: React.FC = () => {
                 return (
                     <>
                         <Form.Group>
-                            <Form.Label>收件人</Form.Label>
-                            <Form.Control
+                            <Form.Label htmlFor="barcode-field-18">收件人</Form.Label>
+                            <Form.Control id="barcode-field-18"
                                 type="email"
                                 value={current.email.to}
                                 onChange={(e) => updateTemplateField('email', 'to', e.target.value)}
@@ -382,16 +383,16 @@ const BarcodePage: React.FC = () => {
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>主题</Form.Label>
-                            <Form.Control
+                            <Form.Label htmlFor="barcode-field-19">主题</Form.Label>
+                            <Form.Control id="barcode-field-19"
                                 value={current.email.subject}
                                 onChange={(e) => updateTemplateField('email', 'subject', e.target.value)}
                                 placeholder="Hello"
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>正文</Form.Label>
-                            <Form.Control
+                            <Form.Label htmlFor="barcode-field-20">正文</Form.Label>
+                            <Form.Control id="barcode-field-20"
                                 as="textarea"
                                 rows={4}
                                 spellCheck={false}
@@ -410,10 +411,10 @@ const BarcodePage: React.FC = () => {
         <div className="barcode-page">
             <div className="barcode-page__layout">
                 <Card className="barcode-page__panel">
-                    <Card.Header>二维码生成</Card.Header>
+                    <Card.Header>内容与样式</Card.Header>
                     <Card.Body>
                         <Form.Group>
-                            <Form.Label>模板</Form.Label>
+                            <div className="ui-label" id="qrcode-template-label">模板</div>
                             <div className="barcode-kind-switcher" role="tablist" aria-label="二维码模板切换">
                                 {templateOptions.map((item) => (
                                     <button
@@ -433,9 +434,9 @@ const BarcodePage: React.FC = () => {
 
                         <div className="barcode-grid">
                             <Form.Group>
-                                <Form.Label>目标宽度</Form.Label>
+                                <Form.Label htmlFor="barcode-field-21">目标宽度</Form.Label>
                                 <InputGroup>
-                                    <Form.Control
+                                    <Form.Control id="barcode-field-21"
                                         inputMode="numeric"
                                         value={width}
                                         onChange={(e) => setWidth(e.target.value.replace(/[^\d]/g, ''))}
@@ -446,8 +447,8 @@ const BarcodePage: React.FC = () => {
                             </Form.Group>
 
                             <Form.Group>
-                                <Form.Label>纠错等级</Form.Label>
-                                <select
+                                <Form.Label htmlFor="barcode-field-22">纠错等级</Form.Label>
+                                <select id="barcode-field-22"
                                     className="ui-control"
                                     value={errorLevel}
                                     onChange={(e) => setErrorLevel(e.target.value as QRErrorLevel)}
@@ -461,8 +462,8 @@ const BarcodePage: React.FC = () => {
                         </div>
 
                         <Form.Group>
-                            <Form.Label>编码内容</Form.Label>
-                            <Form.Control
+                            <Form.Label htmlFor="barcode-field-23">编码内容</Form.Label>
+                            <Form.Control id="barcode-field-23"
                                 as="textarea"
                                 rows={6}
                                 readOnly
@@ -472,14 +473,13 @@ const BarcodePage: React.FC = () => {
                             />
                         </Form.Group>
 
-                        <ButtonToolbar>
-                            <ButtonGroup className="me-2 mt-2">
-                                <Button variant="light" className="border" onClick={copyPayload} disabled={!payload.trim()}>复制内容</Button>
-                                <Button variant="light" className="border" onClick={downloadPng} disabled={loading || !imageDataUrl}>下载 PNG</Button>
-                                <Button variant="light" className="border" onClick={downloadSvg} disabled={loading || !svgMarkup}>下载 SVG</Button>
-                                <Button variant="light" className="border" onClick={resetCurrentTemplate}>重置模板</Button>
-                            </ButtonGroup>
-                        </ButtonToolbar>
+                        <EditorActions editing={<>
+                            <Button onClick={copyPayload} disabled={!payload.trim()}>复制内容</Button>
+                            <Button onClick={resetCurrentTemplate}>重置模板</Button>
+                        </>}>
+                            <Button variant="primary" onClick={downloadPng} disabled={loading || !imageDataUrl}>下载 PNG</Button>
+                            <Button onClick={downloadSvg} disabled={loading || !svgMarkup}>下载 SVG</Button>
+                        </EditorActions>
                     </Card.Body>
                 </Card>
 

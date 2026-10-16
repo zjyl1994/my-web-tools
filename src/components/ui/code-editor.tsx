@@ -2,14 +2,14 @@ import * as React from 'react';
 import { json } from '@codemirror/lang-json';
 import { foldGutter, HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { Annotation, EditorState, StateEffect } from '@codemirror/state';
-import { EditorView, lineNumbers } from '@codemirror/view';
+import { EditorView, lineNumbers, placeholder as editorPlaceholder } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 
 const codeEditorHighlightStyle = HighlightStyle.define([
-  { tag: tags.propertyName, color: '#0f766e' },
-  { tag: tags.string, color: '#1d4ed8' },
-  { tag: tags.number, color: '#b45309' },
-  { tag: [tags.bool, tags.null], color: '#7c3aed' },
+  { tag: tags.propertyName, color: 'var(--ui-syntax-key)' },
+  { tag: tags.string, color: 'var(--ui-syntax-string)' },
+  { tag: tags.number, color: 'var(--ui-syntax-number)' },
+  { tag: [tags.bool, tags.null], color: 'var(--ui-syntax-literal)' },
 ]);
 
 const externalChangeAnnotation = Annotation.define<boolean>();
@@ -17,6 +17,7 @@ const externalChangeAnnotation = Annotation.define<boolean>();
 const cn = (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(' ');
 
 export type CodeEditorProps = {
+  ariaLabel?: string;
   value: string;
   onChange: (value: string) => void;
   rows: number;
@@ -31,6 +32,7 @@ export type CodeEditorProps = {
 };
 
 export const CodeEditor = ({
+  ariaLabel = '编辑内容',
   value,
   onChange,
   rows,
@@ -57,9 +59,10 @@ export const CodeEditor = ({
   const extensions = React.useMemo(() => {
     const next = [
       lineNumbers(),
+      editorPlaceholder('输入或粘贴需要处理的内容…'),
       EditorState.readOnly.of(readOnly),
       EditorView.editable.of(!readOnly),
-      EditorView.contentAttributes.of({ spellcheck: spellCheck ? 'true' : 'false' }),
+      EditorView.contentAttributes.of({ spellcheck: spellCheck ? 'true' : 'false', 'aria-label': ariaLabel }),
       EditorView.updateListener.of((update) => {
         if (update.docChanged && !update.transactions.some((transaction) => transaction.annotation(externalChangeAnnotation))) {
           onChange(update.state.doc.toString());
@@ -84,7 +87,9 @@ export const CodeEditor = ({
     }
 
     return next;
-  }, [enableLanguageFolding, enableLanguageHighlight, language, lineWrapping, onChange, readOnly, spellCheck]);
+  }, [ariaLabel, enableLanguageFolding, enableLanguageHighlight, language, lineWrapping, onChange, readOnly, spellCheck]);
+
+  const initialEditor = React.useRef({ value, extensions });
 
   React.useEffect(() => {
     if (!editorHostRef.current || editorViewRef.current) {
@@ -93,8 +98,8 @@ export const CodeEditor = ({
 
     const view = new EditorView({
       state: EditorState.create({
-        doc: value,
-        extensions,
+        doc: initialEditor.current.value,
+        extensions: initialEditor.current.extensions,
       }),
       parent: editorHostRef.current,
     });
