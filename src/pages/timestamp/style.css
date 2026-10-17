@@ -2,7 +2,7 @@
 .timestamp-live { font-size: clamp(1rem, 2vw, 1.35rem); margin-top: 4px; font-variant-numeric: tabular-nums; }
 .timestamp-current-values { display: flex; flex-wrap: wrap; gap: 12px 28px; }
 .timestamp-current-values > div { display: flex; align-items: center; gap: 10px; }
-.timestamp-current-values > div > span { color: var(--ui-text-muted); font-size: .75rem; }
+.timestamp-current-values > div > span { color: var(--ui-text-muted); font-size: .8125rem; }
 .timestamp-current-values code { font-size: .875rem; font-variant-numeric: tabular-nums; }
 .timestamp-zone { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
 .timestamp-zone .ui-label { margin: 0; }
@@ -12,7 +12,7 @@
 .timestamp-converters h2 { font-size: .9375rem; font-weight: 600; margin: 0; }
 .timestamp-input-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 38px; margin-bottom: 8px; }
 .timestamp-input-heading .ui-label { margin: 0; }
-.timestamp-input-heading select { width: auto; min-height: 36px; padding: 4px 8px; }
+.timestamp-input-heading select { width: auto; min-height: 36px; padding: 4px 8px; border-radius: var(--ui-radius-control); }
 .timestamp-converters [aria-invalid="true"] { border-color: var(--ui-danger); }
 .timestamp-converters .ui-helper-text { min-height: 3em; margin: 8px 0 12px; }
 .timestamp-results { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--ui-border); display: flex; flex-direction: column; gap: 16px; }

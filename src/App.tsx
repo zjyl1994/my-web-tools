@@ -9,8 +9,8 @@ import AboutPage from '@/pages/about';
 import ToolIcon from '@/components/layout/tool-icon';
 import ToolNavItem from '@/components/layout/tool-nav-item';
 import ToolSearch from '@/components/layout/tool-search';
-import ToolDescription from '@/components/layout/tool-description';
 import { useStoredState } from '@/hooks/use-stored-state';
+import { usePrefersDark } from '@/hooks/use-prefers-dark';
 import { tools, toolGroups } from '@/components/layout/tools';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -33,24 +33,37 @@ const ImageCompressPage = lazy(() => import('./pages/imagecompress'));
 
 const cn = (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(' ');
 
+function PageSkeleton() {
+  return (
+    <div className="page-skeleton" role="status">
+      <span className="app-visually-hidden">正在加载工具…</span>
+      <span className="page-skeleton__bar page-skeleton__bar--block" />
+      <span className="page-skeleton__bar page-skeleton__bar--line-wide" />
+      <span className="page-skeleton__bar page-skeleton__bar--line" />
+    </div>
+  );
+}
+
 function App() {
   const location = useLocation();
   const [sidebarExpanded, setSidebarExpanded] = useStoredState('layout.sidebarExpanded', false);
   const [navOpenPath, setNavOpenPath] = useState<string | null>(null);
+  const prefersDark = usePrefersDark();
   const navOpen = navOpenPath === location.pathname;
   const currentTool = tools.find((tool) => tool.path === location.pathname);
   const isHome = location.pathname === '/';
+  const pageTitle = currentTool?.title ?? (isHome ? '工具总览' : '关于工具包');
 
   useEffect(() => {
-    document.title = `${currentTool?.title ?? (isHome ? '工具总览' : '关于')} · ${__SITE__.name}`;
-  }, [currentTool, isHome]);
+    document.title = `${pageTitle} · ${__SITE__.name}`;
+  }, [pageTitle]);
 
   const navigation = (
     <Tooltip.Provider delay={300}><nav className="tool-navigation" aria-label="工具导航">
       <ToolNavItem to="/" label="工具总览" icon="home" expanded={sidebarExpanded} />
       {toolGroups.map((group) => (
-        <div className="tool-nav-group" key={group}>
-          <div className="tool-nav-group-label">{group}</div>
+        <div className="tool-nav-group" role="group" aria-label={group} key={group}>
+          <div className="tool-nav-group-label" aria-hidden="true">{group}</div>
           {tools.filter((tool) => tool.group === group).map((tool) => (
             <ToolNavItem key={tool.path} to={tool.path} label={tool.title} icon={tool.icon} expanded={sidebarExpanded} />
           ))}
@@ -84,10 +97,10 @@ function App() {
         <Dialog.Portal>
           <div className="app-mobile-drawer-layer">
             <Dialog.Backdrop className="app-mobile-drawer-backdrop" />
-            <Dialog.Popup id="app-mobile-drawer" className="app-mobile-drawer" aria-label="移动端导航">
+            <Dialog.Popup id="app-mobile-drawer" className="app-mobile-drawer">
               <div className="app-mobile-drawer__header">
-                <div className="app-mobile-drawer__title">菜单</div>
-                <Dialog.Close className="ui-close-button" aria-label="关闭菜单">
+                <Dialog.Title className="app-mobile-drawer__title">工具导航</Dialog.Title>
+                <Dialog.Close className="ui-close-button" aria-label="关闭工具导航">
                   <span aria-hidden="true">×</span>
                 </Dialog.Close>
               </div>
@@ -104,46 +117,51 @@ function App() {
             aria-label={sidebarExpanded ? '收起导航' : '展开导航'}
             title={sidebarExpanded ? '收起导航' : '展开导航'}
             aria-expanded={sidebarExpanded}
-            aria-controls="app-desktop-sidebar"
             onClick={() => setSidebarExpanded((expanded) => !expanded)}
           >
-            <ToolIcon name="sidebar" /><span>收起导航</span>
+            <ToolIcon name="sidebar" /><span>{sidebarExpanded ? '收起导航' : '展开导航'}</span>
           </button>
           {navigation}
         </aside>
         <main id="main-content" className="app-shell-content" tabIndex={-1}>
-          {!isHome && <div className="page-heading">
-            <h1>{currentTool?.title ?? '关于工具包'}</h1>
-            {currentTool?.description && <ToolDescription key={currentTool.path} title={currentTool.title} description={currentTool.description} />}
-          </div>}
-          <div className={cn('page-workspace', currentTool && `page-workspace--${currentTool.layout}`, location.pathname === '/about' && 'page-workspace--about')}>
-            <Suspense fallback={<div className="page-loading" role="status">正在加载工具…</div>}>
-              <Routes>
-                <Route path="/" element={<FrontPage />} />
-                <Route path="/timestamp" element={<TimestampPage />} />
-                <Route path="/random" element={<RandomPage />} />
-                <Route path="/uuid" element={<UuidPage />} />
-                <Route path="/compare" element={<ComparePage />} />
-                <Route path="/json" element={<JsonPage />} />
-                <Route path="/encoder" element={<EncoderPage />} />
-                <Route path="/kcal" element={<KcalCalcPage />} />
-                <Route path="/code" element={<CodeCalcPage />} />
-                <Route path="/sqlfmt" element={<SQLFmtPage />} />
-                <Route path="/textproc" element={<TextProcPage />} />
-                <Route path="/lottery" element={<LotteryPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/lazygo" element={<LazyGoPage />} />
-                <Route path="/pricecalc" element={<PriceCalcPage />} />
-                <Route path="/jwt" element={<JwtPage />} />
-                <Route path="/imagecompress" element={<ImageCompressPage />} />
-                <Route path="/qrcode" element={<BarcodePage />} />
-              </Routes>
-            </Suspense>
+          <div className={cn(
+            'page-shell',
+            isHome && 'page-shell--home',
+            currentTool && `page-shell--${currentTool.layout}`,
+            location.pathname === '/about' && 'page-shell--about',
+          )}>
+            {!isHome && <div className="page-heading">
+              <h1>{pageTitle}</h1>
+              {currentTool?.description && <p className="page-heading__description">{currentTool.description}</p>}
+            </div>}
+            <div className={cn('page-workspace', currentTool && `page-workspace--${currentTool.layout}`, location.pathname === '/about' && 'page-workspace--about')}>
+              <Suspense fallback={<PageSkeleton />}>
+                <Routes>
+                  <Route path="/" element={<FrontPage />} />
+                  <Route path="/timestamp" element={<TimestampPage />} />
+                  <Route path="/random" element={<RandomPage />} />
+                  <Route path="/uuid" element={<UuidPage />} />
+                  <Route path="/compare" element={<ComparePage />} />
+                  <Route path="/json" element={<JsonPage />} />
+                  <Route path="/encoder" element={<EncoderPage />} />
+                  <Route path="/kcal" element={<KcalCalcPage />} />
+                  <Route path="/code" element={<CodeCalcPage />} />
+                  <Route path="/sqlfmt" element={<SQLFmtPage />} />
+                  <Route path="/textproc" element={<TextProcPage />} />
+                  <Route path="/lottery" element={<LotteryPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/lazygo" element={<LazyGoPage />} />
+                  <Route path="/pricecalc" element={<PriceCalcPage />} />
+                  <Route path="/jwt" element={<JwtPage />} />
+                  <Route path="/imagecompress" element={<ImageCompressPage />} />
+                  <Route path="/qrcode" element={<BarcodePage />} />
+                </Routes>
+              </Suspense>
+            </div>
           </div>
-          <footer className="app-footer"><span>{__SITE__.name}</span></footer>
         </main>
       </div>
-      <ToastContainer />
+      <ToastContainer theme={prefersDark ? 'dark' : 'light'} limit={3} />
     </>
   )
 }

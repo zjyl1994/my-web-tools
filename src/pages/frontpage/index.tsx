@@ -4,7 +4,7 @@ import { tools, toolGroups } from '@/components/layout/tools';
 
 export default function FrontPage() {
   return (
-    <div className="home-page">
+    <div>
       <section className="tool-directory" aria-labelledby="tool-directory-title">
         <div className="section-heading"><h1 id="tool-directory-title">全部工具</h1><span>{tools.length} 个工具</span></div>
         {toolGroups.map((group) => (

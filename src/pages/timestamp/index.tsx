@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Button, ButtonToolbar, Card, Form } from '@/components/ui';
-import { useCopy } from '@/hooks/use-basic';
+import CopyButton from '@/components/ui/copy-button';
 import { useStoredState } from '@/hooks/use-stored-state';
 import { convertInput, formatDatetime, formatOffset, parseDatetime, parseTimestamp } from './utils';
 import type { TimestampUnit, TimeZone } from './utils';
 import './style.css';
 
 function CopyValue({ id, label, value, placeholder = '等待输入' }: { id: string; label: string; value: string; placeholder?: string }) {
-  const copy = useCopy(value);
   return <div className="timestamp-output">
     <Form.Label htmlFor={id}>{label}</Form.Label>
     <div className="timestamp-value-row">
       <Form.Control id={id} className="font-monospace" value={value} placeholder={placeholder} readOnly />
-      <Button disabled={!value} onClick={copy} aria-label={`复制${label}`}>复制</Button>
+      <CopyButton text={value} disabled={!value} ariaLabel={`复制${label}`} />
     </div>
   </div>;
 }
@@ -28,8 +27,6 @@ export default function TimestampPage() {
   const datetimeConversion = convertInput(() => parseDatetime(datetime, zone));
   const parsedTimestamp = timestampConversion.result;
   const parsedDatetime = datetimeConversion.result;
-  const copyNowSeconds = useCopy(String(Math.floor(now / 1000)));
-  const copyNowMilliseconds = useCopy(String(now));
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
@@ -37,8 +34,8 @@ export default function TimestampPage() {
   }, []);
 
   const currentValues = <div className="timestamp-current-values">
-    <div><span>秒</span><code>{Math.floor(now / 1000)}</code><Button onClick={copyNowSeconds}>复制秒</Button></div>
-    <div><span>毫秒</span><code>{now}</code><Button onClick={copyNowMilliseconds}>复制毫秒</Button></div>
+    <div><span>秒</span><code>{Math.floor(now / 1000)}</code><CopyButton text={String(Math.floor(now / 1000))} label="复制秒" ariaLabel="复制当前秒时间戳" /></div>
+    <div><span>毫秒</span><code>{now}</code><CopyButton text={String(now)} label="复制毫秒" ariaLabel="复制当前毫秒时间戳" /></div>
   </div>;
 
   return (

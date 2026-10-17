@@ -35,12 +35,6 @@ export const ButtonToolbar = React.forwardRef<HTMLDivElement, React.HTMLAttribut
 
 ButtonToolbar.displayName = 'ButtonToolbar';
 
-export const Container = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => <div ref={ref} className={cn('ui-container', className)} {...props} />,
-);
-
-Container.displayName = 'Container';
-
 const CardRoot = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
   ({ className, ...props }, ref) => <section ref={ref} className={cn('ui-card', className)} {...props} />,
 );
@@ -232,10 +226,11 @@ type ModalProps = {
   onHide: () => void;
   centered?: boolean;
   fullscreen?: boolean;
+  initialFocus?: React.RefObject<HTMLElement | null>;
   children?: React.ReactNode;
 };
 
-const ModalRoot = ({ show, onHide, fullscreen, children }: ModalProps) => (
+const ModalRoot = ({ show, onHide, fullscreen, initialFocus, children }: ModalProps) => (
   <Dialog.Root
     open={show}
     onOpenChange={(open) => {
@@ -247,7 +242,7 @@ const ModalRoot = ({ show, onHide, fullscreen, children }: ModalProps) => (
     <Dialog.Portal>
       <div className="ui-dialog-layer">
         <Dialog.Backdrop className="ui-dialog-backdrop" />
-        <Dialog.Popup className={cn('ui-dialog-popup', fullscreen && 'ui-dialog-popup--fullscreen')}>
+        <Dialog.Popup className={cn('ui-dialog-popup', fullscreen && 'ui-dialog-popup--fullscreen')} initialFocus={initialFocus}>
           {children}
         </Dialog.Popup>
       </div>

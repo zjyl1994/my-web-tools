@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, Card } from '@/components/ui';
+import { Button, Card, Form } from '@/components/ui';
 import './style.css';
 import ToolIcon from '@/components/layout/tool-icon';
 
@@ -140,8 +140,12 @@ export default function ImageCompressPage() {
           {!source && <button type="button" className="image-compress-empty" disabled={loading} onClick={() => inputRef.current?.click()}><ToolIcon name="image" /><span>{loading ? '正在读取图片…' : '点击选择图片，或 Ctrl / Cmd + V 粘贴'}</span><small>支持 PNG / JPG / WEBP</small></button>}
         </div>
         <Card.Body>
-          <input id="image-scale" aria-label="缩放比例" aria-valuetext={`${Number(scale.toFixed(2))}%`} className="image-compress-slider" type="range" min="0.01" max="100" step="any" value={scale} disabled={!source} onChange={(event) => setScale(Number(event.target.value))} />
-          <div className="image-compress-hint"><span>0.01%</span><output htmlFor="image-scale">{Number(scale.toFixed(2))}%</output><span>100%</span></div>
+          <div className="image-compress-scale-heading">
+            <Form.Label htmlFor="image-scale">缩放比例</Form.Label>
+            <output htmlFor="image-scale">{Number(scale.toFixed(2))}%</output>
+          </div>
+          <input id="image-scale" aria-valuetext={`${Number(scale.toFixed(2))}%`} className="image-compress-slider" type="range" min="0.01" max="100" step="any" value={scale} disabled={!source} onChange={(event) => setScale(Number(event.target.value))} />
+          <div className="image-compress-hint"><span>0.01%</span><span>100%</span></div>
           <dl className="image-compress-stats">
             <div><dt>原始分辨率</dt><dd>{source ? `${source.image.naturalWidth} × ${source.image.naturalHeight}` : '—'}</dd></div>
             <div><dt>缩放后分辨率</dt><dd>{source ? `${width} × ${height}` : '—'}</dd></div>

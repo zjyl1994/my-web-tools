@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import QRCode from 'qrcode';
 import { Button, Card, Form, InputGroup } from '@/components/ui';
-import { useCopy } from '@/hooks/use-basic';
+import CopyButton from '@/components/ui/copy-button';
 
 type QRTemplate = 'text' | 'url' | 'wifi' | 'vcard' | 'phone' | 'sms' | 'email';
 type QRErrorLevel = 'L' | 'M' | 'Q' | 'H';
@@ -74,7 +74,6 @@ const BarcodePage: React.FC = () => {
     );
 
     const payload = useMemo(() => buildPayload(template, templateState), [template, templateState]);
-    const copyPayload = useCopy(payload);
 
     useEffect(() => {
         let cancelled = false;
@@ -109,7 +108,8 @@ const BarcodePage: React.FC = () => {
                 if (cancelled) {
                     return;
                 }
-                const message = error instanceof Error ? error.message : String(error);
+                console.error(error);
+                const message = '二维码生成失败：内容可能过长或包含无法编码的字符。请缩短内容或降低纠错等级。';
                 setRenderError(message);
                 toast.error(message, { autoClose: 8000 });
             } finally {
@@ -415,12 +415,13 @@ const BarcodePage: React.FC = () => {
                     <Card.Body>
                         <Form.Group>
                             <div className="ui-label" id="qrcode-template-label">模板</div>
-                            <div className="barcode-kind-switcher" role="tablist" aria-label="二维码模板切换">
+                            <div className="barcode-kind-switcher" role="group" aria-labelledby="qrcode-template-label">
                                 {templateOptions.map((item) => (
                                     <button
                                         key={item.value}
                                         type="button"
                                         className={`barcode-kind-switcher__item${item.value === template ? ' is-active' : ''}`}
+                                        aria-pressed={item.value === template}
                                         onClick={() => setTemplate(item.value)}
                                     >
                                         {item.label}
@@ -474,7 +475,7 @@ const BarcodePage: React.FC = () => {
                         </Form.Group>
 
                         <EditorActions editing={<>
-                            <Button onClick={copyPayload} disabled={!payload.trim()}>复制内容</Button>
+                            <CopyButton text={payload} label="复制内容" disabled={!payload.trim()} />
                             <Button onClick={resetCurrentTemplate}>重置模板</Button>
                         </>}>
                             <Button variant="primary" onClick={downloadPng} disabled={loading || !imageDataUrl}>下载 PNG</Button>

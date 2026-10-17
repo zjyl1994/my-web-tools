@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import EditorActions from '@/components/ui/editor-actions';
 import { Button, Card, Form, Table } from '@/components/ui';
+import ConfirmDialog from '@/components/ui/confirm-dialog';
 import { numericInput } from '@/utils/numeric-input';
 
 interface PriceItem {
@@ -30,6 +32,7 @@ export default function PriceCalcPage() {
   const [unitNum, setUnitNum] = useState('1');
   const [netContent, setNetContent] = useState('100');
   const [priceList, setPriceList] = useState<PriceItem[]>(readPriceList);
+  const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
   const priceInput = numericInput(price, '总价');
   const quantity = numericInput(unitNum, '份数', { positive: true, integer: true });
   const content = numericInput(netContent, '每份净含量', { positive: true });
@@ -46,6 +49,39 @@ export default function PriceCalcPage() {
   function savePrice() {
     if (unitPrice === null || priceInput.value === null || quantity.value === null || content.value === null) return;
     updateList([{ price: priceInput.value, unitNum: quantity.value, netContent: content.value, unitPrice }, ...priceList]);
+  }
+
+  function deleteItem(index: number) {
+    const removed = priceList[index];
+    if (!removed) return;
+    updateList(priceList.filter((_, itemIndex) => itemIndex !== index));
+    toast.info(({ closeToast }) => (
+      <div className="undo-toast">
+        <span>已删除一条比价记录</span>
+        <button
+          type="button"
+          className="undo-toast__action"
+          onClick={() => { restoreItem(removed, index); closeToast?.(); }}
+        >
+          撤销
+        </button>
+      </div>
+    ), { autoClose: 6000 });
+  }
+
+  function restoreItem(item: PriceItem, index: number) {
+    setPriceList((current) => {
+      if (current.includes(item)) return current;
+      const next = [...current];
+      next.splice(Math.min(index, next.length), 0, item);
+      localStorage.setItem(STORAGE_NAME, JSON.stringify(next));
+      return next;
+    });
+  }
+
+  function clearList() {
+    updateList([]);
+    setClearConfirmOpen(false);
   }
 
   const fields = [
@@ -70,7 +106,7 @@ export default function PriceCalcPage() {
             <Form.Control id="price-result" value={unitPrice === null ? '' : unitPrice.toFixed(CALC_PREC)} placeholder="等待有效输入" readOnly />
             {raw !== null && unitPrice === null && <p className="ui-field-error" role="alert">数值超出可计算范围，请调整输入。</p>}
           </Form.Group>
-          <EditorActions editing={<Button disabled={!priceList.length} onClick={() => updateList([])}>清空记录</Button>}>
+          <EditorActions editing={<Button disabled={!priceList.length} onClick={() => setClearConfirmOpen(true)}>清空记录</Button>}>
             <Button variant="primary" disabled={unitPrice === null} onClick={savePrice}>保存记录</Button>
           </EditorActions>
         </Card.Body>
@@ -85,12 +121,20 @@ export default function PriceCalcPage() {
               {priceList.map((item, index) => <tr key={index}>
                 <td>{item.price}</td><td>{item.unitNum}</td><td>{item.netContent}</td>
                 <td className={item.unitPrice === minUnitPrice ? 'best-price' : undefined}>{item.unitPrice.toFixed(CALC_PREC)}{item.unitPrice === minUnitPrice && '（最便宜）'}</td>
-                <td><button type="button" className="btn-close" aria-label="删除这条比价记录" onClick={() => updateList(priceList.filter((_, itemIndex) => itemIndex !== index))} /></td>
+                <td><button type="button" className="btn-close" aria-label={`删除第 ${index + 1} 条比价记录`} onClick={() => deleteItem(index)} /></td>
               </tr>)}
             </tbody>
           </Table>
         </Card.Body>
       </Card>
+      <ConfirmDialog
+        open={clearConfirmOpen}
+        title="清空比价记录"
+        message="所有已保存的比价记录都会从本机移除，此操作无法撤销。"
+        confirmLabel="清空记录"
+        onConfirm={clearList}
+        onCancel={() => setClearConfirmOpen(false)}
+      />
     </div>
   );
 }

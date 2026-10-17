@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react';
 
-import { Form, Button } from '@/components/ui';
-
-import { useCopy } from '@/hooks/use-basic';
+import { Form } from '@/components/ui';
+import CopyButton from '@/components/ui/copy-button';
 
 import { addSeparator, calculate } from './utils';
 
@@ -12,7 +11,6 @@ const CodePage: React.FC = () => {
 
   const calcCode = useMemo(() => calculate(mainPassword, rememberName), [mainPassword, rememberName]);
   const displayCalcCode = useMemo(() => addSeparator(calcCode, ' '), [calcCode]);
-  const copy = useCopy(calcCode);
 
   return (
     <>
@@ -29,7 +27,7 @@ const CodePage: React.FC = () => {
         <Form.Control id="code-field-3" type="text" value={calcCode} readOnly />
       </Form.Group>
       <p className="password-result font-monospace fs-2">{displayCalcCode}</p>
-      <Button variant="primary" onClick={copy}>复制密码</Button>
+      <CopyButton text={calcCode} label="复制密码" variant="primary" disabled={!calcCode} />
     </>
   )
 }

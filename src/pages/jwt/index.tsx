@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Form, Button, InputGroup } from '@/components/ui';
-import { useCopy } from '@/hooks/use-basic';
+import CopyButton from '@/components/ui/copy-button';
 import { Base64 } from 'js-base64';
 
 const JwtDatePicker = lazy(() => import('./date-picker'));
@@ -71,7 +71,6 @@ const JwtPage = () => {
         };
     }, [secret, expiresAt, fields]);
 
-    const copy = useCopy(token);
     const toggleShowSecret = () => setShowSecret(!showSecret);
     const handleExpiresAtChange = (nextDate: Date | null) => {
         if (!nextDate) {
@@ -154,9 +153,7 @@ const JwtPage = () => {
                     className='textarea-font'
                 />
             </Form.Group>
-            <Button variant="primary" onClick={copy}>
-                复制
-            </Button>
+            <CopyButton text={token} label="复制" variant="primary" disabled={!token} />
         </>
     )
 }

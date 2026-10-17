@@ -19,8 +19,9 @@ export const paste_and_format = async (_: string): Promise<string> => {
     const text = await navigator.clipboard.readText();
     try {
         return enhanced_format_json(text);
-    } catch (e) {
-        toast.error(String(e), { autoClose: 10000 });
+    } catch (error) {
+        console.error(error);
+        toast.error('剪贴板内容不是有效的 JSON，已原样粘贴。', { autoClose: 6000 });
         return text;
     }
 }

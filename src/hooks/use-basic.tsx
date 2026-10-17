@@ -7,15 +7,43 @@ import { Button, ButtonGroup } from '@/components/ui';
 const STORAGE_KEY_PREFIX = 'textarea_history_';
 const TEXTAREA_ROWS_KEY_PREFIX = 'textarea_rows_';
 
+const CLIPBOARD_WRITE_ERROR = '无法写入剪贴板，请检查浏览器的剪贴板权限后重试。';
+const CLIPBOARD_READ_ERROR = '无法读取剪贴板，请检查剪贴板权限，或直接手动粘贴。';
+const ACTION_ERROR = '处理失败，请检查输入内容后重试。';
+const STORAGE_SAVE_ERROR = '无法保存到本地：浏览器存储已满或被禁用。当前内容仍在页面中。';
+const STORAGE_CLEAR_ERROR = '无法清除本地记录：浏览器的本地存储被禁用。';
+
 export const useCopy = (text: string) => {
-    return useCallback(() => {
-        return navigator.clipboard.writeText(text).catch(err => toast.error(String(err), { autoClose: 10000 }));
+    const [copied, setCopied] = useState(false);
+    const timer = useRef<number | null>(null);
+
+    useEffect(() => () => {
+        if (timer.current) window.clearTimeout(timer.current);
+    }, []);
+
+    const copy = useCallback(() => {
+        return navigator.clipboard.writeText(text).then(() => {
+            setCopied(true);
+            if (timer.current) window.clearTimeout(timer.current);
+            timer.current = window.setTimeout(() => setCopied(false), 1600);
+        }).catch((error: unknown) => {
+            console.error(error);
+            setCopied(false);
+            toast.error(CLIPBOARD_WRITE_ERROR);
+        });
     }, [text]);
+
+    return { copy, copied };
 };
 
 export const usePaste = (setInputValue: (value: string) => void) => {
     return useCallback(() => {
-        return navigator.clipboard.readText().then(text => setInputValue(text)).catch(err => toast.error(String(err), { autoClose: 10000 }));
+        return navigator.clipboard.readText()
+            .then(text => setInputValue(text))
+            .catch((error: unknown) => {
+                console.error(error);
+                toast.error(CLIPBOARD_READ_ERROR);
+            });
     }, [setInputValue]);
 };
 
@@ -33,10 +61,14 @@ export const useActionCreater = (
             if (typeof result === "string") {
                 setResult(result);
             } else {
-                result.then(text => setResult(text));
+                result.then(text => setResult(text)).catch((error: unknown) => {
+                    console.error(error);
+                    toast.error(ACTION_ERROR, { autoClose: 6000 });
+                });
             }
-        } catch (e) {
-            toast.error(String(e), { autoClose: 10000 });
+        } catch (error) {
+            console.error(error);
+            toast.error(ACTION_ERROR, { autoClose: 6000 });
         }
     }, [inputValue, setInputValue]);
 };
@@ -63,8 +95,9 @@ export const useBasic = (defaultValue: string, historyType: string) => {
         if (!historyType) return;  // 新增：type为空时不保存
         try {
             localStorage.setItem(storageKey, JSON.stringify(value));
-        } catch (err) {
-            toast.error('Failed to save to localStorage: ' + String(err));
+        } catch (error) {
+            console.error(error);
+            toast.error(STORAGE_SAVE_ERROR, { autoClose: 6000 });
         }
     }, [value, storageKey, historyType]);  // 新增：添加type到依赖项
 
@@ -77,22 +110,26 @@ export const useBasic = (defaultValue: string, historyType: string) => {
         if (!historyType) return;  // 新增：type为空时不清理
         try {
             localStorage.removeItem(storageKey);
-        } catch (err) {
-            toast.error('Failed to clear localStorage: ' + String(err));
+        } catch (error) {
+            console.error(error);
+            toast.error(STORAGE_CLEAR_ERROR, { autoClose: 6000 });
         }
     };
 
     const action = useActionCreater(value, setValue);
-    const copy = useCopy(value);
+    const { copy, copied } = useCopy(value);
     const paste = usePaste(setValue);
 
-    const functionButtonGroup = <ButtonGroup>
-        <Button variant="light" onClick={paste}>粘贴</Button>
-        <Button variant="light" onClick={copy}>复制</Button>
-        <Button variant="light" onClick={undo} disabled={!canUndo}>撤销</Button>
-        <Button variant="light" onClick={redo} disabled={!canRedo}>重做</Button>
-        <Button variant="light" onClick={() => setValue('')}>清空</Button>
-    </ButtonGroup>
+    const functionButtonGroup = <>
+        <ButtonGroup>
+            <Button variant="light" onClick={paste}>粘贴</Button>
+            <Button variant="light" onClick={copy}>{copied ? '已复制' : '复制'}</Button>
+            <Button variant="light" onClick={undo} disabled={!canUndo}>撤销</Button>
+            <Button variant="light" onClick={redo} disabled={!canRedo}>重做</Button>
+            <Button variant="light" onClick={() => setValue('')}>清空</Button>
+        </ButtonGroup>
+        <span className="app-visually-hidden" role="status">{copied ? '已复制到剪贴板' : ''}</span>
+    </>;
 
     useHotkeys('ctrl+z', undo);
     useHotkeys('ctrl+y', redo);

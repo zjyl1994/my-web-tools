@@ -7,6 +7,8 @@
   --ui-hover: #eceef2;
   --ui-border: #e3e6eb;
   --ui-border-strong: #b7bec9;
+  --ui-control-border: #7d8ca2;
+  --ui-control-border-hover: #5f6672;
   --ui-text: #202632;
   --ui-text-muted: #667080;
   --ui-accent: #3159c7;
@@ -25,7 +27,11 @@
   --ui-diff-add-text: #aceebb;
   --ui-danger: #b42335;
   --ui-danger-soft: #fff1f2;
-  --ui-radius: 12px;
+  --ui-danger-border: #c26e7c;
+  --ui-radius: 10px;
+  --ui-radius-control: 6px;
+  --ui-radius-dialog: 12px;
+  --ui-radius-pill: 999px;
   --ui-shadow: 0 2px 4px rgba(20, 30, 50, 0.025);
   --ui-button-row-gap: 0.5rem;
 }
@@ -46,11 +52,6 @@ textarea {
   font: inherit;
 }
 
-.ui-container {
-  width: min(1080px, calc(100% - 24px));
-  margin: 0 auto;
-}
-
 .ui-button {
   appearance: none;
   display: inline-flex;
@@ -59,8 +60,8 @@ textarea {
   gap: 0.35rem;
   min-height: 2.4rem;
   padding: 0.5rem 0.85rem;
-  border: 1px solid var(--ui-border);
-  border-radius: 7px;
+  border: 1px solid var(--ui-control-border);
+  border-radius: var(--ui-radius-control);
   background: var(--ui-surface-strong);
   color: var(--ui-text);
   cursor: pointer;
@@ -78,13 +79,7 @@ textarea {
 .ui-button:hover:not(:disabled),
 .ui-button:focus-visible {
   background: var(--ui-surface-soft);
-  border-color: var(--ui-border-strong);
-}
-
-.ui-button:focus-visible,
-.ui-control:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--ui-accent-soft);
+  border-color: var(--ui-control-border-hover);
 }
 
 .ui-button:disabled {
@@ -94,8 +89,14 @@ textarea {
 
 .ui-button--danger {
   background: var(--ui-danger-soft);
-  border-color: #fecdd3;
+  border-color: var(--ui-danger-border);
   color: var(--ui-danger);
+}
+
+.ui-button--danger:hover:not(:disabled),
+.ui-button--danger:focus-visible {
+  background: var(--ui-danger-soft);
+  border-color: var(--ui-danger);
 }
 
 .ui-button-group,
@@ -117,13 +118,13 @@ textarea {
 
 .ui-button-group > .ui-button:first-child {
   margin-left: 0;
-  border-top-left-radius: 7px;
-  border-bottom-left-radius: 7px;
+  border-top-left-radius: var(--ui-radius-control);
+  border-bottom-left-radius: var(--ui-radius-control);
 }
 
 .ui-button-group > .ui-button:last-child {
-  border-top-right-radius: 7px;
-  border-bottom-right-radius: 7px;
+  border-top-right-radius: var(--ui-radius-control);
+  border-bottom-right-radius: var(--ui-radius-control);
 }
 
 .ui-button-group > .ui-button:focus-visible,
@@ -193,8 +194,8 @@ textarea {
   width: 100%;
   min-height: 2.65rem;
   padding: 0.48rem 0.75rem;
-  border: 1px solid var(--ui-border);
-  border-radius: 7px;
+  border: 1px solid var(--ui-control-border);
+  border-radius: var(--ui-radius-control);
   background: var(--ui-surface-strong);
   color: var(--ui-text);
   transition:
@@ -209,7 +210,7 @@ textarea.ui-control {
 }
 
 .ui-control:hover {
-  border-color: var(--ui-border-strong);
+  border-color: var(--ui-control-border-hover);
 }
 
 .ui-control[readonly] {
@@ -227,7 +228,7 @@ textarea.ui-control {
   margin-bottom: 0.6rem;
   resize: vertical;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: var(--ui-radius-control);
 }
 
 .ui-code-editor-shell.is-readonly {
@@ -240,7 +241,7 @@ textarea.ui-control {
 
 .ui-code-editor .cm-editor {
   height: 100%;
-  border: 1px solid var(--ui-border);
+  border: 1px solid var(--ui-control-border);
   border-radius: 0;
   background: var(--ui-surface-strong);
   color: var(--ui-text);
@@ -251,13 +252,12 @@ textarea.ui-control {
 }
 
 .ui-code-editor .cm-editor:hover {
-  border-color: var(--ui-border-strong);
+  border-color: var(--ui-control-border-hover);
 }
 
 .ui-code-editor .cm-editor.cm-focused {
   outline: none;
-  border-color: var(--ui-border-strong);
-  box-shadow: 0 0 0 3px var(--ui-accent-soft);
+  border-color: var(--ui-accent);
 }
 
 .ui-code-editor-shell.is-readonly .cm-editor {
@@ -323,7 +323,7 @@ textarea.ui-control {
   display: flex;
   flex-direction: column;
   height: 100%;
-  border: 1px solid var(--ui-border);
+  border: 1px solid var(--ui-control-border);
   background: var(--ui-surface-strong);
 }
 
@@ -457,8 +457,8 @@ textarea.ui-control {
   justify-content: center;
   min-height: 2.65rem;
   padding: 0.48rem 0.75rem;
-  border: 1px solid var(--ui-border);
-  border-radius: 7px;
+  border: 1px solid var(--ui-control-border);
+  border-radius: var(--ui-radius-control);
   background: var(--ui-surface-soft);
   color: var(--ui-text-muted);
   white-space: nowrap;
@@ -510,7 +510,7 @@ textarea.ui-control {
   min-width: 12rem;
   padding: 0.35rem;
   border: 1px solid var(--ui-border);
-  border-radius: 10px;
+  border-radius: var(--ui-radius);
   background: var(--ui-surface-strong);
   box-shadow: 0 8px 28px rgba(20, 30, 50, 0.12);
   z-index: 80;
@@ -521,7 +521,7 @@ textarea.ui-control {
   align-items: center;
   width: 100%;
   padding: 0.5rem 0.72rem;
-  border-radius: 7px;
+  border-radius: var(--ui-radius-control);
   color: var(--ui-text);
   cursor: pointer;
   outline: none;
@@ -561,7 +561,7 @@ textarea.ui-control {
   max-height: calc(100vh - 2rem);
   overflow: auto;
   border: 1px solid var(--ui-border);
-  border-radius: 18px;
+  border-radius: var(--ui-radius-dialog);
   background: var(--ui-surface-strong);
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
 }
@@ -598,6 +598,38 @@ textarea.ui-control {
   padding: 1rem 1.25rem 1.25rem;
 }
 
+.ui-dialog__message {
+  margin: 0 0 1.25rem;
+  color: var(--ui-text);
+  line-height: 1.7;
+}
+
+.ui-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.undo-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.undo-toast__action {
+  appearance: none;
+  flex: none;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid currentColor;
+  border-radius: var(--ui-radius-control);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .ui-close-button {
   appearance: none;
   display: inline-flex;
@@ -606,7 +638,7 @@ textarea.ui-control {
   width: 2rem;
   height: 2rem;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: var(--ui-radius-pill);
   background: transparent;
   color: var(--ui-text-muted);
   cursor: pointer;
@@ -624,10 +656,6 @@ textarea.ui-control {
 }
 
 @media (max-width: 640px) {
-  .ui-container {
-    width: min(100% - 20px, 1080px);
-  }
-
   .ui-card__body,
   .ui-card__header,
   .ui-dialog__header,
@@ -647,7 +675,7 @@ textarea.ui-control {
 
   .ui-button-group > .ui-button {
     margin-left: 0;
-    border-radius: 7px;
+    border-radius: var(--ui-radius-control);
   }
 }
 
@@ -664,7 +692,7 @@ textarea.ui-control {
 .ui-card__body > :last-child { margin-bottom: 0; }
 .ui-control { font-size: .875rem; }
 select.ui-control { font: inherit; font-size: .875rem; }
-.ui-code-merge-frame { border-radius: 8px; overflow: hidden; }
+.ui-code-merge-frame { border-radius: var(--ui-radius-control); overflow: hidden; }
 .ui-button-toolbar { padding-top: .25rem; }
 .ui-button-toolbar + .ui-button-toolbar { margin-top: .6rem; }
 .ui-helper-text + .ui-button-toolbar { margin-top: .75rem; }
@@ -695,7 +723,7 @@ select.ui-control { font: inherit; font-size: .875rem; }
 .editor-actions-edit .ui-button {
   padding-inline: .55rem;
   margin: 0;
-  border-radius: 7px;
+  border-radius: var(--ui-radius-control);
   background: transparent;
   border-color: transparent;
   color: var(--ui-text-muted);
@@ -703,7 +731,7 @@ select.ui-control { font: inherit; font-size: .875rem; }
 .editor-actions-edit .ui-button:hover:not(:disabled),
 .editor-actions-edit .ui-button:focus-visible {
   background: var(--ui-surface-soft);
-  border-color: var(--ui-border);
+  border-color: var(--ui-control-border);
   color: var(--ui-text);
 }
 .editor-actions .ui-button { flex-shrink: 0; }
@@ -758,6 +786,9 @@ select.ui-control { font: inherit; font-size: .875rem; }
     --ui-on-accent: #111b30;
     --ui-danger: #ffb3bc;
     --ui-danger-soft: #442832;
+    --ui-danger-border: #b06b77;
+    --ui-control-border: #7d8ca2;
+    --ui-control-border-hover: #96a3b5;
     --ui-syntax-key: #7cdecc;
     --ui-syntax-string: #a4bfff;
     --ui-syntax-number: #f7c38d;
@@ -774,6 +805,13 @@ select.ui-control { font: inherit; font-size: .875rem; }
 @media (prefers-contrast: more) {
   :root { --ui-border: var(--ui-text-muted); --ui-border-strong: var(--ui-text); }
 }
+@media (prefers-reduced-transparency: reduce) {
+  .ui-dialog-backdrop {
+    backdrop-filter: none;
+    background: rgba(15, 23, 42, 0.62);
+  }
+}
+
 @media (pointer: coarse) {
   .btn-close, .ui-close-button { min-width: 44px; min-height: 44px; }
   .barcode-checkbox, .generator-characters label, .image-compress-footer label { min-height: 44px; }

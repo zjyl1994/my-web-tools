@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { Form, Button, InputGroup, ButtonToolbar, Modal, Dropdown } from '@/components/ui';
+import ConfirmDialog from '@/components/ui/confirm-dialog';
 import CodeEditor from '@/components/ui/code-editor';
 import EditorActions from '@/components/ui/editor-actions';
 import './style.css';
@@ -45,6 +46,7 @@ const TextProcPage: React.FC = () => {
     const [replaceDialogShow, setReplaceDialogShow] = useState(false);
     const [affixDialogShow, setAffixDialogShow] = useState(false);
     const [splitJoinDialogShow, setSplitJoinDialogShow] = useState(false);
+    const [memoryConfirmOpen, setMemoryConfirmOpen] = useState(false);
 
     const exec = (effect: (data: string) => (string | Promise<string>), remember?: () => void) => () => {
         if (remember) {
@@ -62,9 +64,8 @@ const TextProcPage: React.FC = () => {
     const { rows, textareaRef } = useTextareaResize<HTMLDivElement>('textproc', 15);
 
     const memory_load = () => {
-        if (confirm('是否使用存储区的内容替换当前内容?')) {
-            setValue(localStorage.getItem('textproc_memory') ?? '');
-        }
+        setValue(localStorage.getItem('textproc_memory') ?? '');
+        setMemoryConfirmOpen(false);
     };
 
     const memory_save = () => {
@@ -87,9 +88,10 @@ const TextProcPage: React.FC = () => {
         });
 
         navigator.clipboard.write([clipboardItem]).then(() => {
-            toast.info('已复制表格内容到剪贴板！', { autoClose: 10000 });
-        }).catch((err) => {
-            toast.error(String(err), { autoClose: 10000 });
+            toast.info('已复制表格内容', { autoClose: 3000 });
+        }).catch((error) => {
+            console.error(error);
+            toast.error('无法写入剪贴板，请检查浏览器的剪贴板权限后重试。', { autoClose: 6000 });
         });
     };
 
@@ -123,7 +125,7 @@ const TextProcPage: React.FC = () => {
                 <EditorActions editing={<>
                     {functionButtonGroup}
                     <Button variant="light" className="border" onClick={memory_save} title="暂存当前结果">暂存内容</Button>
-                    <Button variant="light" className="border" onClick={memory_load} title="用暂存内容替换当前文本">恢复暂存</Button>
+                    <Button variant="light" className="border" onClick={() => setMemoryConfirmOpen(true)} title="用暂存内容替换当前文本">恢复暂存</Button>
                 </>}>
                     <div className="textproc-primary-actions" role="group" aria-label="常用文本处理">
                         <Button variant="light" className="border" onClick={action(uniq_line)}>去除重复行</Button>
@@ -364,6 +366,15 @@ const TextProcPage: React.FC = () => {
                     </ButtonToolbar>
                 </Modal.Body>
             </Modal>
+
+            <ConfirmDialog
+                open={memoryConfirmOpen}
+                title="恢复暂存内容"
+                message="暂存区的内容会覆盖当前文本，覆盖后仍可用「撤销」恢复。"
+                confirmLabel="恢复暂存"
+                onConfirm={memory_load}
+                onCancel={() => setMemoryConfirmOpen(false)}
+            />
         </>
     );
 };

@@ -1,13 +1,11 @@
 import { useId, useState } from 'react';
-import { Button, ButtonToolbar, Form } from '@/components/ui';
-import { useCopy } from '@/hooks/use-basic';
+import { ButtonToolbar, Form } from '@/components/ui';
+import CopyButton from '@/components/ui/copy-button';
 
 export default function GeneratorResult({ value }: { value: string }) {
   const id = useId();
   const [selection, setSelection] = useState({ value: '', text: '' });
   const selectedText = selection.value === value ? selection.text : '';
-  const copyAll = useCopy(value);
-  const copySelected = useCopy(selectedText);
   const count = value ? value.split('\n').length : 0;
 
   return (
@@ -30,8 +28,8 @@ export default function GeneratorResult({ value }: { value: string }) {
       />
       <div className="generator-result-actions">
         <ButtonToolbar>
-          <Button onClick={copyAll} disabled={!value}>复制全部</Button>
-          <Button onClick={copySelected} disabled={!selectedText}>复制选中</Button>
+          <CopyButton text={value} label="复制全部" disabled={!value} />
+          <CopyButton text={selectedText} label="复制选中" disabled={!selectedText} />
         </ButtonToolbar>
         <span className="ui-helper-text">可选中部分内容复制</span>
       </div>
