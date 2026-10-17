@@ -2,8 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
-import site from './site.config';
-import { siteBranding, siteIconPaths } from './build/site-branding';
+import site from './site.config.ts';
+import { siteBranding, siteIconPaths } from './build/site-branding.ts';
 
 const foldedLazyPages = new Set([
     'lazygo',
