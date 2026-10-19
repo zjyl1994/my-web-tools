@@ -10,6 +10,26 @@ body,
     min-height: 100%;
 }
 
+/* Keep native scrolling and dragging, with colors shared by both themes. */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ui-border-strong) transparent;
+}
+
+/* Fallback for browsers without the standard scrollbar properties. */
+@supports not (scrollbar-width: thin) {
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+        background: var(--ui-border-strong);
+        border: 2px solid transparent;
+        border-radius: 999px;
+        background-clip: padding-box;
+    }
+    ::-webkit-scrollbar-thumb:hover { background-color: var(--ui-text-muted); }
+    ::-webkit-scrollbar-corner { background: transparent; }
+}
+
 body {
     margin: 0;
     background: var(--ui-background);
@@ -50,7 +70,8 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 .app-brand img { border-radius: 9px; }
 .app-layout { display: grid; grid-template-columns: 64px minmax(0, 1fr); width: 100%; }
 .app-layout.is-sidebar-expanded { grid-template-columns: 208px minmax(0, 1fr); }
-.app-sidebar { position: sticky; top: 72px; height: calc(100dvh - 72px); overflow-y: auto; overscroll-behavior: contain; padding: 16px 10px; border-right: 1px solid var(--ui-border); scrollbar-width: thin; }
+.app-sidebar { position: sticky; top: 72px; height: calc(100dvh - 72px); overflow-y: auto; overscroll-behavior: contain; padding: 16px 10px; border-right: 1px solid var(--ui-border); scrollbar-width: none; }
+.app-sidebar::-webkit-scrollbar { display: none; }
 .app-sidebar-toggle { display: flex; align-items: center; gap: 11px; width: 100%; min-height: 40px; padding: 8px 12px; margin: 0 0 12px; border: 0; border-radius: var(--ui-radius-control); background: transparent; color: var(--ui-text-muted); font: inherit; font-size: .8125rem; cursor: pointer; }
 .app-sidebar-toggle:hover { color: var(--ui-text); background: var(--ui-hover); }
 .app-sidebar-toggle svg { width: 17px; height: 17px; flex-shrink: 0; }
