@@ -38,6 +38,7 @@ export default function BatchQRCode({ templateSelector, settings, width, errorLe
         const timer = setTimeout(async () => {
             setExpandedNumber(null);
             const nextResults: BatchResult[] = [];
+            let lastPreviewUpdate = 0;
             for (const [index, text] of parts.entries()) {
                 if (cancelled) return;
                 try {
@@ -52,11 +53,15 @@ export default function BatchQRCode({ templateSelector, settings, width, errorLe
                     nextResults.push({ number: index + 1, url: '', error: '生成失败，请缩短该项内容或降低纠错等级。' });
                 }
                 if (cancelled) return;
-                setRendered({ parts, width, errorLevel, items: [...nextResults], complete: false });
+                const now = performance.now();
+                if (index === 0 || now - lastPreviewUpdate >= 50) {
+                    setRendered({ parts, width, errorLevel, items: [...nextResults], complete: false });
+                    lastPreviewUpdate = now;
+                }
                 await new Promise((resolve) => setTimeout(resolve, 0));
             }
             if (!cancelled) setRendered({ parts, width, errorLevel, items: nextResults, complete: true });
-        }, 200);
+        }, 800);
         return () => {
             cancelled = true;
             clearTimeout(timer);
@@ -141,7 +146,7 @@ export default function BatchQRCode({ templateSelector, settings, width, errorLe
                     <span className="barcode-batch-heading">
                         生成结果
                         <span className="barcode-batch-status" role="status">
-                            {loading ? `正在生成 ${results.length} / ${parts.length}…` : `${parts.length} 个`}
+                            {loading ? !current ? '等待输入完成…' : `正在生成 ${results.length} / ${parts.length}…` : `${parts.length} 个`}
                             {results.some((item) => item.error) ? ' · 部分生成失败' : ''}
                         </span>
                     </span>

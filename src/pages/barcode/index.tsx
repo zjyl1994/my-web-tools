@@ -65,7 +65,7 @@ const BarcodePage: React.FC = () => {
     const [templateState, setTemplateState] = useState<QRTemplateState>(defaultTemplateState);
     const [width, setWidth] = useState('360');
     const [errorLevel, setErrorLevel] = useState<QRErrorLevel>('M');
-    const [loading, setLoading] = useState(false);
+    const [rendering, setLoading] = useState(false);
     const [renderError, setRenderError] = useState('');
     const [imageDataUrl, setImageDataUrl] = useState('');
     const [svgMarkup, setSvgMarkup] = useState('');
@@ -76,12 +76,18 @@ const BarcodePage: React.FC = () => {
     );
 
     const payload = useMemo(() => template === 'batch' ? '' : buildPayload(template, templateState), [template, templateState]);
+    const request = useMemo(() => ({ payload, width, errorLevel }), [payload, width, errorLevel]);
+    const [activeRequest, setActiveRequest] = useState<typeof request | null>(null);
+    const waiting = !!payload.trim() && activeRequest !== request;
+    const loading = waiting || rendering;
 
     useEffect(() => {
         let cancelled = false;
+        const { payload, width, errorLevel } = request;
 
         const renderCode = async () => {
             const text = payload.trim();
+            setActiveRequest(request);
             setLoading(true);
             setRenderError('');
             setImageDataUrl('');
@@ -121,12 +127,13 @@ const BarcodePage: React.FC = () => {
             }
         };
 
-        renderCode();
+        const timer = setTimeout(renderCode, 800);
 
         return () => {
             cancelled = true;
+            clearTimeout(timer);
         };
-    }, [errorLevel, payload, width]);
+    }, [request]);
 
     const updateTemplateField = <T extends QRTemplate, K extends keyof QRTemplateState[T]>(
         nextTemplate: T,
@@ -506,7 +513,7 @@ const BarcodePage: React.FC = () => {
                             {svgMarkup ? <div className="barcode-preview-svg" dangerouslySetInnerHTML={{ __html: svgMarkup }} /> : null}
                         </div>
                         <div className="barcode-status-row">
-                            <span>{loading ? '正在生成…' : `当前模板：${templateOptions.find((item) => item.value === template)?.label}`}</span>
+                            <span>{waiting ? '等待输入完成…' : loading ? '正在生成…' : `当前模板：${templateOptions.find((item) => item.value === template)?.label}`}</span>
                             <span>SVG 预览 + PNG/SVG 下载</span>
                         </div>
                         {renderError ? <div className="barcode-error-text">{renderError}</div> : null}
