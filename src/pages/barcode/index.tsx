@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import QRCode from 'qrcode';
 import { Button, Card, Form, InputGroup } from '@/components/ui';
 import CopyButton from '@/components/ui/copy-button';
+import BatchQRCode from './batch';
 
 type QRTemplate = 'text' | 'url' | 'wifi' | 'vcard' | 'phone' | 'sms' | 'email';
 type QRErrorLevel = 'L' | 'M' | 'Q' | 'H';
@@ -28,8 +29,9 @@ type QRTemplateState = {
     email: { to: string; subject: string; body: string };
 };
 
-const templateOptions: Array<{ value: QRTemplate; label: string; helper: string }> = [
+const templateOptions: Array<{ value: QRTemplate | 'batch'; label: string; helper: string }> = [
     { value: 'text', label: '文本', helper: '适合普通文本、口令和短消息。' },
+    { value: 'batch', label: '批量', helper: '输入全部文本，按行或段落自动批量生成二维码。' },
     { value: 'url', label: '网址', helper: '扫码后直接打开网页或应用落地页。' },
     { value: 'wifi', label: 'WiFi', helper: '扫码加入无线网络。' },
     { value: 'vcard', label: '名片', helper: '生成联系人名片二维码，便于通讯录导入。' },
@@ -59,7 +61,7 @@ const defaultTemplateState: QRTemplateState = {
 };
 
 const BarcodePage: React.FC = () => {
-    const [template, setTemplate] = useState<QRTemplate>('text');
+    const [template, setTemplate] = useState<QRTemplate | 'batch'>('text');
     const [templateState, setTemplateState] = useState<QRTemplateState>(defaultTemplateState);
     const [width, setWidth] = useState('360');
     const [errorLevel, setErrorLevel] = useState<QRErrorLevel>('M');
@@ -73,7 +75,7 @@ const BarcodePage: React.FC = () => {
         [template],
     );
 
-    const payload = useMemo(() => buildPayload(template, templateState), [template, templateState]);
+    const payload = useMemo(() => template === 'batch' ? '' : buildPayload(template, templateState), [template, templateState]);
 
     useEffect(() => {
         let cancelled = false;
@@ -141,6 +143,7 @@ const BarcodePage: React.FC = () => {
     };
 
     const resetCurrentTemplate = () => {
+        if (template === 'batch') return;
         setTemplateState((current) => ({
             ...current,
             [template]: { ...defaultTemplateState[template] },
@@ -407,60 +410,72 @@ const BarcodePage: React.FC = () => {
         }
     };
 
+    const templateSelector = (
+        <Form.Group>
+            <div className="ui-label" id="qrcode-template-label">模板</div>
+            <div className="barcode-kind-switcher" role="group" aria-labelledby="qrcode-template-label">
+                {templateOptions.map((item) => (
+                    <button
+                        key={item.value}
+                        type="button"
+                        className={`barcode-kind-switcher__item${item.value === template ? ' is-active' : ''}`}
+                        aria-pressed={item.value === template}
+                        onClick={() => setTemplate(item.value)}
+                    >
+                        {item.label}
+                    </button>
+                ))}
+            </div>
+            <div className="barcode-helper-text">{templateHelper}</div>
+        </Form.Group>
+    );
+    const settings = (
+        <div className="barcode-grid">
+            <Form.Group>
+                <Form.Label htmlFor="barcode-field-21">目标宽度</Form.Label>
+                <InputGroup className="ui-input-group--suffix">
+                    <Form.Control id="barcode-field-21"
+                        inputMode="numeric"
+                        value={width}
+                        onChange={(e) => setWidth(e.target.value.replace(/[^\d]/g, ''))}
+                        placeholder="360"
+                        aria-describedby="barcode-width-unit"
+                    />
+                    <InputGroup.Text id="barcode-width-unit">px</InputGroup.Text>
+                </InputGroup>
+            </Form.Group>
+
+            <Form.Group>
+                <Form.Label htmlFor="barcode-field-22">纠错等级</Form.Label>
+                <select id="barcode-field-22"
+                    className="ui-control"
+                    value={errorLevel}
+                    onChange={(e) => setErrorLevel(e.target.value as QRErrorLevel)}
+                >
+                    <option value="L">L</option>
+                    <option value="M">M</option>
+                    <option value="Q">Q</option>
+                    <option value="H">H</option>
+                </select>
+            </Form.Group>
+        </div>
+    );
+
+    if (template === 'batch') {
+        return <BatchQRCode templateSelector={templateSelector} settings={settings} width={getSafeWidth(width)} errorLevel={errorLevel} />;
+    }
+
     return (
         <div className="barcode-page">
             <div className="barcode-page__layout">
                 <Card className="barcode-page__panel">
                     <Card.Header>内容与样式</Card.Header>
                     <Card.Body>
-                        <Form.Group>
-                            <div className="ui-label" id="qrcode-template-label">模板</div>
-                            <div className="barcode-kind-switcher" role="group" aria-labelledby="qrcode-template-label">
-                                {templateOptions.map((item) => (
-                                    <button
-                                        key={item.value}
-                                        type="button"
-                                        className={`barcode-kind-switcher__item${item.value === template ? ' is-active' : ''}`}
-                                        aria-pressed={item.value === template}
-                                        onClick={() => setTemplate(item.value)}
-                                    >
-                                        {item.label}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className="barcode-helper-text">{templateHelper}</div>
-                        </Form.Group>
+                        {templateSelector}
 
                         {renderTemplateFields()}
 
-                        <div className="barcode-grid">
-                            <Form.Group>
-                                <Form.Label htmlFor="barcode-field-21">目标宽度</Form.Label>
-                                <InputGroup>
-                                    <Form.Control id="barcode-field-21"
-                                        inputMode="numeric"
-                                        value={width}
-                                        onChange={(e) => setWidth(e.target.value.replace(/[^\d]/g, ''))}
-                                        placeholder="360"
-                                    />
-                                    <InputGroup.Text>px</InputGroup.Text>
-                                </InputGroup>
-                            </Form.Group>
-
-                            <Form.Group>
-                                <Form.Label htmlFor="barcode-field-22">纠错等级</Form.Label>
-                                <select id="barcode-field-22"
-                                    className="ui-control"
-                                    value={errorLevel}
-                                    onChange={(e) => setErrorLevel(e.target.value as QRErrorLevel)}
-                                >
-                                    <option value="L">L</option>
-                                    <option value="M">M</option>
-                                    <option value="Q">Q</option>
-                                    <option value="H">H</option>
-                                </select>
-                            </Form.Group>
-                        </div>
+                        {settings}
 
                         <Form.Group>
                             <Form.Label htmlFor="barcode-field-23">编码内容</Form.Label>

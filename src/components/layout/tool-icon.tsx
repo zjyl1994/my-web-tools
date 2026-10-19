@@ -1,4 +1,5 @@
 const paths: Record<string, string> = {
+  download: 'M12 3v12 M7 10l5 5 5-5 M4 16v5h16v-5',
   search: 'M16 16l5 5 M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z',
   sidebar: 'M3 3h18v18H3z M9 3v18',
   fingerprint: 'M8 3a10 10 0 0 1 13 9 M3 8a10 10 0 0 1 2-3 M2 12v3 M6 19c2-3 1-5 1-7a5 5 0 0 1 10 0c0 5-1 7-3 10 M11 22c3-5 2-7 2-10a1 1 0 0 0-2 0c0 3 0 6-3 9 M21 16c0 2-1 4-2 5',

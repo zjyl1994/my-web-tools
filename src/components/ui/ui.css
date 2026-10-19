@@ -464,6 +464,26 @@ textarea.ui-control {
   white-space: nowrap;
 }
 
+.ui-input-group--suffix {
+  position: relative;
+}
+
+.ui-input-group--suffix > .ui-control {
+  padding-right: 3rem;
+}
+
+.ui-input-group--suffix > .ui-input-group__text {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0.75rem;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
 .ui-table-wrap {
   overflow-x: auto;
 }
