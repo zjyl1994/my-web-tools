@@ -1,14 +1,13 @@
 .textproc-primary-actions,
 .textproc-category-actions { display: contents; }
 
-.textproc-actions .editor-actions-main .ui-button {
-    padding-inline: .85rem;
-    background: var(--ui-surface-strong);
-    border-color: var(--ui-border);
-    color: var(--ui-text);
-}
-.textproc-actions .editor-actions-main .ui-button:hover:not(:disabled),
-.textproc-actions .editor-actions-main .ui-button:focus-visible {
-    background: var(--ui-surface-soft);
-    border-color: var(--ui-border-strong);
+@media (min-width: 701px) {
+    .textproc-actions .editor-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) fit-content(50%);
+    }
+    .textproc-actions .editor-actions-edit {
+        margin-left: 0;
+        justify-content: flex-end;
+    }
 }

@@ -93,17 +93,17 @@ const ComparePage: React.FC = () => {
         <ButtonToolbar>
           <ButtonGroup>
             <Button
-              variant="light"
+              variant={mode === 'text' ? 'primary' : 'light'}
               aria-pressed={mode === 'text'}
-              className={`border${mode === 'text' ? ' is-active' : ''}`}
+              className="border"
               onClick={() => setMode('text')}
             >
               文本模式
             </Button>
             <Button
-              variant="light"
+              variant={mode === 'json' ? 'primary' : 'light'}
               aria-pressed={mode === 'json'}
-              className={`border${mode === 'json' ? ' is-active' : ''}`}
+              className="border"
               onClick={() => setMode('json')}
             >
               JSON 模式
