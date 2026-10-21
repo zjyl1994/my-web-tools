@@ -227,10 +227,11 @@ type ModalProps = {
   centered?: boolean;
   fullscreen?: boolean;
   initialFocus?: React.RefObject<HTMLElement | null>;
+  finalFocus?: React.RefObject<HTMLElement | null>;
   children?: React.ReactNode;
 };
 
-const ModalRoot = ({ show, onHide, fullscreen, initialFocus, children }: ModalProps) => (
+const ModalRoot = ({ show, onHide, fullscreen, initialFocus, finalFocus, children }: ModalProps) => (
   <Dialog.Root
     open={show}
     onOpenChange={(open) => {
@@ -242,7 +243,7 @@ const ModalRoot = ({ show, onHide, fullscreen, initialFocus, children }: ModalPr
     <Dialog.Portal>
       <div className="ui-dialog-layer">
         <Dialog.Backdrop className="ui-dialog-backdrop" />
-        <Dialog.Popup className={cn('ui-dialog-popup', fullscreen && 'ui-dialog-popup--fullscreen')} initialFocus={initialFocus}>
+        <Dialog.Popup className={cn('ui-dialog-popup', fullscreen && 'ui-dialog-popup--fullscreen')} initialFocus={initialFocus} finalFocus={finalFocus}>
           {children}
         </Dialog.Popup>
       </div>
@@ -278,8 +279,15 @@ const ModalBody = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivE
 
 ModalBody.displayName = 'Modal.Body';
 
+const ModalFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn('ui-dialog__footer', className)} {...props} />,
+);
+
+ModalFooter.displayName = 'Modal.Footer';
+
 export const Modal = Object.assign(ModalRoot, {
   Header: ModalHeader,
   Title: ModalTitle,
   Body: ModalBody,
+  Footer: ModalFooter,
 });

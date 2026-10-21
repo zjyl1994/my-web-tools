@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { showUndoToast } from '@/components/ui/undo-toast';
 import EditorActions from '@/components/ui/editor-actions';
 import { Button, Card, Form, Table } from '@/components/ui';
 import ConfirmDialog from '@/components/ui/confirm-dialog';
@@ -55,18 +55,7 @@ export default function PriceCalcPage() {
     const removed = priceList[index];
     if (!removed) return;
     updateList(priceList.filter((_, itemIndex) => itemIndex !== index));
-    toast.info(({ closeToast }) => (
-      <div className="undo-toast">
-        <span>已删除一条比价记录</span>
-        <button
-          type="button"
-          className="undo-toast__action"
-          onClick={() => { restoreItem(removed, index); closeToast?.(); }}
-        >
-          撤销
-        </button>
-      </div>
-    ), { autoClose: 6000 });
+    showUndoToast('已删除一条比价记录', () => restoreItem(removed, index));
   }
 
   function restoreItem(item: PriceItem, index: number) {
@@ -103,7 +92,7 @@ export default function PriceCalcPage() {
           </Form.Group>)}
           <Form.Group>
             <Form.Label htmlFor="price-result">单价（元 / 单位净含量）</Form.Label>
-            <Form.Control id="price-result" value={unitPrice === null ? '' : unitPrice.toFixed(CALC_PREC)} placeholder="等待有效输入" readOnly />
+            <Form.Control id="price-result" className="ui-result-field ui-result-field--single" value={unitPrice === null ? '' : unitPrice.toFixed(CALC_PREC)} placeholder="等待有效输入" readOnly />
             {raw !== null && unitPrice === null && <p className="ui-field-error" role="alert">数值超出可计算范围，请调整输入。</p>}
           </Form.Group>
           <EditorActions editing={<Button disabled={!priceList.length} onClick={() => setClearConfirmOpen(true)}>清空记录</Button>}>

@@ -13,7 +13,6 @@
 .timestamp-input-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 38px; margin-bottom: 8px; }
 .timestamp-input-heading .ui-label { margin: 0; }
 .timestamp-input-heading select { width: auto; min-height: 36px; padding: 4px 8px; border-radius: var(--ui-radius-control); }
-.timestamp-converters [aria-invalid="true"] { border-color: var(--ui-danger); }
 .timestamp-converters .ui-helper-text { min-height: 3em; margin: 8px 0 12px; }
 .timestamp-results { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--ui-border); display: flex; flex-direction: column; gap: 16px; }
 .timestamp-value-row { display: flex; gap: 8px; }

@@ -14,7 +14,7 @@ export default function GeneratorResult({ value }: { value: string }) {
       <Form.Control
         id={id}
         as="textarea"
-        className="font-monospace generator-result-text"
+        className="ui-result-field generator-result-text"
         rows={12}
         value={value}
         readOnly

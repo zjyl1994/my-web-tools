@@ -149,11 +149,12 @@ const JwtPage = () => {
                     as="textarea"
                     rows={5}
                     value={token}
+                    placeholder="输入密钥后自动生成 JWT"
                     readOnly
-                    className='textarea-font'
+                    className="ui-result-field"
                 />
             </Form.Group>
-            <CopyButton text={token} label="复制" variant="primary" disabled={!token} />
+            <CopyButton text={token} label="复制 JWT" variant="primary" disabled={!token} />
         </>
     )
 }

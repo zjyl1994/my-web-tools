@@ -41,7 +41,7 @@ body {
 }
 
 .textarea-font, .font-monospace {
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", "Microsoft YaHei", monospace;
+    font-family: var(--ui-font-monospace);
 }
 
 a { color: inherit; }
@@ -100,7 +100,6 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 .page-workspace--editor { display: flex; flex-direction: column; }
 .page-workspace--form, .page-workspace--about { border: 1px solid var(--ui-border); background: var(--ui-surface-strong); border-radius: var(--ui-radius); padding: 24px; box-shadow: var(--ui-shadow); }
 .page-workspace--form > .ui-form-group:last-of-type { margin-bottom: 24px; }
-.page-workspace--form > .ui-form-group:last-of-type .ui-control[readonly] { background: var(--ui-accent-soft); border-color: transparent; color: var(--ui-accent); font-weight: 600; }
 .page-workspace--cards > .ui-card:first-child { margin-top: 0; }
 .page-skeleton { display: flex; flex-direction: column; gap: 12px; padding-bottom: 32px; }
 .page-skeleton__bar { display: block; border-radius: var(--ui-radius-control); background: var(--ui-surface-soft); animation: page-skeleton-pulse 1.4s ease-in-out infinite; }
@@ -289,57 +288,6 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
     white-space: pre-wrap;
 }
 
-.jwt-datepicker-wrapper {
-    display: block;
-    width: 100%;
-}
-
-.jwt-datepicker-wrapper .ui-control {
-    width: 100%;
-}
-
-.jwt-datepicker-popper {
-    z-index: 90;
-}
-
-.jwt-datepicker-calendar {
-    border: 1px solid var(--ui-border);
-    border-radius: var(--ui-radius);
-    box-shadow: var(--ui-shadow);
-    color: var(--ui-text);
-    font-family: inherit;
-}
-
-.jwt-datepicker-calendar .react-datepicker__header {
-    border-bottom: 1px solid var(--ui-border);
-    background: var(--ui-surface-soft);
-}
-
-.jwt-datepicker-calendar .react-datepicker__current-month,
-.jwt-datepicker-calendar .react-datepicker-time__header,
-.jwt-datepicker-calendar .react-datepicker__day-name,
-.jwt-datepicker-calendar .react-datepicker__day,
-.jwt-datepicker-calendar .react-datepicker__time-name {
-    color: var(--ui-text);
-}
-
-.jwt-datepicker-calendar .react-datepicker__day:hover,
-.jwt-datepicker-calendar .react-datepicker__time-list-item:hover,
-.jwt-datepicker-calendar .react-datepicker__time-list-item--selected:hover {
-    background: var(--ui-surface-soft);
-}
-
-.jwt-datepicker-calendar .react-datepicker__day--selected,
-.jwt-datepicker-calendar .react-datepicker__day--keyboard-selected,
-.jwt-datepicker-calendar .react-datepicker__time-list-item--selected {
-    background: var(--ui-accent);
-    color: #ffffff;
-}
-
-.jwt-datepicker-calendar .react-datepicker__time-container {
-    border-left: 1px solid var(--ui-border);
-}
-
 .mt-2 {
     margin-top: 0.75rem;
 }
@@ -357,7 +305,7 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 }
 
 .font-monospace {
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", "Microsoft YaHei", monospace;
+    font-family: var(--ui-font-monospace);
 }
 
 .fs-2 {
@@ -461,8 +409,7 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 .records-layout .ui-button-group { display: inline-flex; margin-bottom: 8px; }
 .calculator-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; }
 .calculator-grid .ui-form-group:last-child { padding-top: 20px; margin-top: 4px; border-top: 1px solid var(--ui-border); grid-column: 1 / -1; }
-.calculator-grid .ui-control[readonly] { background: var(--ui-accent-soft); color: var(--ui-accent); font-size: 1.5rem; font-weight: 600; border-color: transparent; padding: 12px 16px; }
-.password-result, .lottery-result { background: var(--ui-surface-soft); padding: 20px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); overflow-wrap: anywhere; }
+.lottery-result { background: var(--ui-surface-soft); padding: 20px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); overflow-wrap: anywhere; }
 .barcode-helper-text, .barcode-status-row { font-size: .8125rem; }
 .barcode-kind-switcher__item { border-radius: var(--ui-radius-control); font-size: .8125rem; min-height: 36px; }
 .barcode-preview-shell { border-style: solid; border-radius: var(--ui-radius); }
@@ -481,6 +428,8 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 .generator-characters { display: flex; flex-wrap: wrap; gap: 12px 24px; }
 .generator-characters label { display: inline-flex; align-items: center; gap: 8px; font-size: .8125rem; cursor: pointer; }
 .generator-characters input { accent-color: var(--ui-accent); }
+.generator-characters[aria-invalid="true"] { padding: 12px; border: 1px solid var(--ui-danger); border-radius: var(--ui-radius-control); }
+.generator-characters .ui-field-error { flex-basis: 100%; }
 .generator-submit, .generator-result-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .generator-result { border-top: 1px solid var(--ui-border); margin-top: 24px; padding-top: 24px; }
 .generator-result-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; }

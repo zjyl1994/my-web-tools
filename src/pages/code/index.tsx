@@ -24,9 +24,8 @@ const CodePage: React.FC = () => {
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Label htmlFor="code-field-3">最终密码</Form.Label>
-        <Form.Control id="code-field-3" type="text" value={calcCode} readOnly />
+        <output id="code-field-3" className="ui-result-value">{displayCalcCode}</output>
       </Form.Group>
-      <p className="password-result font-monospace fs-2">{displayCalcCode}</p>
       <CopyButton text={calcCode} label="复制密码" variant="primary" disabled={!calcCode} />
     </>
   )

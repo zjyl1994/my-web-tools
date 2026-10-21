@@ -285,22 +285,20 @@ const TextProcPage: React.FC = () => {
                             {replaceToHistory.map(v => (<option value={v} key={v} />))}
                         </datalist>
                     </Form.Group>
-                    <ButtonToolbar>
-                        <Button
-                            variant="light"
-                            className="border"
-                            onClick={exec(
-                                text_replace(replaceSourceValue, replaceDestinationValue),
-                                () => {
-                                    rememberReplaceFrom(replaceSourceValue);
-                                    rememberReplaceTo(replaceDestinationValue);
-                                },
-                            )}
-                        >
-                            执行文本替换
-                        </Button>
-                    </ButtonToolbar>
                 </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => setReplaceDialogShow(false)}>关闭</Button>
+                    <Button
+                        variant="primary"
+                        onClick={exec(
+                            text_replace(replaceSourceValue, replaceDestinationValue),
+                            () => {
+                                rememberReplaceFrom(replaceSourceValue);
+                                rememberReplaceTo(replaceDestinationValue);
+                            },
+                        )}
+                    >执行文本替换</Button>
+                </Modal.Footer>
             </Modal>
 
             <Modal show={affixDialogShow} onHide={() => setAffixDialogShow(false)} centered>

@@ -27,7 +27,7 @@ export default function KcalPage() {
       </Form.Group>)}
       <Form.Group>
         <Form.Label htmlFor="kcal-result">总能量（大卡）</Form.Label>
-        <Form.Control id="kcal-result" value={totalEnergy === null ? '' : String(totalEnergy)} placeholder="等待有效输入" readOnly aria-describedby={raw !== null && totalEnergy === null ? 'kcal-overflow' : undefined} />
+        <Form.Control id="kcal-result" className="ui-result-field ui-result-field--single" value={totalEnergy === null ? '' : String(totalEnergy)} placeholder="等待有效输入" readOnly aria-describedby={raw !== null && totalEnergy === null ? 'kcal-overflow' : undefined} />
         {raw !== null && totalEnergy === null && <p id="kcal-overflow" className="ui-field-error" role="alert">数值超出可计算范围，请减小输入值。</p>}
       </Form.Group>
     </div>

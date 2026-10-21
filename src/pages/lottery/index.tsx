@@ -1,6 +1,7 @@
 import EditorActions from '@/components/ui/editor-actions';
 import { Button, Card, ListGroup } from '@/components/ui';
 import ConfirmDialog from '@/components/ui/confirm-dialog';
+import { showUndoToast } from '@/components/ui/undo-toast';
 
 import { useBasic } from '@/hooks/use-basic';
 import { superLottoGen, markSixGen } from './utils.ts';
@@ -12,7 +13,6 @@ const LotteryGen: React.FC = () => {
 
     const [codeList, setCodeList] = useState<string[]>(loadCodeList())
     const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
-    const [pendingDelete, setPendingDelete] = useState<number | null>(null);
     const { value, action } = useBasic(superLottoGen(), '');
 
     const saveCode = () => setCodeList(prev => {
@@ -29,14 +29,23 @@ const LotteryGen: React.FC = () => {
         setClearConfirmOpen(false);
     };
 
-    const deleteCode = () => {
-        if (pendingDelete === null) return;
+    const deleteCode = (index: number) => {
+        const removed = codeList[index];
+        if (!removed) return;
         setCodeList(prev => {
-            const newList = prev.filter((_, i) => i !== pendingDelete);
+            const newList = prev.filter((_, i) => i !== index);
             localStorage.setItem("lottery_codes", JSON.stringify(newList));
             return newList;
         });
-        setPendingDelete(null);
+        showUndoToast('已删除一组收藏号码', () => {
+            setCodeList(prev => {
+                if (prev.includes(removed)) return prev;
+                const newList = [...prev];
+                newList.splice(Math.min(index, newList.length), 0, removed);
+                localStorage.setItem('lottery_codes', JSON.stringify(newList));
+                return newList;
+            });
+        });
     };
 
     return (
@@ -47,7 +56,7 @@ const LotteryGen: React.FC = () => {
                     <Card.Text className="lottery-result font-monospace fs-5">{value}</Card.Text>
                     <EditorActions editing={<>
                         <Button onClick={saveCode}>收藏号码</Button>
-                        <Button onClick={() => setClearConfirmOpen(true)}>清空收藏</Button>
+                        <Button disabled={!codeList.length} onClick={() => setClearConfirmOpen(true)}>清空收藏</Button>
                     </>}>
                         <Button variant="primary" onClick={action(superLottoGen)}>生成大乐透</Button>
                         <Button onClick={action(markSixGen)}>生成六合彩</Button>
@@ -61,7 +70,7 @@ const LotteryGen: React.FC = () => {
                     {codeList.map((item: string, index: number) =>
                         <ListGroup.Item key={item} className="d-flex justify-content-between">
                             <div>{item} </div>
-                            <button type="button" className="btn-close" aria-label={`删除号码 ${item}`} onClick={() => setPendingDelete(index)}></button>
+                            <button type="button" className="btn-close" aria-label={`删除号码 ${item}`} onClick={() => deleteCode(index)}></button>
                         </ListGroup.Item>
                     )}
                 </ListGroup>
@@ -74,14 +83,6 @@ const LotteryGen: React.FC = () => {
                 confirmLabel="清空收藏"
                 onConfirm={cleanList}
                 onCancel={() => setClearConfirmOpen(false)}
-            />
-            <ConfirmDialog
-                open={pendingDelete !== null}
-                title="删除这组号码"
-                message={pendingDelete === null ? '' : `将删除「${codeList[pendingDelete] ?? ''}」，删除后无法恢复。`}
-                confirmLabel="删除"
-                onConfirm={deleteCode}
-                onCancel={() => setPendingDelete(null)}
             />
         </div>
     )

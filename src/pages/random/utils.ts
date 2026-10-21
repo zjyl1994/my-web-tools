@@ -14,6 +14,15 @@ export function validateCount(count: number) {
   }
 }
 
+export function generationCountError(text: string) {
+  try {
+    validateCount(Number(text));
+    return '';
+  } catch (error) {
+    return (error as Error).message;
+  }
+}
+
 // Reuse random bytes across a batch; rejection sampling keeps every outcome equally likely.
 function createRandomSource() {
   const buffer = new Uint32Array(1024);
