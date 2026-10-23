@@ -1,0 +1,7 @@
+.sql-format-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 8px;
+  max-width: 100%;
+}

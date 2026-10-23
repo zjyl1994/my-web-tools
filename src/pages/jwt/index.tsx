@@ -1,3 +1,4 @@
+import ControlGroup from '@/components/ui/control-group';
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Form, Button, InputGroup } from '@/components/ui';
 import CopyButton from '@/components/ui/copy-button';
@@ -96,16 +97,17 @@ const JwtPage = () => {
         <>
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="jwt-field-1">密钥</Form.Label>
-                <InputGroup>
+                <ControlGroup end={
+                    <Button variant="light" onClick={toggleShowSecret} aria-controls="jwt-field-1" aria-label={showSecret ? '隐藏密钥' : '显示密钥'}>
+                        {showSecret ? '隐藏' : '显示'}
+                    </Button>
+                }>
                     <Form.Control id="jwt-field-1"
                         type={showSecret ? 'text' : 'password'}
                         onChange={e => setSecret(e.target.value.trim())}
                         autoComplete='off'
                     />
-                    <Button variant="light" className="border" onClick={toggleShowSecret}>
-                        {showSecret ? '隐藏' : '显示'}
-                    </Button>
-                </InputGroup>
+                </ControlGroup>
             </Form.Group>
 
             <Form.Group className="mb-3">

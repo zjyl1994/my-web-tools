@@ -1,3 +1,4 @@
+import ControlGroup from '@/components/ui/control-group';
 import { useEffect, useState } from 'react';
 import { Button, ButtonToolbar, Card, Form } from '@/components/ui';
 import CopyButton from '@/components/ui/copy-button';
@@ -9,10 +10,9 @@ import './style.css';
 function CopyValue({ id, label, value, placeholder = '等待输入' }: { id: string; label: string; value: string; placeholder?: string }) {
   return <div className="timestamp-output">
     <Form.Label htmlFor={id}>{label}</Form.Label>
-    <div className="timestamp-value-row">
+    <ControlGroup end={<CopyButton text={value} disabled={!value} ariaLabel={`复制${label}`} />}>
       <Form.Control id={id} className="font-monospace" value={value} placeholder={placeholder} readOnly />
-      <CopyButton text={value} disabled={!value} ariaLabel={`复制${label}`} />
-    </div>
+    </ControlGroup>
   </div>;
 }
 
@@ -46,23 +46,26 @@ export default function TimestampPage() {
         <details className="timestamp-current-mobile"><summary>复制时间戳</summary>{currentValues}</details>
       </div>
       <div className="timestamp-zone">
-        <Form.Label htmlFor="timestamp-zone">转换时区</Form.Label>
-        <select id="timestamp-zone" className="ui-control" value={zone} onChange={(event) => setZone(event.target.value as TimeZone)}>
-          <option value="local">本地时区 · {localZone}</option>
-          <option value="utc">UTC · 协调世界时</option>
-        </select>
+        <ControlGroup label="转换时区" htmlFor="timestamp-zone" compact>
+          <select id="timestamp-zone" className="ui-control" value={zone} onChange={(event) => setZone(event.target.value as TimeZone)}>
+            <option value="local">本地时区 · {localZone}</option>
+            <option value="utc">UTC · 协调世界时</option>
+          </select>
+        </ControlGroup>
         <span className="ui-helper-text">Unix 时间戳本身不带时区</span>
       </div>
       <div className="timestamp-converters">
         <Card>
           <Card.Header><h2>时间戳 → 日期时间</h2></Card.Header>
           <Card.Body>
-            <div className="timestamp-input-heading"><Form.Label htmlFor="timestamp-input">Unix 时间戳</Form.Label>
+            <div className="timestamp-input-heading"><Form.Label htmlFor="timestamp-input">Unix 时间戳</Form.Label></div>
+            <ControlGroup end={
               <select aria-label="时间戳单位" className="ui-control" value={unit} onChange={(event) => setUnit(event.target.value as TimestampUnit)}>
                 <option value="auto">自动识别</option><option value="seconds">秒（s）</option><option value="milliseconds">毫秒（ms）</option>
               </select>
-            </div>
-            <Form.Control id="timestamp-input" className="font-monospace" value={timestamp} onChange={(event) => setTimestamp(event.target.value)} placeholder="例如 1700000000 或 1700000000000" aria-invalid={Boolean(timestampConversion.error)} aria-describedby="timestamp-input-help" autoComplete="off" spellCheck={false} />
+            }>
+              <Form.Control id="timestamp-input" className="font-monospace" value={timestamp} onChange={(event) => setTimestamp(event.target.value)} placeholder="例如 1700000000 或 1700000000000" aria-invalid={Boolean(timestampConversion.error)} aria-describedby="timestamp-input-help" autoComplete="off" spellCheck={false} />
+            </ControlGroup>
             <p id="timestamp-input-help" className={`ui-helper-text${timestampConversion.error ? ' text-danger' : ''}`} aria-live="polite">{timestampConversion.error || (parsedTimestamp ? `当前按${parsedTimestamp.unit === 'seconds' ? '秒' : '毫秒'}解析 · ${formatOffset(parsedTimestamp.milliseconds, zone)}` : '支持秒或毫秒；较早日期建议手动指定单位。')}</p>
             <ButtonToolbar><Button onClick={() => { const value = Date.now(); setTimestamp(String(unit === 'milliseconds' ? value : Math.floor(value / 1000))); }}>填入当前时间</Button><Button disabled={!timestamp} onClick={() => setTimestamp('')}>清空</Button></ButtonToolbar>
             <div className="timestamp-results">

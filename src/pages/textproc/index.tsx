@@ -1,3 +1,4 @@
+import ControlGroup from '@/components/ui/control-group';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -211,23 +212,24 @@ const TextProcPage: React.FC = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form.Group>
-                        <Form.Label htmlFor="textproc-field-1">预设</Form.Label>
-                        <select id="textproc-field-1"
-                            className="ui-control"
-                            defaultValue=""
-                            onChange={e => {
-                                if (e.target.value) {
-                                    setRegexValue(e.target.value);
-                                }
-                            }}
-                        >
-                            <option value="">选择预设正则</option>
-                            {predefined_regex_list.map(item => (
-                                <option value={item.value} key={item.key}>
-                                    {item.key}
-                                </option>
-                            ))}
-                        </select>
+                        <ControlGroup label="预设" htmlFor="textproc-field-1">
+                            <select id="textproc-field-1"
+                                className="ui-control"
+                                defaultValue=""
+                                onChange={e => {
+                                    if (e.target.value) {
+                                        setRegexValue(e.target.value);
+                                    }
+                                }}
+                            >
+                                <option value="">选择预设正则</option>
+                                {predefined_regex_list.map(item => (
+                                    <option value={item.value} key={item.key}>
+                                        {item.key}
+                                    </option>
+                                ))}
+                            </select>
+                        </ControlGroup>
                     </Form.Group>
                     <Form.Group>
                         <Form.Label htmlFor="textproc-field-2">正则表达式</Form.Label>

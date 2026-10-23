@@ -1,8 +1,9 @@
+import ControlGroup from '@/components/ui/control-group';
 import EditorActions from '@/components/ui/editor-actions';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import QRCode from 'qrcode';
-import { Button, Card, Form, InputGroup } from '@/components/ui';
+import { Button, Card, Form } from '@/components/ui';
 import CopyButton from '@/components/ui/copy-button';
 import BatchQRCode from './batch';
 
@@ -208,7 +209,7 @@ const BarcodePage: React.FC = () => {
             case 'wifi':
                 return (
                     <>
-                        <div className="barcode-grid">
+                        <div className="barcode-grid barcode-grid--controls">
                             <Form.Group>
                                 <Form.Label htmlFor="barcode-field-3">WiFi 名称</Form.Label>
                                 <Form.Control id="barcode-field-3"
@@ -218,16 +219,17 @@ const BarcodePage: React.FC = () => {
                                 />
                             </Form.Group>
                             <Form.Group>
-                                <Form.Label htmlFor="barcode-field-4">加密方式</Form.Label>
-                                <select id="barcode-field-4"
-                                    className="ui-control"
-                                    value={current.wifi.security}
-                                    onChange={(e) => updateTemplateField('wifi', 'security', e.target.value as QRTemplateState['wifi']['security'])}
-                                >
-                                    <option value="WPA">WPA/WPA2</option>
-                                    <option value="WEP">WEP</option>
-                                    <option value="nopass">无密码</option>
-                                </select>
+                                <ControlGroup label="加密方式" htmlFor="barcode-field-4">
+                                    <select id="barcode-field-4"
+                                        className="ui-control"
+                                        value={current.wifi.security}
+                                        onChange={(e) => updateTemplateField('wifi', 'security', e.target.value as QRTemplateState['wifi']['security'])}
+                                    >
+                                        <option value="WPA">WPA/WPA2</option>
+                                        <option value="WEP">WEP</option>
+                                        <option value="nopass">无密码</option>
+                                    </select>
+                                </ControlGroup>
                             </Form.Group>
                         </div>
                         <div className="barcode-grid">
@@ -439,8 +441,7 @@ const BarcodePage: React.FC = () => {
     const settings = (
         <div className="barcode-grid">
             <Form.Group>
-                <Form.Label htmlFor="barcode-field-21">目标宽度</Form.Label>
-                <InputGroup className="ui-input-group--suffix">
+                <ControlGroup label="目标宽度" htmlFor="barcode-field-21" suffix="px" suffixId="barcode-width-unit">
                     <Form.Control id="barcode-field-21"
                         inputMode="numeric"
                         value={width}
@@ -448,22 +449,22 @@ const BarcodePage: React.FC = () => {
                         placeholder="360"
                         aria-describedby="barcode-width-unit"
                     />
-                    <InputGroup.Text id="barcode-width-unit">px</InputGroup.Text>
-                </InputGroup>
+                </ControlGroup>
             </Form.Group>
 
             <Form.Group>
-                <Form.Label htmlFor="barcode-field-22">纠错等级</Form.Label>
-                <select id="barcode-field-22"
-                    className="ui-control"
-                    value={errorLevel}
-                    onChange={(e) => setErrorLevel(e.target.value as QRErrorLevel)}
-                >
-                    <option value="L">L</option>
-                    <option value="M">M</option>
-                    <option value="Q">Q</option>
-                    <option value="H">H</option>
-                </select>
+                <ControlGroup label="纠错等级" htmlFor="barcode-field-22">
+                    <select id="barcode-field-22"
+                        className="ui-control"
+                        value={errorLevel}
+                        onChange={(e) => setErrorLevel(e.target.value as QRErrorLevel)}
+                    >
+                        <option value="L">L</option>
+                        <option value="M">M</option>
+                        <option value="Q">Q</option>
+                        <option value="H">H</option>
+                    </select>
+                </ControlGroup>
             </Form.Group>
         </div>
     );

@@ -1,3 +1,4 @@
+import ControlGroup from '@/components/ui/control-group';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { Button, Form } from '@/components/ui';
@@ -35,8 +36,9 @@ export default function UuidPage() {
       }}>
         <div className="generator-settings generator-settings--uuid">
           <Form.Group>
-            <Form.Label htmlFor="uuid-count">生成数量</Form.Label>
-            <Form.Control id="uuid-count" type="number" min="1" max={MAX_GENERATION_COUNT} step="1" required value={count} onChange={(event) => setCount(event.target.value)} aria-invalid={submitted && Boolean(countError)} aria-describedby={submitted && countError ? 'uuid-count-error' : undefined} />
+            <ControlGroup label="数量" htmlFor="uuid-count">
+              <Form.Control id="uuid-count" type="number" min="1" max={MAX_GENERATION_COUNT} step="1" required value={count} onChange={(event) => setCount(event.target.value)} aria-invalid={submitted && Boolean(countError)} aria-describedby={submitted && countError ? 'uuid-count-error' : undefined} />
+            </ControlGroup>
             {submitted && countError && <p id="uuid-count-error" className="ui-field-error" aria-live="polite">{countError}</p>}
           </Form.Group>
           <Button type="submit" variant="primary">生成 UUID</Button>

@@ -5,19 +5,13 @@
 .timestamp-current-values > div > span { color: var(--ui-text-muted); font-size: .8125rem; }
 .timestamp-current-values code { font-size: .875rem; font-variant-numeric: tabular-nums; }
 .timestamp-zone { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
-.timestamp-zone .ui-label { margin: 0; }
-.timestamp-zone select { width: auto; max-width: 100%; }
 .timestamp-converters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .timestamp-converters > .ui-card { min-width: 0; }
 .timestamp-converters h2 { font-size: .9375rem; font-weight: 600; margin: 0; }
 .timestamp-input-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 38px; margin-bottom: 8px; }
 .timestamp-input-heading .ui-label { margin: 0; }
-.timestamp-input-heading select { width: auto; min-height: 36px; padding: 4px 8px; border-radius: var(--ui-radius-control); }
 .timestamp-converters .ui-helper-text { min-height: 3em; margin: 8px 0 12px; }
 .timestamp-results { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--ui-border); display: flex; flex-direction: column; gap: 16px; }
-.timestamp-value-row { display: flex; gap: 8px; }
-.timestamp-value-row .ui-control { min-width: 0; flex: 1; }
-.timestamp-value-row .ui-button { flex-shrink: 0; }
 .timestamp-note { margin: 16px 0 0; }
 @media (max-width: 1050px) { .timestamp-converters { grid-template-columns: 1fr; } }
 @media (max-width: 540px) {
@@ -45,7 +39,6 @@
   .timestamp-zone > .ui-helper-text { display: none; }
   .timestamp-converters .ui-helper-text { min-height: 0; }
   .timestamp-input-heading { flex-wrap: wrap; }
-  .timestamp-input-heading select { min-height: 44px; }
   .timestamp-note { font-size: .8125rem; }
 }
 @media (pointer: coarse) { .timestamp-current-mobile summary { min-height: 44px; } }

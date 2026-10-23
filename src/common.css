@@ -226,6 +226,8 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
     gap: 0.85rem;
 }
 
+.barcode-grid--controls { align-items: end; }
+
 .barcode-checkbox {
     display: flex;
     align-items: center;
@@ -422,8 +424,8 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 .generator-mode legend, .generator-characters legend { font-size: .8125rem; font-weight: 500; margin-bottom: 8px; }
 .generator-settings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .generator-settings .ui-form-group { margin: 0 0 16px; }
-.generator-settings--uuid { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
-.generator-settings--uuid .ui-form-group { width: 180px; margin: 0; }
+.generator-settings--uuid { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px; }
+.generator-settings--uuid .ui-form-group { width: 240px; max-width: 100%; margin: 0; }
 .generator-settings--uuid > .ui-button { min-height: 2.65rem; }
 .generator-characters { display: flex; flex-wrap: wrap; gap: 12px 24px; }
 .generator-characters label { display: inline-flex; align-items: center; gap: 8px; font-size: .8125rem; cursor: pointer; }

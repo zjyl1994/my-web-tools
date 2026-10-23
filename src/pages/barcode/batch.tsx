@@ -1,3 +1,4 @@
+import ControlGroup from '@/components/ui/control-group';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import QRCode from 'qrcode';
 import { toast } from 'react-toastify';
@@ -128,12 +129,13 @@ export default function BatchQRCode({ templateSelector, settings, width, errorLe
                         />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label htmlFor="barcode-batch-split">切割方式</Form.Label>
-                        <select id="barcode-batch-split" className="ui-control" value={splitMode}
-                            onChange={(event) => setSplitMode(event.target.value as SplitMode)}>
-                            <option value="line">按行切割</option>
-                            <option value="paragraph">按段落切割</option>
-                        </select>
+                        <ControlGroup label="切割方式" htmlFor="barcode-batch-split">
+                            <select id="barcode-batch-split" className="ui-control" value={splitMode}
+                                onChange={(event) => setSplitMode(event.target.value as SplitMode)}>
+                                <option value="line">按行切割</option>
+                                <option value="paragraph">按段落切割</option>
+                            </select>
+                        </ControlGroup>
                         <div className="barcode-helper-text">
                             {splitMode === 'line' ? '每个非空行生成一个二维码。' : '一个或多个空白行分隔段落，保留段落内的换行。'}
                         </div>

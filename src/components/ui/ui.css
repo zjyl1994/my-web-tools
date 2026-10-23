@@ -515,6 +515,75 @@ textarea.ui-control {
   pointer-events: none;
 }
 
+.ui-control-group {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.65rem;
+  max-width: 100%;
+  border: 1px solid var(--ui-control-border);
+  border-radius: var(--ui-radius-control);
+  background: var(--ui-surface-strong);
+}
+.ui-control-group--compact { width: fit-content; }
+.ui-control-group:hover { border-color: var(--ui-control-border-hover); }
+.ui-control-group:has(> .ui-control[aria-invalid="true"]) { border-color: var(--ui-danger); }
+.ui-control-group:has(> .ui-control:focus-visible) {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 3px;
+}
+.ui-control-group > .ui-control {
+  flex: 1 1 0%;
+  width: 0;
+  min-width: 0;
+  min-height: calc(2.65rem - 2px);
+  border: 0;
+  border-radius: inherit;
+}
+.ui-control-group--compact > .ui-control { flex: 1 1 auto; width: auto; }
+.ui-control-group > .ui-control:not(:first-child) { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.ui-control-group > .ui-control:not(:last-child) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.ui-control-group > .ui-control:focus-visible { outline: none; }
+.ui-control-group__label,
+.ui-control-group__suffix {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: .48rem .75rem;
+  background: var(--ui-surface-soft);
+  color: var(--ui-text-muted);
+  font-size: .875rem;
+  white-space: nowrap;
+}
+.ui-control-group__label {
+  border-right: 1px solid var(--ui-control-border);
+  border-radius: calc(var(--ui-radius-control) - 1px) 0 0 calc(var(--ui-radius-control) - 1px);
+  font-weight: 500;
+}
+.ui-control-group__suffix,
+.ui-control-group__end {
+  border-left: 1px solid var(--ui-control-border);
+  border-radius: 0 calc(var(--ui-radius-control) - 1px) calc(var(--ui-radius-control) - 1px) 0;
+}
+.ui-control-group__suffix:not(:last-child) { border-radius: 0; }
+.ui-control-group__end { display: flex; align-items: stretch; flex-shrink: 0; }
+.ui-control-group__end > :is(.ui-button, .ui-control) {
+  width: auto;
+  min-height: 0;
+  border: 0;
+  border-radius: inherit;
+}
+.ui-control-group__end > :is(.ui-button, .ui-control):focus-visible { outline-offset: -3px; }
+.ui-control-group select { cursor: pointer; }
+@media (pointer: coarse) {
+  .ui-control-group { min-height: 44px; }
+  .ui-control-group > .ui-control { min-height: 42px; }
+}
+@media (max-width: 700px) {
+  .ui-control-group__label, .ui-control-group__suffix { font-size: 1rem; }
+}
+
 .ui-table-wrap {
   overflow-x: auto;
 }
