@@ -1,7 +1,7 @@
 import * as LosslessJSON from 'lossless-json';
-import { toast } from 'react-toastify';
 import { Base64 } from 'js-base64';
 import pako from 'pako';
+import { ActionInputError } from '@/utils/action-error';
 
 export const deepParse = (s: string): unknown => LosslessJSON.parse(s, (_, v) => {
     try {
@@ -20,9 +20,8 @@ export const paste_and_format = async (_: string): Promise<string> => {
     try {
         return enhanced_format_json(text);
     } catch (error) {
-        console.error(error);
-        toast.error('剪贴板内容不是有效的 JSON，已原样粘贴。', { autoClose: 6000 });
-        return text;
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new ActionInputError(`剪贴板内容不是有效的 JSON，编辑器原内容已保留。${detail}`, text);
     }
 }
 

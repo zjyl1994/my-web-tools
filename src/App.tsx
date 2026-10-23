@@ -46,7 +46,7 @@ function PageSkeleton() {
 
 function App() {
   const location = useLocation();
-  const [sidebarExpanded, setSidebarExpanded] = useStoredState('layout.sidebarExpanded', false);
+  const [sidebarExpanded, setSidebarExpanded] = useStoredState('layout.sidebarExpanded', window.matchMedia('(min-width: 1181px)').matches);
   const [navOpenPath, setNavOpenPath] = useState<string | null>(null);
   const prefersDark = usePrefersDark();
   const navOpen = navOpenPath === location.pathname;

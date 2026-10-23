@@ -1,3 +1,4 @@
+import ActionError from '@/components/ui/action-error';
 import { Button } from '@/components/ui';
 import CodeEditor from '@/components/ui/code-editor';
 import EditorActions from '@/components/ui/editor-actions';
@@ -13,7 +14,7 @@ import {
 } from './utils';
 
 const JsonPage: React.FC = () => {
-    const { value, setValue, action, functionButtonGroup } = useBasic('', 'json');
+    const { value, setValue, action, actionError, functionButtonGroup } = useBasic('', 'json', true);
 
     const { rows, textareaRef } = useTextareaResize<HTMLDivElement>('json', 20);
 
@@ -31,12 +32,14 @@ const JsonPage: React.FC = () => {
                 enableLanguageFolding
             />
 
+            <ActionError message={actionError} />
+
             <EditorActions editing={functionButtonGroup}>
                 <Button variant="primary" className="border" onClick={action(format_json)} title="格式化当前JSON">格式化</Button>
                 <Button variant="light" className="border" onClick={action(enhanced_format_json)} title="递归格式化内嵌于字符串的JSON">增强格式化</Button>
                 <Button variant="light" className="border" onClick={action(paste_and_format)} title="粘贴并进行增强格式化">粘贴 & 格式化</Button>
                 <Button variant="light" className="border" onClick={action(compress_json)} title="压缩成一行">压缩</Button>
-                <ResponsiveActions label="修复与转换" actions={[
+                <ResponsiveActions alwaysMenu label="修复与转换" actions={[
                     { label: '转义为字符串', onClick: action(escape_json) },
                     { label: '去除转义', onClick: action(unescape_json) },
                     { label: '智能修复', onClick: action(smart_process), title: '尝试解码、解压及修复 JSON' },

@@ -3,13 +3,13 @@ import { toast } from 'react-toastify';
 import { useHistoryState } from "@uidotdev/usehooks";
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Button, ButtonGroup } from '@/components/ui';
+import { describeActionError } from '@/utils/action-error';
 
 const STORAGE_KEY_PREFIX = 'textarea_history_';
 const TEXTAREA_ROWS_KEY_PREFIX = 'textarea_rows_';
 
 const CLIPBOARD_WRITE_ERROR = '无法写入剪贴板，请检查浏览器的剪贴板权限后重试。';
 const CLIPBOARD_READ_ERROR = '无法读取剪贴板，请检查剪贴板权限，或直接手动粘贴。';
-const ACTION_ERROR = '处理失败，请检查输入内容后重试。';
 const STORAGE_SAVE_ERROR = '无法保存到本地：浏览器存储已满或被禁用。当前内容仍在页面中。';
 const STORAGE_CLEAR_ERROR = '无法清除本地记录：浏览器的本地存储被禁用。';
 
@@ -50,11 +50,17 @@ export const usePaste = (setInputValue: (value: string) => void) => {
 export const useActionCreater = (
     inputValue: string,
     setInputValue: (value: string) => void,
+    onError?: (message: string) => void,
 ) => {
     return useCallback((action: (origin: string) => (string | Promise<string>)) => () => {
         const setResult = function (value: string) {
-            if (value)
-                setInputValue(value);
+            onError?.('');
+            setInputValue(value);
+        };
+        const reportError = (error: unknown) => {
+            const message = describeActionError(error, inputValue);
+            if (onError) onError(message);
+            else toast.error(message, { autoClose: false });
         };
         try {
             const result = action(inputValue);
@@ -63,17 +69,18 @@ export const useActionCreater = (
             } else {
                 result.then(text => setResult(text)).catch((error: unknown) => {
                     console.error(error);
-                    toast.error(ACTION_ERROR, { autoClose: 6000 });
+                    reportError(error);
                 });
             }
         } catch (error) {
             console.error(error);
-            toast.error(ACTION_ERROR, { autoClose: 6000 });
+            reportError(error);
         }
-    }, [inputValue, setInputValue]);
+    }, [inputValue, setInputValue, onError]);
 };
 
-export const useBasic = (defaultValue: string, historyType: string) => {
+export const useBasic = (defaultValue: string, historyType: string, inlineErrors = false) => {
+    const [actionError, setActionError] = useState('');
     const storageKey = `${STORAGE_KEY_PREFIX}${historyType}`;
 
     // 从localStorage加载初始值
@@ -87,8 +94,10 @@ export const useBasic = (defaultValue: string, historyType: string) => {
         }
     };
 
-    const { state, set, undo, redo, clear, canUndo, canRedo } = useHistoryState(getInitialValue());
+    const { state, set, undo: undoState, redo: redoState, clear, canUndo, canRedo } = useHistoryState(getInitialValue());
     const value = state;
+    const undo = () => { setActionError(''); undoState(); };
+    const redo = () => { setActionError(''); redoState(); };
 
     // 保存到localStorage的effect
     useEffect(() => {
@@ -102,6 +111,7 @@ export const useBasic = (defaultValue: string, historyType: string) => {
     }, [value, storageKey, historyType]);  // 新增：添加type到依赖项
 
     const setValue = (newValue: string) => {
+        setActionError('');
         set(newValue);
     };
 
@@ -116,7 +126,7 @@ export const useBasic = (defaultValue: string, historyType: string) => {
         }
     };
 
-    const action = useActionCreater(value, setValue);
+    const action = useActionCreater(value, setValue, inlineErrors ? setActionError : undefined);
     const { copy, copied } = useCopy(value);
     const paste = usePaste(setValue);
 
@@ -134,7 +144,7 @@ export const useBasic = (defaultValue: string, historyType: string) => {
     useHotkeys('ctrl+z', undo);
     useHotkeys('ctrl+y', redo);
 
-    return { value, setValue, action, copy, paste, undo, redo, clearHistory, canUndo, canRedo, functionButtonGroup };
+    return { value, setValue, action, actionError, clearActionError: () => setActionError(''), copy, paste, undo, redo, clearHistory, canUndo, canRedo, functionButtonGroup };
 }
 
 

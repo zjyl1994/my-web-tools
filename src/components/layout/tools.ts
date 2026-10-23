@@ -17,7 +17,7 @@ export const tools: Tool[] = [
   { path: '/encoder', title: '编解码', description: 'Base64、URL 与 Gzip 编解码。', group: '开发与文本', icon: 'arrows', layout: 'editor' },
   { path: '/textproc', title: '文本处理', description: '文本拆分、合并、替换、去重与排序。', group: '开发与文本', icon: 'text', layout: 'editor' },
   { path: '/compare', title: '内容对比', description: '文本与 JSON 差异对比。', group: '开发与文本', icon: 'columns', layout: 'editor' },
-  { path: '/sqlfmt', title: 'SQL 格式化', description: 'SQL 语句格式化。', group: '开发与文本', icon: 'database', layout: 'editor' },
+  { path: '/sqlfmt', title: 'SQL 格式化', description: 'SQL 语句格式化，支持 MySQL、PostgreSQL 等多种方言。', group: '开发与文本', icon: 'database', layout: 'editor' },
   { path: '/lazygo', title: 'Go 生成器', description: '处理结构体标签、代码转换与注释。', group: '开发与文本', icon: 'code', layout: 'editor' },
   { path: '/jwt', title: 'JWT 生成器', description: '设置密钥、有效期与自定义字段，生成 JWT。', group: '开发与文本', icon: 'key', layout: 'form' },
   { path: '/code', title: '密码机', description: '通过主密码与助记符，生成对应的密码。', group: '开发与文本', icon: 'lock', layout: 'form' },

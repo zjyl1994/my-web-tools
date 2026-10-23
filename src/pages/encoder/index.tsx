@@ -1,3 +1,4 @@
+import ActionError from '@/components/ui/action-error';
 import { Button } from '@/components/ui';
 import CodeEditor from '@/components/ui/code-editor';
 import EditorActions from '@/components/ui/editor-actions';
@@ -10,7 +11,7 @@ import { useBasic,useTextareaResize } from '@/hooks/use-basic';
 import { decode_oct_utf8, encode_gzip, decode_gzip } from './utils';
 
 const EncoderPage: React.FC = () => {
-    const { value, setValue, action, functionButtonGroup } = useBasic('','encoder');
+    const { value, setValue, action, actionError, functionButtonGroup } = useBasic('', 'encoder', true);
 
     const { rows, textareaRef } = useTextareaResize<HTMLDivElement>('encoder', 20);
 
@@ -23,6 +24,8 @@ const EncoderPage: React.FC = () => {
                 rows={rows}
                 resizeRef={textareaRef}
             />
+
+            <ActionError message={actionError} />
 
             <EditorActions editing={functionButtonGroup}>
                 <Button variant="primary" className="border" onClick={action(Base64.encode)} title="原版 Base64">Base64 编码</Button>
