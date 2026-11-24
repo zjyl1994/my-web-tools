@@ -9,15 +9,14 @@
 .about-facts > div { display: grid; grid-template-columns: 6rem minmax(0, 1fr); gap: 16px; padding: 8px 0; }
 .about-facts dt { color: var(--ui-text-muted); font-weight: 400; }
 .about-facts dd { margin: 0; overflow-wrap: anywhere; }
-.about-project-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.about-project-links a { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius); text-decoration: none; }
-.about-project-links a:hover { background: var(--ui-surface-soft); border-color: var(--ui-border-strong); }
-.about-project-links strong { display: block; font-weight: 500; font-size: .875rem; }
-.about-project-links small { display: block; margin-top: 4px; color: var(--ui-text-muted); font-size: .8125rem; overflow-wrap: anywhere; }
-.about-credit { margin: 28px 0 0; color: var(--ui-text-muted); font-size: .8125rem; line-height: 1.8; }
+.about-app-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.about-app-actions svg { width: 16px; height: 16px; }
+.about-app-status { margin: 8px 0 0; color: var(--ui-text-muted); font-size: .8125rem; line-height: 1.65; }
+.about-app-status:empty { margin: 0; }
+.about-footer { margin-top: 28px; color: var(--ui-text-muted); font-size: .8125rem; line-height: 1.8; }
 @media (max-width: 600px) {
     .about-overview { gap: 12px; }
     .about-overview img { width: 40px; height: 40px; }
-    .about-project-links { grid-template-columns: minmax(0, 1fr); }
+    .about-app-actions .ui-button { min-height: 44px; }
     .about-facts > div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
 }

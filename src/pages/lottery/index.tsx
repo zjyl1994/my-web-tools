@@ -4,45 +4,40 @@ import ConfirmDialog from '@/components/ui/confirm-dialog';
 import { showUndoToast } from '@/components/ui/undo-toast';
 
 import { useBasic } from '@/hooks/use-basic';
+import { useStoredList } from '@/hooks/use-stored-state';
 import { superLottoGen, markSixGen } from './utils.ts';
 import { useState } from 'react';
 import { uniq } from 'lodash';
 
-const LotteryGen: React.FC = () => {
-    const loadCodeList = () => JSON.parse(localStorage.getItem("lottery_codes") ?? '[]');
+const STORAGE_KEY = 'lottery_codes';
 
-    const [codeList, setCodeList] = useState<string[]>(loadCodeList())
+function decodeLotteryCode(item: unknown) {
+    if (typeof item !== 'string') return;
+    const code = item.trim();
+    if (/^\d{2}(?: \d{2}){5}$/.test(code) || /^\d{2}(?: \d{2}){4} \+ \d{2} \d{2}$/.test(code)) return code;
+}
+
+const LotteryGen: React.FC = () => {
+    const [codeList, setCodeList] = useStoredList(STORAGE_KEY, decodeLotteryCode, true);
     const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
     const { value, action } = useBasic(superLottoGen(), '');
 
-    const saveCode = () => setCodeList(prev => {
-        const newList = uniq([value, ...prev]);
-        localStorage.setItem("lottery_codes", JSON.stringify(newList));
-        return newList;
-    });
+    const saveCode = () => setCodeList(prev => uniq([value, ...prev]));
 
     const cleanList = () => {
-        setCodeList(() => {
-            localStorage.removeItem("lottery_codes");
-            return [];
-        });
+        setCodeList([]);
         setClearConfirmOpen(false);
     };
 
     const deleteCode = (index: number) => {
         const removed = codeList[index];
         if (!removed) return;
-        setCodeList(prev => {
-            const newList = prev.filter((_, i) => i !== index);
-            localStorage.setItem("lottery_codes", JSON.stringify(newList));
-            return newList;
-        });
+        setCodeList(prev => prev.filter((_, i) => i !== index));
         showUndoToast('已删除一组收藏号码', () => {
             setCodeList(prev => {
                 if (prev.includes(removed)) return prev;
                 const newList = [...prev];
                 newList.splice(Math.min(index, newList.length), 0, removed);
-                localStorage.setItem('lottery_codes', JSON.stringify(newList));
                 return newList;
             });
         });

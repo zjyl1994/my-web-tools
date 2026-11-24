@@ -9,6 +9,7 @@ import EditorActions from '@/components/ui/editor-actions';
 import './style.css';
 import { useBasic, useTextareaResize } from '@/hooks/use-basic';
 import { useInputHistory } from '@/hooks/use-input-history';
+import { readLocalStorage, writeLocalStorage } from '@/utils/local-storage';
 import {
     split_by_comma, join_with_comma,
     trim_line_space, remove_empty_line, split_by_blank, join_by_blank, sperate_with_blank_row,
@@ -65,13 +66,17 @@ const TextProcPage: React.FC = () => {
     const { rows, textareaRef } = useTextareaResize<HTMLDivElement>('textproc', 15);
 
     const memory_load = () => {
-        setValue(localStorage.getItem('textproc_memory') ?? '');
+        const stored = readLocalStorage('textproc_memory', (value) => ({ value }));
+        setValue(stored.value ?? '');
         setMemoryConfirmOpen(false);
     };
 
     const memory_save = () => {
-        localStorage.setItem('textproc_memory', value);
-        toast.info('已保存到存储区', { autoClose: 3000 });
+        if (writeLocalStorage('textproc_memory', value)) {
+            toast.info('已保存到存储区', { autoClose: 3000 });
+        } else {
+            toast.error('无法保存到存储区，当前内容仍在页面中。', { autoClose: 6000 });
+        }
     };
 
     const copy_as_table = () => {

@@ -14,8 +14,8 @@ import { useStoredState } from '@/hooks/use-stored-state';
 const SQLPage: React.FC = () => {
     const { value, setValue, action, actionError, clearActionError, functionButtonGroup } = useBasic('', 'sql', true);
 
-    const [storedLanguage, setLanguage] = useStoredState<DialectChoice>('sql.language', 'auto');
-    const choice = storedLanguage === 'auto' || dialects.some(([value]) => value === storedLanguage) ? storedLanguage : 'auto';
+    const [choice, setLanguage] = useStoredState<DialectChoice>('sql.language', 'auto',
+        (stored) => stored === 'auto' || dialects.some(([value]) => value === stored));
     const detectionCache = useRef<{ sample: string; language: ReturnType<typeof detectDialect>['language'] } | null>(null);
 
     useEffect(() => {

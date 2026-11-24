@@ -18,8 +18,9 @@ function CopyValue({ id, label, value, placeholder = '等待输入' }: { id: str
 
 export default function TimestampPage() {
   const [now, setNow] = useState(Date.now);
-  const [zone, setZone] = useStoredState<TimeZone>('timestamp.zone', 'local');
-  const [unit, setUnit] = useStoredState<TimestampUnit>('timestamp.unit', 'auto');
+  const [zone, setZone] = useStoredState<TimeZone>('timestamp.zone', 'local', (value) => value === 'local' || value === 'utc');
+  const [unit, setUnit] = useStoredState<TimestampUnit>('timestamp.unit', 'auto',
+    (value) => value === 'auto' || value === 'seconds' || value === 'milliseconds');
   const [timestamp, setTimestamp] = useStoredState('timestamp.input', '');
   const [datetime, setDatetime] = useStoredState('timestamp.datetime', '');
   const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone;

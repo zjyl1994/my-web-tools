@@ -5,12 +5,12 @@ import { Button, Form } from '@/components/ui';
 import GeneratorResult from '@/components/ui/generator-result';
 import { useBasic } from '@/hooks/use-basic';
 import { useStoredState } from '@/hooks/use-stored-state';
-import { MAX_GENERATION_COUNT, generationCountError } from '@/pages/random/utils';
+import { MAX_GENERATION_COUNT, generationCountError, isStoredInteger } from '@/pages/random/utils';
 
 const generate = (count: number) => Array.from({ length: count }, () => uuid()).join('\n');
 
 export default function UuidPage() {
-  const [count, setCount] = useStoredState('uuid.count', '10');
+  const [count, setCount] = useStoredState('uuid.count', '10', (value) => isStoredInteger(value, 1, MAX_GENERATION_COUNT));
   const { value: result, setValue: setResult } = useBasic('', 'uuid');
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);

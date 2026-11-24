@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as LosslessJSON from 'lossless-json';
 import { toast } from 'react-toastify';
 
@@ -12,12 +12,13 @@ const STORAGE_KEY_PREFIX = 'textarea_history_';
 
 const ComparePage: React.FC = () => {
   const { rows, textareaRef } = useTextareaResize<HTMLDivElement>('compare.merge', 22);
-  const [mode, setMode] = useStoredState<CompareMode>('compare.mode', 'text');
+  const [mode, setMode] = useStoredState<CompareMode>('compare.mode', 'text', (value) => value === 'text' || value === 'json');
   const [ignoreBlankLines, setIgnoreBlankLines] = useStoredState('compare.ignore_blank_lines', false);
   const [compareAfterSort, setCompareAfterSort] = useStoredState('compare.compare_after_sort', false);
   const [ignoreArrayOrder, setIgnoreArrayOrder] = useStoredState('compare.ignore_array_order', false);
   const [leftValue, setLeftValue] = useStoredTextareaState('compare.left');
   const [rightValue, setRightValue] = useStoredTextareaState('compare.right');
+  const [differenceCount, setDifferenceCount] = useState(0);
   const hasShownJsonFallbackNotice = useRef(false);
 
   useEffect(() => {
@@ -61,28 +62,13 @@ const ComparePage: React.FC = () => {
     }
   }, [compareAfterSort, ignoreArrayOrder, ignoreBlankLines, leftValue, mode, rightValue]);
 
-  const differenceCount = useMemo(() => {
-    const leftLines = normalizeLines(compareState.leftValue);
-    const rightLines = normalizeLines(compareState.rightValue);
-    const maxLength = Math.max(leftLines.length, rightLines.length);
-    let count = 0;
-
-    for (let index = 0; index < maxLength; index += 1) {
-      if ((leftLines[index] ?? '') !== (rightLines[index] ?? '')) {
-        count += 1;
-      }
-    }
-
-    return count;
-  }, [compareState.leftValue, compareState.rightValue]);
-
   return (
     <div className="compare-page">
       <CodeMergeView
-        leftValue={compareState.leftValue}
-        rightValue={compareState.rightValue}
+        documents={compareState}
         onLeftChange={setLeftValue}
         onRightChange={setRightValue}
+        onDifferenceCountChange={setDifferenceCount}
         leftTitle={mode === 'json' ? '左侧 JSON' : '左侧内容'}
         rightTitle={mode === 'json' ? '右侧 JSON' : '右侧内容'}
         rows={rows}

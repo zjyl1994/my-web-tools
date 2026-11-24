@@ -4,6 +4,7 @@ import EditorActions from '@/components/ui/editor-actions';
 import { Button, Card, Form, Table } from '@/components/ui';
 import ConfirmDialog from '@/components/ui/confirm-dialog';
 import { numericInput } from '@/utils/numeric-input';
+import { useStoredList } from '@/hooks/use-stored-state';
 
 interface PriceItem {
   price: number;
@@ -15,23 +16,23 @@ interface PriceItem {
 const STORAGE_NAME = 'price_calc_items';
 const CALC_PREC = 4;
 
-function readPriceList(): PriceItem[] {
-  try {
-    const stored: unknown = JSON.parse(localStorage.getItem(STORAGE_NAME) ?? '[]');
-    if (!Array.isArray(stored)) return [];
-    return stored.filter((item): item is PriceItem => Boolean(item)
-      && [item.price, item.unitNum, item.netContent, item.unitPrice].every((value) => typeof value === 'number' && Number.isFinite(value))
-      && item.price >= 0 && item.netContent > 0 && Number.isSafeInteger(item.unitNum) && item.unitNum > 0 && item.unitPrice >= 0);
-  } catch {
-    return [];
-  }
+function decodePriceItem(item: unknown): PriceItem | undefined {
+  if (!item || typeof item !== 'object') return;
+  const { price, unitNum, netContent = 1, unitPrice } = item as Partial<PriceItem>;
+  const valid = typeof price === 'number' && Number.isFinite(price) && price >= 0
+    && typeof unitNum === 'number' && Number.isSafeInteger(unitNum) && unitNum > 0
+    && typeof netContent === 'number' && Number.isFinite(netContent) && netContent > 0
+    && typeof unitPrice === 'number' && Number.isFinite(unitPrice) && unitPrice >= 0;
+  if (!valid) return;
+  // Older records used the quantity as the total net amount.
+  return 'netContent' in item ? item as PriceItem : { price, unitNum, netContent, unitPrice };
 }
 
 export default function PriceCalcPage() {
   const [price, setPrice] = useState('0');
   const [unitNum, setUnitNum] = useState('1');
   const [netContent, setNetContent] = useState('100');
-  const [priceList, setPriceList] = useState<PriceItem[]>(readPriceList);
+  const [priceList, setPriceList] = useStoredList(STORAGE_NAME, decodePriceItem);
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
   const priceInput = numericInput(price, '总价');
   const quantity = numericInput(unitNum, '份数', { positive: true, integer: true });
@@ -41,20 +42,16 @@ export default function PriceCalcPage() {
   const unitPrice = raw !== null && Number.isFinite(raw) && Number.isFinite(divisor) && divisor !== 0 ? raw : null;
   const minUnitPrice = Math.min(...priceList.map((item) => item.unitPrice));
 
-  function updateList(next: PriceItem[]) {
-    setPriceList(next);
-    localStorage.setItem(STORAGE_NAME, JSON.stringify(next));
-  }
-
   function savePrice() {
     if (unitPrice === null || priceInput.value === null || quantity.value === null || content.value === null) return;
-    updateList([{ price: priceInput.value, unitNum: quantity.value, netContent: content.value, unitPrice }, ...priceList]);
+    const item = { price: priceInput.value, unitNum: quantity.value, netContent: content.value, unitPrice };
+    setPriceList((current) => [item, ...current]);
   }
 
   function deleteItem(index: number) {
     const removed = priceList[index];
     if (!removed) return;
-    updateList(priceList.filter((_, itemIndex) => itemIndex !== index));
+    setPriceList((current) => current.filter((item) => item !== removed));
     showUndoToast('已删除一条比价记录', () => restoreItem(removed, index));
   }
 
@@ -63,13 +60,12 @@ export default function PriceCalcPage() {
       if (current.includes(item)) return current;
       const next = [...current];
       next.splice(Math.min(index, next.length), 0, item);
-      localStorage.setItem(STORAGE_NAME, JSON.stringify(next));
       return next;
     });
   }
 
   function clearList() {
-    updateList([]);
+    setPriceList([]);
     setClearConfirmOpen(false);
   }
 

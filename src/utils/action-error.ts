@@ -1,6 +1,9 @@
 export class ActionInputError extends Error {
-  constructor(message: string, public readonly input: string) {
+  readonly input: string;
+
+  constructor(message: string, input: string) {
     super(message);
+    this.input = input;
   }
 }
 

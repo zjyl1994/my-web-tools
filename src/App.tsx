@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Component, Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
 import { Dialog } from '@base-ui/react/dialog';
 import { Tooltip } from '@base-ui/react/tooltip';
 import { Routes, Route, Link, useLocation } from "react-router-dom";
@@ -9,8 +9,10 @@ import AboutPage from '@/pages/about';
 import ToolIcon from '@/components/layout/tool-icon';
 import ToolNavItem from '@/components/layout/tool-nav-item';
 import ToolSearch from '@/components/layout/tool-search';
+import ActionError from '@/components/ui/action-error';
 import { useStoredState } from '@/hooks/use-stored-state';
 import { usePrefersDark } from '@/hooks/use-prefers-dark';
+import { usePwaInstall } from '@/hooks/use-pwa-install';
 import { tools, toolGroups } from '@/components/layout/tools';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -44,8 +46,24 @@ function PageSkeleton() {
   );
 }
 
+class PageErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  render() {
+    if (this.state.failed) {
+      return <ActionError message="当前页面加载失败。你可以通过导航打开其他工具，或刷新页面重试。" />;
+    }
+    return this.props.children;
+  }
+}
+
 function App() {
   const location = useLocation();
+  const pwaInstall = usePwaInstall();
   const [sidebarExpanded, setSidebarExpanded] = useStoredState('layout.sidebarExpanded', window.matchMedia('(min-width: 1181px)').matches);
   const [navOpenPath, setNavOpenPath] = useState<string | null>(null);
   const prefersDark = usePrefersDark();
@@ -81,7 +99,7 @@ function App() {
       <header className="app-shell-header">
         <div className="app-shell-header-row">
           <Link className="app-brand" to="/">
-            <img src={__SITE__.icon} width="32" height="32" alt="" />
+            <img src={__SITE__.icon} width="28" height="28" alt="" />
             <span title={__SITE__.name}>{__SITE__.name}</span>
           </Link>
           <ToolSearch />
@@ -135,28 +153,30 @@ function App() {
               {currentTool?.description && <p className="page-heading__description">{currentTool.description}</p>}
             </div>}
             <div className={cn('page-workspace', currentTool && `page-workspace--${currentTool.layout}`, location.pathname === '/about' && 'page-workspace--about')}>
-              <Suspense fallback={<PageSkeleton />}>
-                <Routes>
-                  <Route path="/" element={<FrontPage />} />
-                  <Route path="/timestamp" element={<TimestampPage />} />
-                  <Route path="/random" element={<RandomPage />} />
-                  <Route path="/uuid" element={<UuidPage />} />
-                  <Route path="/compare" element={<ComparePage />} />
-                  <Route path="/json" element={<JsonPage />} />
-                  <Route path="/encoder" element={<EncoderPage />} />
-                  <Route path="/kcal" element={<KcalCalcPage />} />
-                  <Route path="/code" element={<CodeCalcPage />} />
-                  <Route path="/sqlfmt" element={<SQLFmtPage />} />
-                  <Route path="/textproc" element={<TextProcPage />} />
-                  <Route path="/lottery" element={<LotteryPage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/lazygo" element={<LazyGoPage />} />
-                  <Route path="/pricecalc" element={<PriceCalcPage />} />
-                  <Route path="/jwt" element={<JwtPage />} />
-                  <Route path="/imagecompress" element={<ImageCompressPage />} />
-                  <Route path="/qrcode" element={<BarcodePage />} />
-                </Routes>
-              </Suspense>
+              <PageErrorBoundary key={location.pathname}>
+                <Suspense fallback={<PageSkeleton />}>
+                  <Routes>
+                    <Route path="/" element={<FrontPage />} />
+                    <Route path="/timestamp" element={<TimestampPage />} />
+                    <Route path="/random" element={<RandomPage />} />
+                    <Route path="/uuid" element={<UuidPage />} />
+                    <Route path="/compare" element={<ComparePage />} />
+                    <Route path="/json" element={<JsonPage />} />
+                    <Route path="/encoder" element={<EncoderPage />} />
+                    <Route path="/kcal" element={<KcalCalcPage />} />
+                    <Route path="/code" element={<CodeCalcPage />} />
+                    <Route path="/sqlfmt" element={<SQLFmtPage />} />
+                    <Route path="/textproc" element={<TextProcPage />} />
+                    <Route path="/lottery" element={<LotteryPage />} />
+                    <Route path="/about" element={<AboutPage {...pwaInstall} />} />
+                    <Route path="/lazygo" element={<LazyGoPage />} />
+                    <Route path="/pricecalc" element={<PriceCalcPage />} />
+                    <Route path="/jwt" element={<JwtPage />} />
+                    <Route path="/imagecompress" element={<ImageCompressPage />} />
+                    <Route path="/qrcode" element={<BarcodePage />} />
+                  </Routes>
+                </Suspense>
+              </PageErrorBoundary>
             </div>
           </div>
         </main>

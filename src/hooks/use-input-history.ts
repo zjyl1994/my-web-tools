@@ -1,41 +1,29 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { encodeStoredList, readStoredList } from '@/utils/local-storage';
+import { useSaveStoredValue, useStorageRepair } from '@/hooks/use-stored-state';
 
-const readHistory = (key: string) => {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) as string[] : [];
-  } catch {
-    return [];
-  }
-};
+const EMPTY_HISTORY: string[] = [];
+const decodeHistoryItem = (item: unknown) => typeof item === 'string' && item.trim().length > 0 ? item : undefined;
 
 export function useInputHistory(key: string, max = 10) {
-  const [historyState, setHistoryState] = useState<{ key: string; history: string[] }>(() => {
-    return { key, history: readHistory(key) };
-  });
-  const history = historyState.key === key ? historyState.history : readHistory(key);
+  const stored = useMemo(() => readStoredList(key, decodeHistoryItem, true), [key]);
+  const initialHistory = stored.value ?? EMPTY_HISTORY;
+  const [historyState, setHistoryState] = useState(() => ({ key, history: initialHistory }));
+  const history = historyState.key === key ? historyState.history : initialHistory;
+  useStorageRepair(stored.repair);
+  useSaveStoredValue(key, history, encodeStoredList);
 
   const remember = useCallback((value: string) => {
     const v = value.trim();
     if (!v) return;
     setHistoryState(prev => {
-      const current = prev.key === key ? prev.history : readHistory(key);
+      const current = prev.key === key ? prev.history : initialHistory;
       const next = [v, ...current.filter(i => i !== v)].slice(0, max);
-      try {
-        localStorage.setItem(key, JSON.stringify(next));
-      } catch {
-        // ignore
-      }
       return { key, history: next };
     });
-  }, [key, max]);
+  }, [initialHistory, key, max]);
 
   const clear = useCallback(() => {
-    try {
-      localStorage.removeItem(key);
-    } catch {
-      // ignore
-    }
     setHistoryState({ key, history: [] });
   }, [key]);
 

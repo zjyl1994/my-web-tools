@@ -4,6 +4,8 @@ import { useHistoryState } from "@uidotdev/usehooks";
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Button, ButtonGroup } from '@/components/ui';
 import { describeActionError } from '@/utils/action-error';
+import { readLocalStorage, writeLocalStorage } from '@/utils/local-storage';
+import { useSaveStoredValue, useStorageRepair } from '@/hooks/use-stored-state';
 
 const STORAGE_KEY_PREFIX = 'textarea_history_';
 const TEXTAREA_ROWS_KEY_PREFIX = 'textarea_rows_';
@@ -12,6 +14,10 @@ const CLIPBOARD_WRITE_ERROR = '无法写入剪贴板，请检查浏览器的剪�
 const CLIPBOARD_READ_ERROR = '无法读取剪贴板，请检查剪贴板权限，或直接手动粘贴。';
 const STORAGE_SAVE_ERROR = '无法保存到本地：浏览器存储已满或被禁用。当前内容仍在页面中。';
 const STORAGE_CLEAR_ERROR = '无法清除本地记录：浏览器的本地存储被禁用。';
+
+function reportStorageSaveError() {
+    toast.error(STORAGE_SAVE_ERROR, { autoClose: 6000 });
+}
 
 export const useCopy = (text: string) => {
     const [copied, setCopied] = useState(false);
@@ -81,34 +87,18 @@ export const useActionCreater = (
 
 export const useBasic = (defaultValue: string, historyType: string, inlineErrors = false) => {
     const [actionError, setActionError] = useState('');
-    const storageKey = `${STORAGE_KEY_PREFIX}${historyType}`;
-
-    // 从localStorage加载初始值
-    const getInitialValue = (): string => {
-        if (!historyType) return defaultValue;
-        try {
-            const storedValue = localStorage.getItem(storageKey);
-            return storedValue ? JSON.parse(storedValue) : defaultValue;
-        } catch {
-            return defaultValue;
-        }
-    };
-
-    const { state, set, undo: undoState, redo: redoState, clear, canUndo, canRedo } = useHistoryState(getInitialValue());
+    const storageKey = historyType ? `${STORAGE_KEY_PREFIX}${historyType}` : null;
+    const [stored] = useState(() => storageKey === null ? {} : readLocalStorage(storageKey, (raw) => {
+        const parsed: unknown = JSON.parse(raw);
+        if (typeof parsed === 'string') return { value: parsed };
+    }));
+    useStorageRepair(stored.repair);
+    const { state, set, undo: undoState, redo: redoState, clear, canUndo, canRedo } = useHistoryState(stored.value ?? defaultValue);
     const value = state;
     const undo = () => { setActionError(''); undoState(); };
     const redo = () => { setActionError(''); redoState(); };
 
-    // 保存到localStorage的effect
-    useEffect(() => {
-        if (!historyType) return;  // 新增：type为空时不保存
-        try {
-            localStorage.setItem(storageKey, JSON.stringify(value));
-        } catch (error) {
-            console.error(error);
-            toast.error(STORAGE_SAVE_ERROR, { autoClose: 6000 });
-        }
-    }, [value, storageKey, historyType]);  // 新增：添加type到依赖项
+    useSaveStoredValue(storageKey, value, JSON.stringify, reportStorageSaveError);
 
     const setValue = (newValue: string) => {
         setActionError('');
@@ -117,11 +107,7 @@ export const useBasic = (defaultValue: string, historyType: string, inlineErrors
 
     const clearHistory = () => {
         clear();
-        if (!historyType) return;  // 新增：type为空时不清理
-        try {
-            localStorage.removeItem(storageKey);
-        } catch (error) {
-            console.error(error);
+        if (storageKey !== null && !writeLocalStorage(storageKey, null)) {
             toast.error(STORAGE_CLEAR_ERROR, { autoClose: 6000 });
         }
     };
@@ -155,16 +141,15 @@ export const useTextareaResize = <T extends HTMLElement = HTMLTextAreaElement>(t
         const availableRows = Math.max(8, Math.floor((window.innerHeight - 360) / lineSize));
         return Math.min(defaultRows, window.innerWidth <= 800 ? 12 : defaultRows, availableRows);
     }, [defaultRows]);
-    const [rows, setRows] = useState(() => {
-        const savedRows = localStorage.getItem(storageKey);
-        if (!savedRows) return defaultVisibleRows();
-
-        const parsedRows = parseInt(savedRows, 10);
-        return Number.isFinite(parsedRows) && parsedRows > 0 ? parsedRows : defaultVisibleRows();
-    });
+    const [stored] = useState(() => readLocalStorage(storageKey, (raw) => {
+        const value = Number(raw);
+        if (/^[1-9]\d*$/.test(raw) && Number.isSafeInteger(value)) return { value };
+    }));
+    const [rows, setRows] = useState(() => stored.value ?? defaultVisibleRows());
+    useStorageRepair(stored.repair);
     const textareaRef = useRef<T | null>(null);
     const lineHeight = useRef(0);
-    const currentRows = useRef(defaultRows);
+    const currentRows = useRef(rows);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
     const lastHeight = useRef(0);
     const stableHeightCount = useRef(0);
@@ -225,7 +210,7 @@ export const useTextareaResize = <T extends HTMLElement = HTMLTextAreaElement>(t
                         if (finalRows !== currentRows.current) {
                             currentRows.current = finalRows;
                             setRows(finalRows);
-                            localStorage.setItem(storageKey, finalRows.toString());
+                            writeLocalStorage(storageKey, finalRows.toString());
                             lastHeight.current = newHeight;
                             stableHeightCount.current = 0; // 重置稳定计数
                         }
@@ -243,7 +228,6 @@ export const useTextareaResize = <T extends HTMLElement = HTMLTextAreaElement>(t
             if (currentRows.current > maxRows) {
                 currentRows.current = maxRows;
                 setRows(maxRows);
-                localStorage.setItem(storageKey, maxRows.toString());
             }
             
             // 初始化当前高度
@@ -259,7 +243,7 @@ export const useTextareaResize = <T extends HTMLElement = HTMLTextAreaElement>(t
                 if (currentRows.current > maxRows) {
                     currentRows.current = maxRows;
                     setRows(maxRows);
-                    localStorage.setItem(storageKey, maxRows.toString());
+                    writeLocalStorage(storageKey, maxRows.toString());
                 }
             }, 100);
         };
@@ -284,7 +268,7 @@ export const useTextareaResize = <T extends HTMLElement = HTMLTextAreaElement>(t
         const initialRows = defaultVisibleRows();
         setRows(initialRows);
         currentRows.current = initialRows;
-        localStorage.removeItem(storageKey);
+        writeLocalStorage(storageKey, null);
     };
 
     return { rows, textareaRef, resetRows };

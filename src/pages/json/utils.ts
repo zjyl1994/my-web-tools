@@ -1,7 +1,7 @@
 import * as LosslessJSON from 'lossless-json';
 import { Base64 } from 'js-base64';
 import pako from 'pako';
-import { ActionInputError } from '@/utils/action-error';
+import { ActionInputError } from '../../utils/action-error.ts';
 
 export const deepParse = (s: string): unknown => LosslessJSON.parse(s, (_, v) => {
     try {
@@ -70,9 +70,11 @@ export const smart_process = (data: string) => {
         if (content === null) {
             throw new Error('json not found');
         }
-        // 自动处理两侧的引号
-        const json_content = auto_single_quote(content);
-        return LosslessJSON.parse(json_content);
+        try {
+            return LosslessJSON.parse(content);
+        } catch {
+            return LosslessJSON.parse(auto_single_quote(content));
+        }
     }
     try {
         try { // 优先按照单行处理
@@ -104,20 +106,30 @@ function extractJsonString(input: string): string | null {
     let jsonStart = -1;
     let jsonEnd = -1;
     const stack: string[] = [];
-    const length = input.length;
+    let quote: '"' | "'" | null = null;
+    let escaped = false;
 
-    for (let i = 0; i < length; i++) {
-        if (input[i] === '{' || input[i] === '[') {
+    for (let i = 0; i < input.length; i++) {
+        const character = input[i];
+        if (quote !== null) {
+            if (escaped) escaped = false;
+            else if (character === '\\') escaped = true;
+            else if (character === quote) quote = null;
+            continue;
+        }
+        if (stack.length && (character === '"' || character === "'")) {
+            quote = character;
+        } else if (character === '{' || character === '[') {
             if (jsonStart === -1) {
                 jsonStart = i;
             }
-            stack.push(input[i]);
-        } else if (input[i] === '}' || input[i] === ']') {
+            stack.push(character);
+        } else if (character === '}' || character === ']') {
             if (stack.length === 0) {
                 return null; // Unbalanced JSON
             }
             const last = stack.pop();
-            if ((last === '{' && input[i] !== '}') || (last === '[' && input[i] !== ']')) {
+            if ((last === '{' && character !== '}') || (last === '[' && character !== ']')) {
                 return null; // Unbalanced JSON
             }
             if (stack.length === 0) {
@@ -126,7 +138,7 @@ function extractJsonString(input: string): string | null {
         }
     }
 
-    if (jsonStart !== -1 && jsonEnd !== -1) {
+    if (jsonEnd !== -1 && stack.length === 0) {
         return input.substring(jsonStart, jsonEnd + 1);
     }
 

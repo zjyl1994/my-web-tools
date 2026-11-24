@@ -3,7 +3,7 @@ import { Button, ButtonToolbar, Form } from '@/components/ui';
 import GeneratorResult from '@/components/ui/generator-result';
 import { useBasic } from '@/hooks/use-basic';
 import { useStoredState } from '@/hooks/use-stored-state';
-import { characterGroups, generateNumbers, generateStrings, generationCountError, MAX_GENERATION_COUNT, MAX_STRING_LENGTH } from './utils';
+import { characterGroups, generateNumbers, generateStrings, generationCountError, isStoredInteger, MAX_GENERATION_COUNT, MAX_STRING_LENGTH } from './utils';
 
 type Mode = 'number' | 'string';
 
@@ -13,12 +13,13 @@ function integerError(text: string) {
 }
 
 export default function RandomPage() {
-  const [mode, setMode] = useStoredState<Mode>('random.mode', 'number');
-  const [min, setMin] = useStoredState('random.min', '1');
-  const [max, setMax] = useStoredState('random.max', '100');
-  const [length, setLength] = useStoredState('random.length', '16');
-  const [count, setCount] = useStoredState('random.count', '10');
-  const [groups, setGroups] = useStoredState<string[]>('random.groups', ['lowercase', 'uppercase', 'digits']);
+  const [mode, setMode] = useStoredState<Mode>('random.mode', 'number', (value) => value === 'number' || value === 'string');
+  const [min, setMin] = useStoredState<string>('random.min', '1', isStoredInteger);
+  const [max, setMax] = useStoredState<string>('random.max', '100', isStoredInteger);
+  const [length, setLength] = useStoredState('random.length', '16', (value) => isStoredInteger(value, 1, MAX_STRING_LENGTH));
+  const [count, setCount] = useStoredState('random.count', '10', (value) => isStoredInteger(value, 1, MAX_GENERATION_COUNT));
+  const [groups, setGroups] = useStoredState<string[]>('random.groups', ['lowercase', 'uppercase', 'digits'],
+    (value) => new Set(value).size === value.length && value.every((id) => characterGroups.some((group) => group.id === id)));
   const { value: result, setValue: setResult } = useBasic('', 'random');
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);

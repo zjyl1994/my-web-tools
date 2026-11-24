@@ -1,6 +1,12 @@
 export const MAX_GENERATION_COUNT = 1000;
 export const MAX_STRING_LENGTH = 256;
 
+export function isStoredInteger(text: string, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER) {
+  const value = Number(text);
+  return /^-?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?$/i.test(text)
+    && Number.isSafeInteger(value) && value >= min && value <= max;
+}
+
 export const characterGroups = [
   { id: 'lowercase', label: '小写字母 a–z', characters: 'abcdefghijklmnopqrstuvwxyz' },
   { id: 'uppercase', label: '大写字母 A–Z', characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' },
